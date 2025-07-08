@@ -7,7 +7,7 @@ export async function GET(req) {
   await dbConnect();
   try {
     const entries = await HomeCollection.find();
-    const banner = entries[0]?.banner || '/banner/banner.webp';
+    const banner = entries[0]?.banner || '';
 
     const items = [];
 
