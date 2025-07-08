@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
         
         <div className="flex md:hidden fixed top-0 left-0 right-0 z-10">   <NavbarM/></div>
         <div className="hidden md:flex fixed top-0 left-0 right-0 z-10">  <Navbar/></div>
-        <div className="fixed top-[9vh] left-0 right-0 z-5"><Announcemnt/></div>
+        {/* <div className="fixed top-[9vh] left-0 right-0 z-5"><Announcemnt/></div> */}
         <div className="absolute top-[14vh] w-full">
           
           {children}
