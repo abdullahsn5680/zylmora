@@ -1,36 +1,19 @@
-'use client';
-import React, { useState, useEffect } from 'react';
+export const revalidate = 3600;
+
 import Banner from './Components/UI/Banner';
 import CardContainer from './Components/UI/Container/CardContainer';
-import Loader from './Components/Loader/loader';
 
-function Page() {
-  const [loading, setLoading] = useState(true);
-  const [content, setContent] = useState(null);
+async function getData() {
+    const time = new Date().toLocaleTimeString();
+  console.log(`🧠 [Server] Page rendered at: ${time}`);
+  const res = await fetch('http://localhost:3000/api/getHome', {
+    next: { revalidate: 3600 },
+  });
+  return res.json();
+}
 
-  useEffect(() => {
-    const fetchP = async () => {
-      try {
-        const res = await fetch('/api/getHome');
-        const data = await res.json();
-        console.log(data);
-        setContent(data);
-      } catch (error) {
-        console.error('Fetch error:', error);
-      }
-    };
-    fetchP();
-  }, []);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
-  }, []);
-
-  if (loading || !content) {
-    return <Loader />;
-  }
+export default async function HomePage() {
+  const content = await getData();
 
   return (
     <div className="md:px-[50px] px-1 w-full overflow-x-hidden">
@@ -45,5 +28,3 @@ function Page() {
     </div>
   );
 }
-
-export default Page;
