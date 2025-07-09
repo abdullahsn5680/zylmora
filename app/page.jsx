@@ -3,15 +3,6 @@ export const revalidate = 3600;
 import Banner from './Components/UI/Banner';
 import CardContainer from './Components/UI/Container/CardContainer';
 
-async function getData() {
-    const time = new Date().toLocaleTimeString();
-  console.log(`🧠 [Server] Page rendered at: ${time}`);
-  const res = await fetch('http://localhost:3000/api/getHome', {
-    next: { revalidate: 3600 },
-  });
-  return res.json();
-}
-
 export default async function HomePage() {
   const content = await getData();
 
