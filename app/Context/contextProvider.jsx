@@ -10,7 +10,7 @@ export const QueryContext = createContext();
 export const UserContext = createContext();
 
 function ContextProvider({ children }) {
-  const [isSlide, setIsSlide] = useState(false);
+  const [isSlide, setIsSlide] = useState('false');
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSubCategory, setSelectedSubCategory] = useState('');
@@ -24,7 +24,6 @@ function ContextProvider({ children }) {
 
   const { data: session } = useSession();
   const [fetchedUser, setFetchedUser] = useState(false);
-
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -50,21 +49,13 @@ function ContextProvider({ children }) {
     fetchUser();
   }, [session?.user?.id, fetchedUser]);
 
-
   useEffect(() => {
-    const cached = localStorage.getItem('collections');
-    if (cached) {
-      setCategories(JSON.parse(cached));
-      return;
-    }
-
     const fetchCollections = async () => {
       try {
         const res = await fetch('/api/collections');
         const data = await res.json();
         if (data.success) {
           setCategories(data.collections);
-          localStorage.setItem('collections', JSON.stringify(data.collections));
         }
       } catch (err) {
         console.error('Error fetching collections:', err);
@@ -91,7 +82,8 @@ function ContextProvider({ children }) {
             setSelectedMinPrice,
             selectedHighPrice,
             setSelectedHighPrice,
-          }}>
+          }}
+        >
           <QueryContext.Provider value={[query, setQuery]}>
             <AuthAnimationContext.Provider value={[authAnimation, setAuthAnimation]}>
               <UserContext.Provider value={[user, setUser]}>
