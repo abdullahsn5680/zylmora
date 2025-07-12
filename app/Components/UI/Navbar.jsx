@@ -1,7 +1,7 @@
 'use client';
-import { Heart, Search, ShoppingBag, User2 } from 'lucide-react';
+import { Heart, Package, Search, ShoppingBag, User2 } from 'lucide-react';
 import Link from 'next/link';
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef, useContext,useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { CollectionContext, FilterContext } from '@/app/Context/contextProvider';
 
@@ -10,6 +10,14 @@ function Navbar() {
   const [hovered, setHovered] = useState(null);
   const timeoutRef = useRef(null);
   const router = useRouter();
+   useEffect(() => {
+       
+    router.prefetch('/Authentication');
+    router.prefetch('/Profile/Wishlist');
+    router.prefetch('/Profile/Cart');
+     router.prefetch('/Profile/Orders');
+    router.prefetch('/Collections');
+  }, []);
 
   const {
     selectedCategory,
@@ -39,7 +47,7 @@ function Navbar() {
 
   return (
     <nav className="bg-gray-950 text-slate-100 transition-all duration-300 w-full relative z-20 flex justify-between items-center font-extrabold px-4 py-2">
-      {/* LEFT: Categories */}
+    
       <div className="options w-full">
         <ul className="flex gap-10">
           {categories.map((category) => (
@@ -66,7 +74,7 @@ function Navbar() {
                       key={index}
                       onClick={() => {
                         setSelectedSubCategory(sub);
-                        performAction(); // uses router.push() with filters (OK!)
+                        performAction(); 
                       }}
                       className="hover:underline p-1 w-fit"
                     >
@@ -80,12 +88,11 @@ function Navbar() {
         </ul>
       </div>
 
-      {/* CENTER: Brand */}
+  
       <div className="brandNam cursor-pointer w-full text-center text-[24px]">
         <Link href="/">ZYLMORA✦STORE</Link>
       </div>
-
-      {/* RIGHT: Icons + Search */}
+    
       <div className="buttonsc w-full flex justify-end items-center gap-4">
         <ul className="flex gap-5">
           <li className="hover:text-gray-500">
@@ -94,8 +101,8 @@ function Navbar() {
             </Link>
           </li>
           <li className="hover:text-gray-500">
-            <Link href="/Profile/Wishlist">
-              <Heart />
+            <Link href="/Profile/Orders">
+              <Package/>
             </Link>
           </li>
           <li className="hover:text-gray-500">

@@ -1,16 +1,21 @@
 'use client';
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useContext } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import Loader from '@/app/Components/Loader/loader';
+import { UserContext } from '@/app/Context/contextProvider';
 export default function CartPage() {
       const [loading,setLoading]=useState(true)
   const router = useRouter();
-  const { data: session } = useSession();
+  const { session } = useContext(UserContext)
   const [cartItems, setCartItems] = useState([
     
   ]);
-
+useEffect(()=>{
+    if(!session){
+      router.replace('/Authentication')
+    }
+    
+  },[])
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0

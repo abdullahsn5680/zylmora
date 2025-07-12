@@ -1,5 +1,6 @@
 'use client';
 import { useContext, useState, useEffect, useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Funnel } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import Align from '@/app/Components/Opeartions/Align';
@@ -9,12 +10,13 @@ import Card from '@/app/Components/UI/Card/Card';
 import Loader from '@/app/Components/Loader/loader';
 import Nextpage from '@/app/Components/UI/NextPage/Nextpage';
 import { FilterContext, QueryContext } from '@/app/Context/contextProvider';
+import { safeFetch } from '@/Utils/safeFetch';
 
 export default function ClientPage() {
   const searchParams = useSearchParams();
   const category = searchParams.get('category');
   const subcategory = searchParams.get('subcategory');
-
+  const origin = window.location.origin;
   const [query, setQuery] = useContext(QueryContext);
   const [grid, setGrid] = useState('grid-col-2');
   const [products, setProducts] = useState([]);
@@ -81,8 +83,10 @@ export default function ClientPage() {
     const getData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/getCollectionsProducts?${query}`);
-        const data = await res.json();
+        const res = await safeFetch(`/api/getCollectionsProducts?${query}`,{},360000);
+
+        console.log(res)
+        const data = res
 
         if (data?.success && Array.isArray(data.products)) {
           setProducts(data.products);
@@ -151,3 +155,6 @@ export default function ClientPage() {
     </div>
   );
 }
+
+
+  

@@ -2,13 +2,12 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Trash, Pencil, Check, X, ArrowLeft, Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import { UserContext } from '@/app/Context/contextProvider';
 import Loader from '@/app/Components/Loader/loader';
 export default function AddressManager() {
   const router = useRouter();
-  const { data: session } = useSession();
-  const [user, setUser] = useContext(UserContext);
+  const { session } = useContext(UserContext)
+  const {user, setUser} = useContext(UserContext);
   const [laoding,setLoading]=useState(true)
   const [addresses, setAddresses] = useState([]);
   const [defaultIndex, setDefaultIndex] = useState(0);
@@ -22,7 +21,12 @@ export default function AddressManager() {
     
     }
   }, [user]);
-
+useEffect(()=>{
+    if(!session){
+      router.replace('/Authentication')
+    }
+    
+  },[])
   const addAddress = () => {
     if (!newAddress.trim()) return;
     setAddresses([...addresses, newAddress.trim()]);

@@ -1,6 +1,7 @@
 'use client';
-import React, { useState,useEffect } from 'react';
-
+import React, { useState,useEffect,useContext } from 'react';
+import { useRouter } from 'next/navigation';
+import { UserContext } from '@/app/Context/contextProvider';
 export default function CollectionsAdminPage() {
   const [collections, setCollections] = useState([]);
   const [newCollection, setNewCollection] = useState('');
@@ -13,7 +14,17 @@ export default function CollectionsAdminPage() {
     setCollections([...collections, { name: newCollection, subs: [] }]);
     setNewCollection('');
   };
-    
+     const router =useRouter()
+      const  {session}=useContext(UserContext)
+    const isAdmin = session?.user?.role 
+     useEffect(()=>{
+        if(!session){
+          router.replace('/Authentication')
+        }
+         if(!isAdmin){
+          router.replace('/')
+        }
+      },[])
 
   const addSub = () => {
     if (!newSub.trim() || selectedCollection === null) return;

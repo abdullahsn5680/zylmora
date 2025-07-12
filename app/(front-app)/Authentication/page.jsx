@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import { useSpring, animated, a } from "@react-spring/web";
 import Login from "@/app/Components/Login/Login";
 import SignUp from "@/app/Components/Login/SignUp";
@@ -9,15 +8,16 @@ import Welcome from "@/app/Components/Login/Welcome";
 import WelcomeBack from "@/app/Components/Login/WelcomeBack";
 import Loader from "@/app/Components/Loader/loader";
 import { useContext } from "react";
+import { UserContext } from "@/app/Context/contextProvider";
 import { AuthAnimationContext } from "@/app/Context/contextProvider";
 import { Ban } from "lucide-react";
 import { useRouter } from "next/navigation";
 function page() {
-  const {data:session}=useSession();
+  const {session} =useContext(UserContext)
   const router =useRouter();
   useEffect(()=>{
     if(session){
-      router.push('./Profile')
+      router.replace('./Profile')
     }
     
   },[session])
@@ -45,12 +45,12 @@ function page() {
   }, [authAnimation]);
 
   const animationForm = useSpring({
-    from: { transform: "translateX(0%)" }, // Initial state
+    from: { transform: "translateX(0%)" }, 
     to: { transform: authAnimation ? "translateX(0%)" : "translateX(110%)" },
     config: { duration: 1000 },
   });
 const animationForm2= useSpring({
-    from: { transform: "translateY(0%)" }, // Initial state
+    from: { transform: "translateY(0%)" }, 
     to: { transform: authAnimation ? "translateY(0%)" : "translateY(40%)" },
     config: { duration: 1000 },
   });

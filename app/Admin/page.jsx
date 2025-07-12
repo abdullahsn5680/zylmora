@@ -13,7 +13,17 @@ export default function AdminPage() {
 
   const [uniqueCategories, setUniqueCategories] = useState([]);
   const [categorySubMap, setCategorySubMap] = useState({});
+    useEffect(()=>{
+    if(!session){
+      router.replace('/Authentication')
+    }
+     if(!session.role){
+      router.replace('/')
+    }
+  },[])
 
+
+  
   useEffect(() => {
     const extractCategorySub = () => {
       const catMap = {};

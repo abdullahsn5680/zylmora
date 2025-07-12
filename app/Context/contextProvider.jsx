@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect, createContext } from 'react';
 import { useSession } from 'next-auth/react';
+import { safeFetch } from '@/Utils/safeFetch';
 
 export const SlideBarContext = createContext();
 export const AuthAnimationContext = createContext();
@@ -21,13 +22,24 @@ function ContextProvider({ children }) {
   const [authAnimation, setAuthAnimation] = useState(true);
   const [query, setQuery] = useState('');
   const [user, setUser] = useState();
+  
 
-  const { data: session } = useSession();
-  const [fetchedUser, setFetchedUser] = useState(false);
+  const { data: session, status } = useSession();
 
+  
   useEffect(() => {
     const fetchUser = async () => {
-      if (!session?.user?.id || fetchedUser) return;
+      if (!session?.user?.id || status !== 'authenticated') return;
+
+      const userFetched = sessionStorage.getItem('userFetched');
+      if (userFetched) {
+     
+        const cachedUser = sessionStorage.getItem('userData');
+        if (cachedUser) {
+          setUser(JSON.parse(cachedUser));
+          return;
+        }
+      }
 
       try {
         const res = await fetch('/api/User', {
@@ -39,21 +51,25 @@ function ContextProvider({ children }) {
         const result = await res.json();
         if (result?.data) {
           setUser(result.data);
-          setFetchedUser(true);
+          
+          sessionStorage.setItem('userData', JSON.stringify(result.data));
+          sessionStorage.setItem('userFetched', 'true');
         }
       } catch (err) {
         console.error('Error fetching user:', err);
       }
     };
+if (!user && status === 'authenticated') {
+  fetchUser();
+}
 
-    fetchUser();
-  }, [session?.user?.id, fetchedUser]);
-
+  }, [session?.user?.id]);
+  
   useEffect(() => {
     const fetchCollections = async () => {
       try {
-        const res = await fetch('/api/collections');
-        const data = await res.json();
+         const origin = window.location.origin;
+        const data = await safeFetch(`/api/collections`, {}, 3600000);
         if (data.success) {
           setCategories(data.collections);
         }
@@ -63,7 +79,7 @@ function ContextProvider({ children }) {
     };
 
     fetchCollections();
-  }, []);
+  }, []); 
 
   return (
     <SlideBarContext.Provider value={[isSlide, setIsSlide]}>
@@ -86,7 +102,7 @@ function ContextProvider({ children }) {
         >
           <QueryContext.Provider value={[query, setQuery]}>
             <AuthAnimationContext.Provider value={[authAnimation, setAuthAnimation]}>
-              <UserContext.Provider value={[user, setUser]}>
+              <UserContext.Provider value={{ user, setUser, session, status }}>
                 {children}
               </UserContext.Provider>
             </AuthAnimationContext.Provider>

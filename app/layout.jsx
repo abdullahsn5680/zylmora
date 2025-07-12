@@ -6,19 +6,22 @@ import SlideBar from './Components/UI/MObile/SlideBar';
 import AuthSessionProvider from './Provider/Auth/AuthSessionProvider';
 import ContextProvider from './Context/contextProvider';
 
+
 export const metadata = {
   title: 'StyleNest – Cozy, Stylish, and Everyday Wear for All',
   description: 'Build your nest of comfort and fashion.',
 };
 
 export default function RootLayout({ children }) {
+
+
   return (
     <html lang="en">
       <head>
-       
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#ff0000" />
-        <link rel="icon" href="/icons/icon-192x192.png" />
+       <link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#000000" />
+<link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+
       </head>
       <body className="overflow-x-hidden relative">
         <AuthSessionProvider>
@@ -31,7 +34,7 @@ export default function RootLayout({ children }) {
             </div>
             <div className="absolute top-[14vh] w-full">
               {children}
-              <Footer />
+           
             </div>
             <div className="top-0 fixed z-20 md:hidden">
               <SlideBar />

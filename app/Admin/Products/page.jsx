@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { useRouter } from 'next/navigation'; 
 import Loader from '@/app/Components/Loader/loader';
+import { UserContext } from '@/app/Context/contextProvider';
 function ProductsTablePage() {
   const router = useRouter();
   const [loader,setloader]=useState(true);
@@ -10,7 +11,17 @@ function ProductsTablePage() {
   const [search, setSearch] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [deleteProductId, setDeleteProductId] = useState(null);
-
+ 
+  const  {session}=useContext(UserContext)
+const isAdmin = session?.user?.role 
+ useEffect(()=>{
+    if(!session){
+      router.replace('/Authentication')
+    }
+     if(!isAdmin){
+      router.replace('/')
+    }
+  },[])
   useEffect(() => {
     if (!isSearching) {
       fetchProducts();

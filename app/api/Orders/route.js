@@ -68,7 +68,7 @@ export const PUT = async (request) => {
     if (body.returnReason) updateFields.returnReason = body.returnReason;
     if (body.cancelReason) updateFields.cancelReason = body.cancelReason;
     if (body.address) updateFields.address = body.address;
-
+    await GlobalOrder.findOneAndUpdate({ orderId: body.id }, { $set: updateFields });
     await Order.findOneAndUpdate({ id: body.id }, { $set: updateFields });
 
     return NextResponse.json({ message: 'Order updated', success: true }, { status: 200 });

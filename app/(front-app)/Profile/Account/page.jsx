@@ -1,5 +1,4 @@
 'use client';
-import { useSession } from 'next-auth/react';
 import { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { PencilLine, Save } from 'lucide-react';
@@ -8,10 +7,10 @@ import * as Yup from 'yup';
 import { UserContext } from '@/app/Context/contextProvider';
 import Loader from '@/app/Components/Loader/loader';
 export default function ProfilePage() {
-  const { data: session } = useSession();
+  const {  session } =useContext(UserContext)
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
-  const [user, setUser] = useContext(UserContext);
+  const {user, setUser} = useContext(UserContext);
 
   const initialValues = {
     name: '',
@@ -22,7 +21,12 @@ export default function ProfilePage() {
   };
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState(initialValues);
-
+useEffect(()=>{
+    if(!session){
+      router.replace('/Authentication')
+    }
+    
+  },[])
   useEffect(() => {
     if (user) {
       setTimeout(() => {

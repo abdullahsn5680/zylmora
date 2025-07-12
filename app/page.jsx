@@ -1,38 +1,34 @@
 'use client';
-
+import { safeFetch } from '@/Utils/safeFetch';
 import { useEffect, useState } from 'react';
-import Banner from './Components/UI/Banner';
-import CardContainer from './Components/UI/Container/CardContainer';
-import Loader from './Components/Loader/loader';
-
+import Banner from '@/app/Components/UI/Banner';
+import CardContainer from '@/app/Components/UI/Container/CardContainer';
+import Loader from '@/app/Components/Loader/loader';
+import { useRouter } from 'next/navigation';
 export default function HomeClient() {
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    const load = async () => {
-      try {
-        const res = await fetch('/api/getHome');
-        if (!res.ok) throw new Error('Network response was not ok');
-
-        const data = await res.json();
-        if (!data) throw new Error('Empty data received');
-
-        setContent(data);
-      } catch (err) {
-        console.error('❌ Failed to load content:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    load();
+    try {
+      setLoading(true)
+      const origin = window.location.origin;
+     const fetch= async()=> {
+      const data = await safeFetch(`/api/getHome`, {}, 3600000);
+          if (data) {
+            
+          setContent(data)
+          setLoading(false)
+          }}
+          fetch();
+        } catch (err) {
+          console.error('Error fetching collections:', err);
+        }
   }, []);
 
   if (loading) return <Loader />;
 
   return (
-    <div className="md:px-[50px] px-1 w-full overflow-x-hidden">
+    <div className="md:px-[50px] px-2 w-full overflow-x-hidden">
       <div className="banner w-full">
         <Banner url={content.banner_Url} />
       </div>

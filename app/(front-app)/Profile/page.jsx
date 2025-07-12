@@ -1,6 +1,7 @@
 'use client';
-import { useSession, signOut } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import {  signOut } from 'next-auth/react';
+import { useEffect, useState,useContext } from 'react';
+import { UserContext } from '@/app/Context/contextProvider';
 import { useRouter } from 'next/navigation';
 import {
   User,
@@ -16,27 +17,41 @@ import {
 } from 'lucide-react';
 
 export default function ProfilePage() {
-  const { data: session } = useSession();
+  
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    address: '',
-  });
 
-  useEffect(() => {
-    if (session?.user) {
-      setFormData({
-        name: session.user.name || '',
-        email: session.user.email || '',
-        address: '',
-      });
-    }
-  }, [session]);
-
-
+    
+const  {session}=useContext(UserContext)
 const isAdmin = session?.user?.role === true;
+ useEffect(()=>{
+    if(!session){
+      router.replace('/Authentication')
+    }
+    
+  },[])
+  useEffect(() => {
+       
+  
+    router.prefetch('/Profile/Account');
+    router.prefetch('/Profile/Orders');
+    router.prefetch('/Profile/Wishlist');
+    router.prefetch('/Profile/Cart');
+    router.prefetch('/Profile/Address');
+    router.prefetch('/Profile/Orders');
+    router.prefetch('/Profile/Orders');
+   
+  }, []);
+   useEffect(() => {
+       if(isAdmin){
+  
+    router.prefetch('/Admin/AddProducts');
+    router.prefetch('/Admin/Collections');
+    router.prefetch('/Admin/Order');
+    router.prefetch('/Admin/Products');
+     router.prefetch('/Admin/UpdateProduct');
 
+       }
+  }, []);
 const menuOptions = [
   {
     label: 'Manage My Account',
@@ -100,7 +115,7 @@ const menuOptions = [
     <div className="min-h-screen bg-gray-100 px-4 py-10 flex flex-col items-center">
       <div className="w-full max-w-xl flex justify-start mb-4">
         <button
-          onClick={() => router.push('./')}
+          onClick={() => router.back()}
           className="text-sm px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md text-gray-700"
         >
           ← Back

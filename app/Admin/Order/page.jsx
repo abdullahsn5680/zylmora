@@ -1,12 +1,24 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
+import { useEffect, useState,useContext } from 'react';
+import { useRouter } from 'next/navigation';
+  import { UserContext } from '@/app/Context/contextProvider';
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState('All');
-
+ const router =useRouter()
+  const  {session}=useContext(UserContext)
+const isAdmin = session?.user?.role 
+ useEffect(()=>{
+    if(!session){
+      router.replace('/Authentication')
+    }
+     if(!isAdmin){
+      router.replace('/')
+    }
+  },[])
   const fetchGlobalOrders = async () => {
     try {
       const res = await fetch('/api/globalOrders');
@@ -95,7 +107,7 @@ export default function AdminOrdersPage() {
               >
                 <div className="w-full sm:w-40 h-40">
                   <img
-                    src={order.product?.main_image || 'https://via.placeholder.com/150'}
+                    src={order.product?.main_image || ''}
                     alt={order.product?.title || 'Product'}
                     className="w-full h-full object-cover rounded-md"
                   />
@@ -128,7 +140,7 @@ export default function AdminOrdersPage() {
                   </p>
 
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {/* ✔️ Only allow mark as shipped if not already shipped/delivered */}
+                  
                     {order.status === 'Processing' && (
                       <button
                         onClick={() => updateOrder(order._id, { status: 'Shipped' })}
@@ -138,7 +150,15 @@ export default function AdminOrdersPage() {
                       </button>
                     )}
 
-                    {/* ✔️ Only allow mark as delivered if shipped */}
+                {order.status === 'Return Requested' && (
+                      <button
+                        onClick={() => updateOrder(order._id, { status: 'Shipped' })}
+                        className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded hover:bg-blue-200"
+                      >
+                        Mark as Shipped
+                      </button>
+                    )}
+
                     {order.status === 'Shipped' && (
                       <button
                         onClick={() => updateOrder(order._id, { status: 'Delivered' })}
@@ -148,8 +168,8 @@ export default function AdminOrdersPage() {
                       </button>
                     )}
 
-                    {/* ❌ Only allow cancel when Processing */}
-                    {order.status === 'Processing' && (
+              
+                    {order.status === 'Processing'  &&(
                       <button
                         onClick={() => updateOrder(order._id, { status: 'Cancelled' })}
                         className="text-xs bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200"
@@ -157,6 +177,16 @@ export default function AdminOrdersPage() {
                         Cancel Order
                       </button>
                     )}
+                        {order.status === 'Return Requested'  &&(
+                      <button
+                        onClick={() => updateOrder(order._id, { status: 'Cancelled' })}
+                        className="text-xs bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200"
+                      >
+                        Cancel Order
+                      </button>
+                    )}
+
+                    
                   </div>
 
                   {order.returnReason && (

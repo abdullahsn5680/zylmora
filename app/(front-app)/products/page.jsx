@@ -1,29 +1,30 @@
 'use client'
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { useParams } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 import { UserContext } from '@/app/Context/contextProvider';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight, Heart } from 'lucide-react';
 import ImageViewer from '@/app/Components/UI/Img/ImageViewer';
 import Card from '@/app/Components/UI/Card/Card';
 import Loader from '@/app/Components/Loader/loader';
+import { safeFetch } from '@/Utils/safeFetch';
 function Page() {
-  const { data: session } = useSession();
-  const [user, setUser] = useContext(UserContext);
-  const params = useParams();
-  const slug = params.slug;
+  const router =useRouter();
+  const { session } =useContext(UserContext)
+  const {user, setUser} = useContext(UserContext);
+   const searchParams = useSearchParams();
   const [Counter, setCounter] = useState(1);
   const [Size, setSize] = useState(0);
   const scrollRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const [relatedProducts, setRP] = useState([]);
   const [product, setProduct] = useState({});
-
   const [showOrderForm, setShowOrderForm] = useState(false);
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
   
+
   useEffect(() => {
     if (user?.address?.length > 0) {
       setAddress(user.address[0]);
@@ -39,13 +40,16 @@ function Page() {
       setSize(defaultSize);
     }
   }, [product]);
+  
+const slug = searchParams.get('url');
 
   useEffect(() => {
     const getProduct = async () => {
-      const id = slug;
+
       try {
-        const res = await fetch(`/api/Products?id=${id}`);
-        const data = await res.json();
+          const origin = window.location.origin;
+        const res = await safeFetch(`/api/Products?id=${slug}`,{},360000);
+        const data = res
         setProduct(data.product);
         if (data.success) {
           setTimeout(() => setLoading(false), 2000);
@@ -55,6 +59,7 @@ function Page() {
       }
     };
     getProduct();
+    
   }, [slug]);
 
   useEffect(() => {
@@ -66,9 +71,9 @@ function Page() {
         category: product.category,
         subcategory: product.subcategory,
       });
-
-      const res = await fetch(`/api/RelatedProducts/?${Query.toString()}`);
-    const data = await res.json();
+        const origin = window.location.origin;
+      const res = await safeFetch(`/api/RelatedProducts/?${Query.toString()}`);
+    const data = res
 if (data.success) {
   const related = data.products.filter(p => p._id !== product._id);
   setRP(related);
@@ -139,6 +144,7 @@ if (data.success) {
     };
 
     try{
+      setLoading(true)
          const res = await fetch('/api/Orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -146,6 +152,7 @@ if (data.success) {
           orderDetails
         }),
       });
+      setLoading(false)
     }catch(err){
       if(err){
         alert('Order Failed');
@@ -154,6 +161,8 @@ if (data.success) {
     }
     setShowOrderForm(false);
     alert('Order placed!');
+    router.push('/Profile/Orders')
+    
   };
 
   const dummyDescription = [
@@ -329,7 +338,7 @@ console.log('Fetching RelatedProducts with:', product.category, product.subcateg
               className="w-full border rounded p-2 mb-4 text-sm"
             />
 
-            <button onClick={handleSubmitOrder} className="w-full bg-black text-white py-2 rounded hover:bg-gray-800">
+            <button disabled={loading} onClick={handleSubmitOrder} className="w-full bg-black text-white py-2 rounded hover:bg-gray-800">
               Confirm Order
             </button>
           </div>

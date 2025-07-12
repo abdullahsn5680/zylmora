@@ -18,7 +18,14 @@ function NavbarM() {
 }
     }
   };
-
+      useEffect(() => {
+        router.prefetch('/');
+        router.prefetch('/Authentication');
+        router.prefetch('/Profile/Wishlist');
+        router.prefetch('/Profile/Cart');
+        router.prefetch('/Collections');
+      }, []);
+    
   const performanSearch = () => {
     if (isSlide == 'slide') {
       setIsSlide('false');

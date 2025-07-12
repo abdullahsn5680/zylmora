@@ -4,7 +4,12 @@ import { useRouter } from 'next/navigation'
 function AddCart({prop}) {
   const router = useRouter();
   const performAction = (url) => {
-    const path =`/products/${url}`
+
+       const query = new URLSearchParams({
+      url:url,
+      
+    }).toString();
+        const path =`/products?${query}`
     router.push(path)
    
   }

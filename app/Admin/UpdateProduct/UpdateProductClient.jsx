@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useContext, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { UserContext } from '@/app/Context/contextProvider';
 import { Plus, X } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { CollectionContext } from '@/app/Context/contextProvider';
@@ -11,7 +13,17 @@ export default function UpdateProductClient()  {
   const [loading, setLoading] = useState(false);
   const [newDescriptionLine, setNewDescriptionLine] = useState('');
   const [categories] = useContext(CollectionContext);
-
+ const router =useRouter()
+  const  {session}=useContext(UserContext)
+const isAdmin = session?.user?.role 
+ useEffect(()=>{
+    if(!session){
+      router.replace('/Authentication')
+    }
+     if(!isAdmin){
+      router.replace('/')
+    }
+  },[])
   const [product, setProduct] = useState({
     _id: '',
     title: '',

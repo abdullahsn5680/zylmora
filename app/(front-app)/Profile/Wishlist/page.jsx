@@ -1,17 +1,21 @@
 'use client';
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useContext } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import Loader from '@/app/Components/Loader/loader';
+import { UserContext } from '@/app/Context/contextProvider';
 export default function WishlistPage() {
   const router = useRouter();
- const { data: session } = useSession();
-
+ const { session } = useContext(UserContext)
    const [loading,setLoading]=useState(true)
   const [wishlist, setWishlist] = useState([
     
   ]);
-
+useEffect(()=>{
+    if(!session){
+      router.replace('/Authentication')
+    }
+    
+  },[])
   const removeFromWishlist = (id) => {
     setWishlist((prev) => prev.filter((item) => item.id !== id));
   };

@@ -42,7 +42,7 @@ console.log(prop)
 
       <div
        
-        className="cursor-pointer w-full text-[11px]  md:text-base min-h-10 text-slate-800"
+        className="cursor-pointer w-full text-[11px]  md:text-base max-h-10 h-fit text-slate-800"
       >
         {prop.title}
       </div>

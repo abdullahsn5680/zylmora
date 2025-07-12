@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState, useEffect, useContext } from 'react';
+import { useRouter } from 'next/navigation';
 import { Plus, X } from 'lucide-react';
 import { CollectionContext } from '@/app/Context/contextProvider';
+import { UserContext } from '@/app/Context/contextProvider';
 function AddProductPage() {
   const [product, setProduct] = useState({
     title: '',
@@ -17,7 +19,17 @@ function AddProductPage() {
     description: [],
     discount:0,
   });
-
+  const router =useRouter()
+  const  {session}=useContext(UserContext)
+const isAdmin = session?.user?.role 
+ useEffect(()=>{
+    if(!session){
+      router.replace('/Authentication')
+    }
+     if(!isAdmin){
+      router.replace('/')
+    }
+  },[])
   const [previewMainImage, setPreviewMainImage] = useState(null);
   const [previewImages, setPreviewImages] = useState([]);
   const [selectedSize, setSelectedSize] = useState('');
