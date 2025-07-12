@@ -29,41 +29,28 @@ function ContextProvider({ children }) {
   
   useEffect(() => {
     const fetchUser = async () => {
-      if (!session?.user?.id || status !== 'authenticated') return;
-
-      const userFetched = sessionStorage.getItem('userFetched');
-      if (userFetched) {
-     
-        const cachedUser = sessionStorage.getItem('userData');
-        if (cachedUser) {
-          setUser(JSON.parse(cachedUser));
-          return;
-        }
-      }
-
       try {
         const res = await fetch('/api/User', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ Id: session.user.id }),
+          body: JSON.stringify({ Id: session?.user?.id }),
         });
 
         const result = await res.json();
         if (result?.data) {
           setUser(result.data);
           
-          sessionStorage.setItem('userData', JSON.stringify(result.data));
-          sessionStorage.setItem('userFetched', 'true');
+    
         }
       } catch (err) {
         console.error('Error fetching user:', err);
       }
     };
-if (!user && status === 'authenticated') {
+if(session){
   fetchUser();
 }
 
-  }, [session?.user?.id]);
+  }, [session]);
   
   useEffect(() => {
     const fetchCollections = async () => {

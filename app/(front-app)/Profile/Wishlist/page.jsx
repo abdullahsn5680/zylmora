@@ -1,6 +1,7 @@
 'use client';
 import React, { useState,useEffect, useContext } from 'react';
 import { useRouter } from 'next/navigation';
+import { cacheFetch } from '@/Utils/cacheFetch';
 import Loader from '@/app/Components/Loader/loader';
 import { UserContext } from '@/app/Context/contextProvider';
 export default function WishlistPage() {
@@ -24,7 +25,9 @@ useEffect(()=>{
    
       try {
         if(session?.user?.email){
-       const res = await fetch(`/api/Wishlist?email=${session.user.email}`);
+       const res = await cacheFetch(`/api/Wishlist?email=${session.user.email}`);
+
+
 const data = await res.json();
 
 if (data) {

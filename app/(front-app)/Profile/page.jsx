@@ -25,7 +25,7 @@ const  {session}=useContext(UserContext)
 const isAdmin = session?.user?.role === true;
  useEffect(()=>{
     if(!session){
-      router.replace('/Authentication')
+      router.push('/Authentication')
     }
     
   },[])
@@ -115,7 +115,7 @@ const menuOptions = [
     <div className="min-h-screen bg-gray-100 px-4 py-10 flex flex-col items-center">
       <div className="w-full max-w-xl flex justify-start mb-4">
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push('./')}
           className="text-sm px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md text-gray-700"
         >
           ← Back

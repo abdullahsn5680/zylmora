@@ -1,6 +1,6 @@
 import './globals.css';
 import Navbar from './Components/UI/Navbar';
-import Footer from './Components/UI/Footer';
+import MobileNavbar from './Components/UI/MObile/bottomNav';
 import NavbarM from './Components/UI/MObile/NavbarM';
 import SlideBar from './Components/UI/MObile/SlideBar';
 import AuthSessionProvider from './Provider/Auth/AuthSessionProvider';
@@ -32,13 +32,14 @@ export default function RootLayout({ children }) {
             <div className="hidden md:flex fixed top-0 left-0 right-0 z-10">
               <Navbar />
             </div>
-            <div className="absolute top-[14vh] w-full">
+            <div className="absolute top-[14vh] bottom-8  w-full">
               {children}
            
             </div>
             <div className="top-0 fixed z-20 md:hidden">
               <SlideBar />
             </div>
+            <div className="w-full "><MobileNavbar/></div>
           </ContextProvider>
         </AuthSessionProvider>
       </body>

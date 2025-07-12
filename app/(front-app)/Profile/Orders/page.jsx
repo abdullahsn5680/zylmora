@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';
 import Loader from '@/app/Components/Loader/loader';
 import { UserContext } from '@/app/Context/contextProvider';
-
+import { cacheFetch } from '@/Utils/cacheFetch';
 export default function OrdersPage() {
   const { session } = useContext(UserContext);
   const router = useRouter();
@@ -22,10 +22,12 @@ export default function OrdersPage() {
 
   const fetchOrders = async () => {
     try {
-      const res = await fetch(`/api/Orders?userId=${session?.user?.id}`);
-      const data = await res.json();
+      const res = await cacheFetch(`/api/Orders?userId=${session?.user?.id}`);
+      const data = res
       setTimeout(() => setLoading(false), 1000);
-      if (data.success) setOrders(data.orders);
+      if (data) {
+        console.log(data)
+        setOrders(data.orders);}
     } catch (err) {
       console.error('Error fetching orders:', err);
     }

@@ -15,12 +15,7 @@ import { useRouter } from "next/navigation";
 function page() {
   const {session} =useContext(UserContext)
   const router =useRouter();
-  useEffect(()=>{
-    if(session){
-      router.replace('./Profile')
-    }
-    
-  },[session])
+
  useEffect(() => {
   const handleResize = () => {
     setIsMobile(window.innerWidth < 768);

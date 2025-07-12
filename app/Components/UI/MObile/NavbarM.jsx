@@ -19,7 +19,8 @@ function NavbarM() {
     }
   };
       useEffect(() => {
-        router.prefetch('/');
+          router.prefetch('/');
+        router.prefetch('/Profile');
         router.prefetch('/Authentication');
         router.prefetch('/Profile/Wishlist');
         router.prefetch('/Profile/Cart');
@@ -45,8 +46,8 @@ if(isSlide == 'false'){setIsSlide('search');}else{
       <ul className='flex w-full justify-around items-center h-[9vh]'>
         <li className='cursor-pointer hover:text-gray-500' onClick={slide}><AlignJustify /></li>
         <li className='cursor-pointer hover:text-gray-500' onClick={performanSearch}><SearchCheck /></li>
-        <li className="brandName text-center text-[25px]">✦ZYLMORA✦</li>
-        <li className='cursor-pointer hover:text-gray-500' onClick={()=>router.push('/Profile/Account')}><User2 /></li>
+        <li className="brandName text-center text-[25px]" onClick={()=>router.push('/')}>✦ZYLMORA✦</li>
+        <li className='cursor-pointer hover:text-gray-500' onClick={()=>router.push('/Profile')}><User2 /></li>
         <li className='cursor-pointer hover:text-gray-500' onClick={()=>router.push('/Profile/Cart')}><ShoppingBag /></li>
       </ul>
     </div>
