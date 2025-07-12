@@ -3,25 +3,28 @@
 import { useState, useEffect, useContext } from 'react';
 import { CollectionContext } from '@/app/Context/contextProvider';
 import { PlusCircle, Trash2 } from 'lucide-react';
-
+import { UserContext } from '@/app/Context/contextProvider';
+import { useRouter } from 'next/navigation';
 export default function AdminPage() {
+  const router =useRouter();
   const [collections] = useContext(CollectionContext);
   const [bannerImage, setBannerImage] = useState(null);
   const [initialBannerImage, setInitialBannerImage] = useState(null);
   const MAX_PRODUCTS = 10;
   const [entries, setEntries] = useState([]);
-
+  const {session} =useContext(UserContext)
   const [uniqueCategories, setUniqueCategories] = useState([]);
   const [categorySubMap, setCategorySubMap] = useState({});
-    useEffect(()=>{
-    if(!session){
-      router.replace('/Authentication')
-    }
-     if(!session.role){
-      router.replace('/')
-    }
-  },[])
-
+    
+  const isAdmin = session?.user?.role 
+   useEffect(()=>{
+      if(!session){
+        router.replace('/Authentication')
+      }
+       if(!isAdmin){
+        router.replace('/')
+      }
+    },[])
 
   
   useEffect(() => {

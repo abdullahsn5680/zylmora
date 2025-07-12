@@ -14,6 +14,7 @@ import {
   Layers3,
   Edit,
   LuggageIcon,
+  HomeIcon,
 } from 'lucide-react';
 
 export default function ProfilePage() {
@@ -89,6 +90,11 @@ const menuOptions = [
       label: 'Admin Collections',
       icon: <Heart size={18} />,
       path: '/Admin/Collections',
+    },
+     {
+      label: 'Home Page',
+      icon: <HomeIcon size={18} />,
+      path: '/Admin',
     },
     {
       label: 'All Orders',
