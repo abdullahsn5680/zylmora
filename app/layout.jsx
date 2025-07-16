@@ -5,10 +5,10 @@ import NavbarM from './Components/UI/MObile/NavbarM';
 import SlideBar from './Components/UI/MObile/SlideBar';
 import AuthSessionProvider from './Provider/Auth/AuthSessionProvider';
 import ContextProvider from './Context/contextProvider';
-
+import Announcemnt from './Components/alerts/announcemnt';
 
 export const metadata = {
-  title: 'StyleNest – Cozy, Stylish, and Everyday Wear for All',
+  title: 'Zylmora – Cozy, Stylish, and Everyday Wear for All',
   description: 'Build your nest of comfort and fashion.',
 };
 
@@ -32,7 +32,8 @@ export default function RootLayout({ children }) {
             <div className="hidden md:flex fixed top-0 left-0 right-0 z-10">
               <Navbar />
             </div>
-            <div className="absolute top-[14vh] bottom-8  w-full">
+            <div className="announcement w-full fixed top-[9vh] left-0 right-0 z-10 "><Announcemnt/></div>
+            <div className="absolute top-[14vh]  bottom-8  w-full">
               {children}
            
             </div>

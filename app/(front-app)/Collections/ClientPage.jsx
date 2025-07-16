@@ -83,7 +83,7 @@ export default function ClientPage() {
     const getData = async () => {
       setLoading(true);
       try {
-        const res = await safeFetch(`/api/getCollectionsProducts?${query}`,{},360000);
+        const res = await safeFetch(`/api/getCollectionsProducts?${query}`,{},360000,session);
 
         console.log(res)
         const data = res

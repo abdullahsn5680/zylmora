@@ -1,29 +1,37 @@
 'use client';
 import { safeFetch } from '@/Utils/safeFetch';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { UserContext } from './Context/contextProvider';
 import Banner from '@/app/Components/UI/Banner';
 import CardContainer from '@/app/Components/UI/Container/CardContainer';
 import Loader from '@/app/Components/Loader/loader';
-import { useRouter } from 'next/navigation';
+
 export default function HomeClient() {
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const {session}=useContext(UserContext)
   useEffect(() => {
     try {
       setLoading(true)
-      const origin = window.location.origin;
+   
      const fetch= async()=> {
-      const data = await safeFetch(`/api/getHome`, {}, 3600000);
+      const data = await safeFetch(`/api/getHome`, {}, 3600000,session);
           if (data) {
             
           setContent(data)
           setLoading(false)
           }}
-          fetch();
+          if(session){
+          fetch();}else{
+            setTimeout(()=>{
+              fetch()
+
+            },500)
+          }
         } catch (err) {
           console.error('Error fetching collections:', err);
         }
-  }, []);
+  }, [session]);
 
   if (loading) return <Loader />;
 

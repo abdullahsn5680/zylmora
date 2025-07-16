@@ -20,7 +20,7 @@ const handler = NextAuth({
       async authorize(credentials) {
         await dbConnect();
        const user = await users.findOne({ Username:credentials.username });
-       console.log(user)
+  
         if (user) {
           if (user.isactive) {
             const isPasswordValid = await bcrypt.compare(credentials.password, user.password);

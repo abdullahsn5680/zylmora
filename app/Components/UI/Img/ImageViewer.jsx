@@ -15,64 +15,88 @@ function ImageViewer({ images }) {
   };
 
   return (
-    <div className="more_img mt-10 w-full   mx-auto">
-   <div className="w-full text-center text-3xl font-bold text-slate-700 mb-6 tracking-wide relative">
-  <span className="inline-block bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 bg-clip-text text-transparent drop-shadow-md">
-    More Images
-  </span>
-  <div className="w-20 h-1 bg-red-400 mx-auto mt-2 rounded-full"></div>
-</div>
-      <div className=" md:hidden flex items-center justify-center gap-4">
-     
-        <button
-          onClick={handlePrev}
-          className="bg-gray-200 hover:bg-gray-300 text-black rounded-full p-3 shadow"
-        >
-          <ChevronLeft size={20} />
-        </button>
-
+    <div className="more_img mt-16 w-full max-w-6xl mx-auto px-4">
     
-        <div className="relative w-[80%] aspect-square rounded-xl overflow-hidden border bg-gray-100 shadow-md">
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-light text-gray-900 mb-4 tracking-wide">
+          More Images
+        </h2>
+        <div className="w-24 h-0.5 bg-gray-900 mx-auto"></div>
+      </div>
+
+
+      <div className="md:hidden flex items-center justify-center gap-4 mb-8">
+       
+
+        <div className="relative w-[90%] aspect-square rounded-2xl overflow-hidden border border-gray-200 bg-gray-50 shadow-lg">
+    
           <Image
             key={current}
             src={images[current]}
             alt={`Product image ${current + 1}`}
             fill
-            className="object-cover transition-all duration-500 ease-in-out"
+            className="object-contain transition-all duration-500 ease-in-out hover:scale-105"
             priority
           />
-  
-          <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+          
+          <div className="absolute bottom-4 right-4 bg-black/70 text-white text-sm px-3 py-1 rounded-full font-medium">
             {current + 1} / {images.length}
           </div>
         </div>
 
-        <button
-          onClick={handleNext}
-          className="bg-gray-200 hover:bg-gray-300 text-black rounded-full p-3 shadow"
-        >
-          <ChevronRight size={20} />
-        </button>
+     
       </div>
 
-  
-      <div className="hidden md:flex gap-4 w-full overflow-x-auto md:justify-center mt-6">
-        {images.map((img, index) => (
-          <div
+      <div className="hidden md:block">
+       
+        <div className="flex gap-6 w-full overflow-x-auto justify-center px-4">
+          {images.map((img, index) => (
+            <div
+              key={index}
+              onClick={() => setCurrent(index)}
+              className={`min-w-[140px] w-[140px] h-[140px] rounded-lg overflow-hidden border-2 cursor-pointer transition-all duration-300 ${
+                current === index 
+                  ? 'border-gray-900 shadow-lg ring-2 ring-gray-200' 
+                  : 'border-gray-300 hover:border-gray-500 shadow-sm'
+              }`}
+            >
+              <Image
+                src={img}
+                alt={`Product thumbnail ${index + 1}`}
+                width={140}
+                height={140}
+                className="object-contain w-full h-full bg-gray-50"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="md:hidden flex justify-between w-[90%] mx-auto  mt-4 bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700 rounded-full p-3 shadow-sm transition-all duration-200">
+            <button
+          onClick={handlePrev}
+          className="bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700 rounded-full p-3 shadow-sm transition-all duration-200"
+        >
+          <ChevronLeft size={15} />
+       
+        </button>
+              <div className=" flex justify-center items-center gap-2">    {images.map((_, index) => (
+          <button
             key={index}
             onClick={() => setCurrent(index)}
-            className={`min-w-[120px] md:min-w-[150px] aspect-square rounded overflow-hidden border cursor-pointer transition-all duration-300
-              ${current === index ? 'border-red-500 shadow-md' : 'border-gray-300 hover:border-red-400'}`}
-          >
-            <Image
-              src={img}
-              alt={`Product image ${index + 1}`}
-              width={150}
-              height={150}
-              className="object-cover w-full h-full"
-            />
-          </div>
-        ))}
+            className={`w-2 h-2 rounded-full transition-all duration-200 ${
+              current === index 
+                ? 'bg-gray-900 w-6' 
+                : 'bg-gray-300 hover:bg-gray-400'
+            }`}
+          />
+        ))}</div>
+           <button
+          onClick={handleNext}
+          className="bg-white border-2  border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700 rounded-full p-3 shadow-sm transition-all duration-200"
+        >
+          <ChevronRight size={15} />
+        </button>
       </div>
     </div>
   );
