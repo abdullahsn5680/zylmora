@@ -32,7 +32,7 @@ export default function RootLayout({ children }) {
             <div className="hidden md:flex fixed top-0 left-0 right-0 z-10">
               <Navbar />
             </div>
-            <div className="announcement w-full fixed top-[9vh] left-0 right-0 z-10 "><Announcemnt/></div>
+            <div className="announcement w-full fixed top-[9vh] left-0 right-0 z-1 "><Announcemnt/></div>
             <div className="absolute top-[14vh]  bottom-8  w-full">
               {children}
            
