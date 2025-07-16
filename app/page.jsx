@@ -36,7 +36,7 @@ export default function HomeClient() {
   if (loading) return <Loader />;
 
   return (
-    <div className="md:px-[50px] px-2 w-full overflow-x-hidden">
+    <div className="md:px-[50px]  w-full overflow-x-hidden">
       <div className="banner w-full">
         <Banner url={content.banner_Url} />
       </div>
