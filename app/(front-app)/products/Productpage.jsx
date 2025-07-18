@@ -12,8 +12,9 @@ import { safeFetch } from '@/Utils/safeFetch';
 
 function ProductPage() {
   const router = useRouter();
+  const [finalAddress,setFinalAddresses]=useState('')
   const { session } = useContext(UserContext)
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const searchParams = useSearchParams();
   const [Counter, setCounter] = useState(1);
   const [Size, setSize] = useState(0);
@@ -22,8 +23,6 @@ function ProductPage() {
   const [relatedProducts, setRP] = useState([]);
   const [product, setProduct] = useState({});
   const [showOrderForm, setShowOrderForm] = useState(false);
-  
-
   const [selectedAddress, setSelectedAddress] = useState('');
   const [streetAddress, setStreetAddress] = useState('');
   const [city, setCity] = useState('');
@@ -31,6 +30,7 @@ function ProductPage() {
   const [postalCode, setPostalCode] = useState('');
   const [country, setCountry] = useState('');
   const [firstName, setFirstName] = useState('');
+  const [province,setProvince]=useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -38,6 +38,7 @@ function ProductPage() {
   const [confirmLogin,setConfirmLogin]=useState(true);
   const [sucess,setSucess]=useState(false);
   const [Alert,setAlert]=useState(false);
+  const [update,setUpdate]=useState(0)
   const parseAddressString = (addressString) => {
     if (!addressString) return {};
     
@@ -48,15 +49,17 @@ function ProductPage() {
     
     const country = parts[length - 1];
     const postalCode = parts[length - 2];
-    const district = parts[length - 3];
-    const city = parts[length - 4];
-  
-    const streetParts = parts.slice(0, length - 4);
+   const province =parts[length -3]
+    const district = parts[length - 4];
+    const city = parts[length - 5];
+ 
+    const streetParts = parts.slice(0, length - 5);
     const streetAddress = streetParts.join(', ');
     
     return {
       country: country || '',
       postalCode: postalCode || '',
+      province: province || '',
       district: district || '',
       city: city || '',
       streetAddress: streetAddress || ''
@@ -64,17 +67,19 @@ function ProductPage() {
   };
 
   useEffect(() => {
-    if (selectedAddress) {
+    if (selectedAddress&&update==0) {
+      alert(`hit ${update}`)
       const parsed = parseAddressString(selectedAddress);
       setCountry(parsed.country || '');
       setPostalCode(parsed.postalCode || '');
+      setProvince(parsed.province || '');
       setDistrict(parsed.district || '');
       setCity(parsed.city || '');
       setStreetAddress(parsed.streetAddress || '');
     }
   }, [selectedAddress]);
 
- 
+
   useEffect(() => {
     if (user) {
       setFirstName(user.firstName || '');
@@ -83,7 +88,8 @@ function ProductPage() {
       setPhone(user.phone || '');
       
    
-      if (user.address && user.address.length > 0) {
+      if (user.address && user.address.length > 0 &&update==0 ) {
+       
         setSelectedAddress(user.address[0]);
       }
     }
@@ -181,8 +187,22 @@ function ProductPage() {
     setShowOrderForm(true);
   };
 
+
+    const handleAddress=async()=>{
+const addressParts = [streetAddress.trim()]
+addressParts.push(city.trim());
+addressParts.push(district.trim());
+addressParts.push(province.trim());
+addressParts.push(postalCode.trim());
+addressParts.push(country.trim());
+const formatted = addressParts.join(', ')
+setFinalAddresses(formatted)
+return formatted;
+}
+
   const handleSubmitOrder = async () => {
-   
+  
+    const addr = await handleAddress();
     if (!selectedAddress || !firstName || !lastName || !email || !phone) {
       alert('Please fill all required fields');
       return;
@@ -192,12 +212,14 @@ function ProductPage() {
       alert('Please select a size');
       return;
     }
+     
+
 
     const orderDetails = {
       product: product,
       quantity: Counter,
       size: Size.size,
-      address: selectedAddress,
+      address: addr,
       firstName,
       lastName,
       email,
@@ -234,7 +256,7 @@ setSucess(true)
   const calculateTotal = () => {
     const productPrice = product?.cut_price || 0;
     const subtotal = productPrice * Counter;
-    const shipping = 250; // Flat shipping rate
+    const shipping = 250; 
     return subtotal + shipping;
   };
 
@@ -243,8 +265,9 @@ setSucess(true)
     { id: 2, line: 'Perfect for everyday use and special occasions.' },
   ];
 
+  
   if (loading) return <Loader />;
-
+    
   
   if (showOrderForm) {
     return (
@@ -377,7 +400,7 @@ setSucess(true)
                   {user?.address && user.address.length > 0 ? (
                     <select
                       value={selectedAddress}
-                      onChange={(e) => setSelectedAddress(e.target.value)}
+                      onChange={(e) => {setSelectedAddress(e.target.value);setUpdate(0)}}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       required
                     >
@@ -401,7 +424,7 @@ setSucess(true)
                   )}
                 </div>
 
-                {selectedAddress && (
+                 {selectedAddress && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -410,8 +433,9 @@ setSucess(true)
                       <input
                         type="text"
                         value={streetAddress}
+                        onChange={(e)=>{setStreetAddress(e.target.value); setUpdate(update+1);}}
                         className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50"
-                        readOnly
+                       
                       />
                     </div>
                     <div>
@@ -421,8 +445,9 @@ setSucess(true)
                       <input
                         type="text"
                         value={city}
+                        onChange={(e)=>{setCity(e.target.value); setUpdate(update+1);}}
                         className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50"
-                        readOnly
+                       
                       />
                     </div>
                     <div>
@@ -432,8 +457,21 @@ setSucess(true)
                       <input
                         type="text"
                         value={district}
+                          onChange={(e)=>{setDistrict(e.target.value); setUpdate(update+1);}}
                         className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50"
-                        readOnly
+                       
+                      />
+                    </div>
+                     <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Province
+                      </label>
+                      <input
+                        type="text"
+                        value={province}
+                          onChange={(e)=>{setProvince(e.target.value); setUpdate(update+1);}}
+                        className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50"
+                        
                       />
                     </div>
                     <div>
@@ -443,8 +481,9 @@ setSucess(true)
                       <input
                         type="text"
                         value={postalCode}
+                          onChange={(e)=>{setPostalCode(e.target.value); setUpdate(update+1);}}
                         className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50"
-                        readOnly
+                   
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -454,8 +493,9 @@ setSucess(true)
                       <input
                         type="text"
                         value={country}
+                          onChange={(e)=>{setCountry(e.target.value); setUpdate(update+1);}}
                         className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50"
-                        readOnly
+                        
                       />
                     </div>
                   </div>

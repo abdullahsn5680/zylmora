@@ -49,21 +49,62 @@ export async function POST(req) {
 
 
 export async function DELETE(req) {
+  try{
   await dbConnect();
 
-  const { searchParams } = new URL(req.url);
-  const email = searchParams.get('email');
-  const productId = searchParams.get('productId');
+  const data = await req.json();
+  const {id,email}=data;
 
-  if (!email || !productId) {
+  if (!email || !id) {
+    console.log(email,id)
     return NextResponse.json({ error: "Email and productId are required" }, { status: 400 });
   }
 
   const user = await users.findOne({ email });
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-  user.cart = user.cart.filter((item) => item.id !== productId);
+  user.cart = user.cart.filter((item) => item.id !== id);
   await user.save();
 
-  return NextResponse.json({ success: true, cart: user.cart });
+  return NextResponse.json({ success: true, cart: user.cart });}
+  catch(err){
+console.log(err)
+return NextResponse.json({ success:false }, { status: 404 })
+  }
 }
+
+
+export async function PUT(req) {
+  try{ await dbConnect();
+  const data = await req.json();
+  const {id,action,email}=data;
+  if(action=='increase'){ const user = await users.findOneAndUpdate({email},{
+  $inc: {
+    'cart.$[elem].quantity': 1
+  }
+},
+{
+  arrayFilters: [
+    { 'elem.id': id, }
+  ]
+}
+  )}else{
+     const user = await users.findOneAndUpdate({email},{
+  $inc: {
+    'cart.$[elem].quantity': -1
+  }
+},
+{
+  arrayFilters: [
+    { 'elem.id': id, }
+  ]
+}
+  )
+  }
+ 
+ return NextResponse.json({ ok: true,  });}
+ catch(error){
+ return NextResponse.json({ ok: false,message:'Some thing went wrong'});}
+ }
+ 
+

@@ -6,7 +6,7 @@ import SlideBar from './Components/UI/MObile/SlideBar';
 import AuthSessionProvider from './Provider/Auth/AuthSessionProvider';
 import ContextProvider from './Context/contextProvider';
 import Announcemnt from './Components/alerts/announcemnt';
-
+import LoaderProvider from './Provider/loader/loaderProvider';
 export const metadata = {
   title: 'Zylmora – Cozy, Stylish, and Everyday Wear for All',
   description: 'Build your nest of comfort and fashion.',
@@ -34,8 +34,9 @@ export default function RootLayout({ children }) {
             </div>
             <div className="announcement w-full fixed top-[9vh] left-0 right-0 z-1 "><Announcemnt/></div>
             <div className="absolute top-[14vh]  bottom-8  w-full">
+              <LoaderProvider>
               {children}
-           
+            </LoaderProvider>
             </div>
             <div className="top-0 fixed z-20 md:hidden">
               <SlideBar />

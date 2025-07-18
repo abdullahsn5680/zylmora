@@ -3,6 +3,7 @@ import {  signOut } from 'next-auth/react';
 import { useEffect, useState,useContext } from 'react';
 import { UserContext } from '@/app/Context/contextProvider';
 import { useRouter } from 'next/navigation';
+import { LoaderContext } from '@/app/Context/contextProvider';
 import {
   User,
   Package,
@@ -18,9 +19,11 @@ import {
 } from 'lucide-react';
 
 export default function ProfilePage() {
-  
+   const [loader,setLoading]=useContext(LoaderContext)
   const router = useRouter();
-
+useEffect(() => {
+  setLoading(false)
+}, []);
     
 const  {session}=useContext(UserContext)
 const isAdmin = session?.user?.role === true;

@@ -9,6 +9,7 @@ export const CollectionContext = createContext();
 export const FilterContext = createContext();
 export const QueryContext = createContext();
 export const UserContext = createContext();
+export const LoaderContext = createContext();
 
 function ContextProvider({ children }) {
   const [isSlide, setIsSlide] = useState('false');
@@ -22,7 +23,7 @@ function ContextProvider({ children }) {
   const [authAnimation, setAuthAnimation] = useState(true);
   const [query, setQuery] = useState('');
   const [user, setUser] = useState();
-  
+  const [loader,setLoader]=useState(true)
 
   const { data: session, status } = useSession();
 
@@ -90,7 +91,9 @@ if(session){
           <QueryContext.Provider value={[query, setQuery]}>
             <AuthAnimationContext.Provider value={[authAnimation, setAuthAnimation]}>
               <UserContext.Provider value={{ user, setUser, session, status }}>
+                <LoaderContext.Provider value={[loader,setLoader]}>
                 {children}
+                </LoaderContext.Provider>
               </UserContext.Provider>
             </AuthAnimationContext.Provider>
           </QueryContext.Provider>

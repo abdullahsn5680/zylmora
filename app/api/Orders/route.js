@@ -10,7 +10,8 @@ export const POST = async (request) => {
     const data = await request.json();
     const detail = data.orderDetails;
 
-    const count = await Order.countDocuments();
+    
+    const count = await GlobalOrder.countDocuments();
     const orderId = `ORD-${String(count + 1).padStart(5, '0')}`;
     const totalPrice = detail.product.cut_price * detail.quantity;
 
