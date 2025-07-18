@@ -4,7 +4,7 @@ import Image from 'next/image'
 function Banner({url}) {
   return (
     <div className='w-full h-full '>
-      <Image src={url} width={2400} className='w-full' height={1200}  alt='banner'/>
+      <Image src={url||'/banner/banner.webp'} width={2400} className='w-full' height={1200}  alt='banner'/>
     </div>
   )
 }

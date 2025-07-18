@@ -38,10 +38,10 @@ export default function HomeClient() {
   return (
     <div className="md:px-[50px]  w-full overflow-x-hidden">
       <div className="banner w-full">
-        <Banner url={content.banner_Url} />
+        <Banner url={content?.banner_Url} />
       </div>
       <div className="conatiners w-full">
-        {content.Items.map((data) => (
+        {content?.Items?.map((data) => (
           <CardContainer key={data.id} prop={data} />
         ))}
       </div>
