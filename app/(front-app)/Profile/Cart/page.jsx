@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext ,useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight, Heart, ArrowLeft, MapPin, CreditCard, Package, User, Phone, Mail } from 'lucide-react';
 import Loader from '@/app/Components/Loader/loader';
@@ -13,6 +13,7 @@ export default function CartPage() {
   const router = useRouter();
   const [showProceed,setShowProceed]=useState(false)
   const [cartItems, setCartItems] = useState([]);
+  const [Orders,setOrders]=useState([]);
   const [processing, setProcessing] = useState(false);
   const [province,setProvince]=useState('');
   const { session } = useContext(UserContext)
@@ -24,6 +25,8 @@ export default function CartPage() {
   const [district, setDistrict] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [country, setCountry] = useState('');
+  const [sucess,setSucess]=useState(false);
+    const [Alert,setAlert]=useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -64,6 +67,7 @@ const formatted = addressParts.join(', ')
     setTimeout(() => {
      
 const Info={
+  userId:session.user.id,
 firstName:firstName,
 lastName:lastName,
 email:email,
@@ -73,24 +77,33 @@ address:address,
 }
 
 try{
- const perform =async()=>{ 
+ const performOrder =async()=>{ 
+   if (!navigator.onLine) {
+          setAlert(true); 
+          setProcessing(false);
+          return;
+        }
 const res = await fetch('/api/cartOrders',{method:'POST',
   headers: { 'Content-Type': 'application/json' },
 
-  body:JSON.stringify({Info}),
+  body:JSON.stringify({Info,Orders}),
 })
 const data =await res.json();
 
-
+if(!data.success){
+  setAlert(true)
+}else{
+  setSucess(true)
+}
  }
-alert('Cart order whould be avialable in next update ')
-//perform();
-}catch(err){}
+
+performOrder();
+}catch(err){
+  setAlert(true)
+}
 
 
     setProcessing(false);
-      alert('Order placed successfully!');
-
     }, 2000);
   };
 
@@ -103,11 +116,7 @@ alert('Cart order whould be avialable in next update ')
     }
   }, [session, router]);
 
-  useEffect(() => {
-    if (cartItems.length > 0) {
-      setSelectedItems(new Set(cartItems.map(item => item.id)));
-    }
-  }, [cartItems]);
+
   
   const handleItemSelect = (itemId) => {
     setSelectedItems(prev => {
@@ -127,9 +136,14 @@ alert('Cart order whould be avialable in next update ')
     } else {
       setSelectedItems(new Set(cartItems.map(item => item.id)));
     }
-  };
+  }
+  const selectedCartItems = useMemo(() => {
+  return cartItems.filter(item => selectedItems.has(item.id));
+}, [cartItems, selectedItems]);
+  useEffect(() => {
+      setOrders(selectedCartItems)
+  }, [selectedCartItems]);
 
-  const selectedCartItems = cartItems.filter(item => selectedItems.has(item.id));
   const subtotal = selectedCartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
@@ -316,8 +330,6 @@ const total = subtotal + shipping;
        setLastName(user.lastName || '');
        setEmail(user.email || session?.user?.email || '');
        setPhone(user.phone || '');
-       
-    
        if (user.address && user.address.length > 0 &&update==0 ) {
         
          setSelectedAddress(user.address[0]);
@@ -340,7 +352,7 @@ const total = subtotal + shipping;
           }
         }
       } catch (err) {
-        console.error(err);
+        setAlert(true)
         setLoading(false);
       }
     };
@@ -354,12 +366,7 @@ const total = subtotal + shipping;
       <div className="bg-white shadow-sm">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-4">
           <div className="flex items-center justify-between">
-            <button
-              onClick={() => setShowProceed(false)}
-              className="text-sm px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-700 transition-colors"
-            >
-              ← Back to Cart
-            </button>
+        
             <h1 className="text-xl sm:text-2xl font-bold">Checkout</h1>
             <div className="w-20"></div>
           </div>
@@ -379,7 +386,7 @@ const total = subtotal + shipping;
         
             
               <div className="hidden lg:flex items-center gap-3 mb-6">
-                <button onClick={() => setShowOrderForm(false)} className="p-2 hover:bg-gray-100 rounded-lg">
+                <button onClick={() => setShowProceed(false)} className="p-2 hover:bg-gray-100 rounded-lg">
                   <ArrowLeft size={20} />
                 </button>
                 <h1 className="text-2xl font-bold">Complete Your Order</h1>
@@ -608,7 +615,7 @@ const total = subtotal + shipping;
               <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
               
               <div className="space-y-4 mb-6">
-                {cartItems.map((item) => (
+                {Orders.map((item) => (
                   <div key={item.id} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
                     <div className="w-16 h-16 bg-white rounded-lg overflow-hidden border">
                       <img
@@ -684,6 +691,40 @@ const total = subtotal + shipping;
           </div>
         </div>
       </div>
+           {sucess == true && (
+          <div className="fixed inset-0 backdrop-blur-md bg-black/30 bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">✅ Sucess</h3>
+              <p className="text-gray-600 mb-6">Task perfrom sucessfully.</p>
+              <div className="flex justify-end gap-3">
+            
+                <button
+                  onClick={() => setShowProceed(false)}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors"
+                >
+                  Go Back
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+            {Alert == true && (
+          <div className="fixed inset-0 backdrop-blur-md bg-black/30 bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">⚠️ Error</h3>
+              <p className="text-gray-600 mb-6">Some Thing Went Wrong.</p>
+              <div className="flex justify-end gap-3">
+            
+                <button
+                  onClick={() => setAlert(false)}
+                  className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors"
+                >
+                  Ok
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
     </div>
   );
 }
@@ -731,9 +772,9 @@ const total = subtotal + shipping;
                   key={item.id}
                   className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
                 >
-                  {/* Mobile Layout */}
+               
                   <div className="block sm:hidden">
-                    {/* Product Info Section */}
+                  
                     <div className="p-4 bg-pink-50 border-b">
                       <div className="flex items-start gap-3">
                         <input
@@ -940,10 +981,10 @@ const total = subtotal + shipping;
             <div className="space-y-2">
               <button
                 onClick={handleCheckout}
-                disabled={selectedCartItems.length === 0 || isCheckoutDisabled}
+                disabled={selectedCartItems.length === 0}
                 className="w-full bg-black text-white py-3 rounded hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
               >
-                {isCheckoutDisabled ? 'PROCESSING...' : 'PROCEED TO CHECKOUT'}
+                {'PROCEED TO CHECKOUT'}
               </button>
               
               <button
@@ -965,6 +1006,7 @@ const total = subtotal + shipping;
           </div>
         </div>
       </div>
+
     </div>
   );
 }
