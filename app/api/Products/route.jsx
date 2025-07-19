@@ -1,4 +1,7 @@
-// pages/api/products/route.js (Next.js App Router API Route)
+
+export const config = {
+  runtime: 'nodejs',
+};
 
 import { NextResponse } from "next/server";
 import Product from "@/models/Product";

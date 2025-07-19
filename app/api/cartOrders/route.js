@@ -71,3 +71,6 @@ return NextResponse.json({ success: false },{message:err}, { status: 400 });
 
  
 }
+export const config = {
+  runtime: 'nodejs',
+};

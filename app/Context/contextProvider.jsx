@@ -88,7 +88,7 @@ if(session){
             setSelectedHighPrice,
           }}
         >
-          <QueryContext.Provider value={[query, setQuery]}>
+          <QueryContext.Provider value={[query,setQuery]}>
             <AuthAnimationContext.Provider value={[authAnimation, setAuthAnimation]}>
               <UserContext.Provider value={{ user, setUser, session, status }}>
                 <LoaderContext.Provider value={[loader,setLoader]}>

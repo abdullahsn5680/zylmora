@@ -28,7 +28,7 @@ export async function GET(req) {
         totalFilteredProducts: 0,
         fromProduct: 0,
         toProduct: 0,
-      });
+      }, { status: 400 });
     }
 
     const filter = {
@@ -74,3 +74,7 @@ export async function GET(req) {
     return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
   }
 }
+
+export const config = {
+  runtime: 'nodejs',
+};

@@ -5,7 +5,9 @@ import { FilterContext } from '@/app/Context/contextProvider';
 import { useRouter } from 'next/navigation';
 import { QueryContext } from '@/app/Context/contextProvider';
 function SortBy() {
-const  {setQuery}  =useContext(QueryContext);
+const  [query, setQuery] =useContext(QueryContext);
+const context = useContext(QueryContext);
+console.log('QueryContext:', context);
   const router = useRouter();
   const {
        selectedCategory,
@@ -55,7 +57,7 @@ const  {setQuery}  =useContext(QueryContext);
 
   return (
     <div className="relative inline-block text-left group w-fit">
-      {/* Toggle Button */}
+     
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center md:w-52 h-[42px] justify-between font-bold gap-2 px-4 py-2 text-sm text-gray-800 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition"
@@ -63,7 +65,7 @@ const  {setQuery}  =useContext(QueryContext);
         Sort By <ChevronDown size={16} />
       </button>
 
-      {/* Dropdown Menu */}
+
       {isOpen && (
         <div className="absolute z-10 mt-2 w-52 rounded-md shadow-md right-0 bg-white border border-gray-200">
           <ul className="py-2 text-sm text-gray-700">

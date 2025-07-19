@@ -34,7 +34,7 @@ export default function RootLayout({ children }) {
             </div>
             <div className="announcement w-full fixed top-[9vh] left-0 right-0 z-1 "><Announcemnt/></div>
             <div className="absolute top-[14vh]  bottom-8  w-full">
-              
+          
               {children}
           
             </div>

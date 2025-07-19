@@ -16,7 +16,7 @@ export default function ClientPage() {
   const searchParams = useSearchParams();
   const category = searchParams.get('category');
   const subcategory = searchParams.get('subcategory');
-  const origin = window.location.origin;
+ 
   const [query, setQuery] = useContext(QueryContext);
   const [grid, setGrid] = useState('grid-col-2');
   const [products, setProducts] = useState([]);
@@ -83,7 +83,7 @@ export default function ClientPage() {
     const getData = async () => {
       setLoading(true);
       try {
-        const res = await safeFetch(`/api/getCollectionsProducts?${query}`,{},360000,session);
+        const res = await safeFetch(`/api/getCollectionsProducts?${query}`,{},360000);
 
         console.log(res)
         const data = res
@@ -115,19 +115,19 @@ export default function ClientPage() {
 
   return (
     <div className="px-1 w-full flex flex-col">
-      {/* <div className="filters w-full hidden md:flex items-center justify-between">
+       <div className="filters w-full hidden md:flex items-center justify-between">
         <Filter />
         <SortBy />
       </div>
-      <div className="seprator w-full h-[1px] bg-slate-300 mt-5 hidden md:flex"></div> */}
-      {/* <div className="oprations md:hidden flex justify-between  items-center py-3">
+      <div className="seprator w-full h-[1px] bg-slate-300 mt-5 hidden md:flex"></div> 
+      <div className="oprations md:hidden flex justify-between  items-center py-3">
         <div className="flex gap-1 text-slate-700 font-bold">
           <Funnel className="w-6 h-6" />
           Filter
         </div>
         <Align Funtion={[grid, setGrid]} />
         <SortBy />
-      </div> */}
+      </div> 
       <div className={`items w-full grid mx-auto  xl:grid-cols-4 mt-5 md:grid-cols-3 grid-cols-2  justify-center items-center gap-4`}>
         {!selectedCategory || !selectedSubCategory ? (
           <p className="col-span-full text-center text-gray-500">

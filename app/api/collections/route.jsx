@@ -47,3 +47,6 @@ export async function DELETE(req) {
     return NextResponse.json({ success: false, message: 'Server error' }, { status: 500 });
   }
 }
+export const config = {
+  runtime: 'nodejs',
+};

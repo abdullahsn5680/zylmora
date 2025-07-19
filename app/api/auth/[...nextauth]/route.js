@@ -3,7 +3,7 @@ import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import dbConnect from '@/Utils/connectDb';
 import users from '@/models/users';
-import bcrypt from 'bcryptjs'; 
+import bcrypt from 'bcryptjs';
 
 const handler = NextAuth({
   providers: [
@@ -19,13 +19,13 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         await dbConnect();
-       const user = await users.findOne({ Username:credentials.username });
-  
+        const user = await users.findOne({ Username: credentials.username });
+
         if (user) {
           if (user.isactive) {
             const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
             if (isPasswordValid) {
-              return { id: user._id, email: user.email, name: user.Username, role: user.admin }; // 
+              return { id: user._id, email: user.email, name: user.Username, role: user.admin };
             } else {
               throw new Error("Invalid password");
             }
@@ -40,7 +40,6 @@ const handler = NextAuth({
   ],
   secret: process.env.NEXTAUTH_SECRET,
   session: { strategy: "jwt" },
-  
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -51,16 +50,17 @@ const handler = NextAuth({
       }
       return token;
     },
-
     async session({ session, token }) {
-
       session.user.id = token.id;
       session.user.name = token.name;
-      session.user.role = token.role;  
-      
+      session.user.role = token.role;
       return session;
     },
   },
 });
+
+export const config = {
+  runtime: 'nodejs',
+};
 
 export { handler as GET, handler as POST };

@@ -1,3 +1,7 @@
+export const config = {
+  runtime: 'nodejs',
+};
+
 import { NextResponse } from "next/server";
 import users from "@/models/users";
 import dbConnect from "@/Utils/connectDb";

@@ -108,3 +108,6 @@ export async function PUT(req) {
  }
  
 
+export const config = {
+  runtime: 'nodejs',
+};
