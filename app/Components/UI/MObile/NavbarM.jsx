@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState, useContext } from 'react';
 import { AlignJustify, SearchCheck, Heart, Search, ShoppingBag, User2 } from 'lucide-react';
+import Announcemnt from '../../alerts/announcemnt';
 import { SlideBarContext } from '@/app/Context/contextProvider';
 import { useRouter } from 'next/navigation';
 function NavbarM() {
@@ -50,6 +51,7 @@ if(isSlide == 'false'){setIsSlide('search');}else{
         <li className='cursor-pointer hover:text-gray-500' onClick={()=>router.push('/Profile')}><User2 /></li>
         <li className='cursor-pointer hover:text-gray-500' onClick={()=>router.push('/Profile/Cart')}><ShoppingBag /></li>
       </ul>
+       <div className="announcement w-full  "><Announcemnt/></div>
     </div>
   );
 }

@@ -26,13 +26,13 @@ export default function RootLayout({ children }) {
       <body className="overflow-x-hidden relative">
         <AuthSessionProvider>
           <ContextProvider>
-            <div className="flex md:hidden fixed top-0 left-0 right-0 z-10">
+            <div className="flex lg:hidden fixed top-0 left-0 right-0 z-10">
               <NavbarM />
             </div>
-            <div className="hidden md:flex fixed top-0 left-0 right-0 z-10">
+            <div className="hidden lg:flex fixed top-0 left-0 right-0 z-10">
               <Navbar />
             </div>
-            <div className="announcement w-full fixed top-[9vh] left-0 right-0 z-1 "><Announcemnt/></div>
+           
             <div className="absolute top-[14vh]  bottom-8  w-full">
           
               {children}

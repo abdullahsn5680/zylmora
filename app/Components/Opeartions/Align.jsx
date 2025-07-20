@@ -1,20 +1,22 @@
 'use client'
+import { GridContext } from '@/app/Context/contextProvider';
 import { AlignJustify } from 'lucide-react';
 import React from 'react';
+import { useContext } from 'react';
+function Align() {
 
-function Align({ slug }) {
-  const category = slug;
- 
+ const [grid,setGrid]=useContext(GridContext)
 
   return (
     <div className="text-slate-500 flex gap-2">
-      {/* Default layout icon */}
-      <div className="border-2 p-1 border-slate-600 rounded cursor-pointer">
+     
+      <div onClick={()=>{setGrid('grid-cols-1')}} className="border-2 p-1 border-slate-600 rounded cursor-pointer">
+       
         <AlignJustify />
       </div>
 
-      {/* Rotated layout icon */}
-      <div className="border-2 p-1 border-slate-600 rounded cursor-pointer rotate-90">
+  
+      <div onClick={()=>{setGrid('grid-cols-2')}} className="border-2 p-1 border-slate-600 rounded cursor-pointer rotate-90">
         <AlignJustify />
       </div>
     </div>

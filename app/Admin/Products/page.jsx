@@ -11,7 +11,6 @@ function ProductsTablePage() {
   const [search, setSearch] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [deleteProductId, setDeleteProductId] = useState(null);
- 
   const  {session}=useContext(UserContext)
 const isAdmin = session?.user?.role 
  useEffect(()=>{
@@ -36,7 +35,7 @@ const isAdmin = session?.user?.role
       setTimeout(() => {
          setloader(false)
       }, 500);
-     
+        console.log(data)
       if (data.success) setProducts(data.products);
     } catch (err) {
       console.error('Error fetching products:', err);

@@ -1,4 +1,3 @@
-
 export const config = {
   runtime: 'nodejs',
 };
@@ -6,8 +5,6 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/Utils/connectDb';
 import Product from '@/models/Product';
 import { stemmer } from 'stemmer';
-
-
 
 export async function GET(req) {
   try {
@@ -26,7 +23,7 @@ export async function GET(req) {
 
     const gender = words.find((w) => genderCategories.includes(w));
     const otherWords = words.filter((w) => !genderCategories.includes(w));
-    const stemmedKeywords = otherWords.map((kw) => stemmer.stem(kw));
+    const stemmedKeywords = otherWords.map((kw) => stemmer(kw));
 
     const conditions = [];
 

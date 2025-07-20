@@ -1,9 +1,11 @@
 'use client';
 import { Heart, Package, Search, ShoppingBag, User2 } from 'lucide-react';
 import Link from 'next/link';
+
 import React, { useState, useRef, useContext,useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { CollectionContext, FilterContext } from '@/app/Context/contextProvider';
+import Announcemnt from '../alerts/announcemnt';
 
 function Navbar() {
   const [categories] = useContext(CollectionContext);
@@ -42,10 +44,11 @@ function Navbar() {
       category: selectedCategory,
       subcategory: selectedSubCategory,
     }).toString();
-    router.push(`/Collections?${query}`);
+    router.push(`/Collections`);
   };
 
   return (
+    <div className=''>
     <nav className="bg-gray-950 text-slate-100 transition-all duration-300 w-full relative z-20 flex justify-between items-center font-extrabold px-4 py-2">
     
       <div className="options w-full">
@@ -120,7 +123,10 @@ function Navbar() {
           />
         </div>
       </div>
+       
     </nav>
+    <div className="announcement w-full  "><Announcemnt/></div>
+    </div>
   );
 }
 

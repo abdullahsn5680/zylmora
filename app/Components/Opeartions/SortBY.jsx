@@ -1,27 +1,26 @@
 'use client';
-import React, { useState, useContext } from 'react';
-import { ChevronDown, Router } from 'lucide-react';
-import { FilterContext } from '@/app/Context/contextProvider';
+import React, { useState, useContext, useEffect } from 'react';
+import { ChevronDown } from 'lucide-react';
+import { FilterContext, QueryContext } from '@/app/Context/contextProvider';
 import { useRouter } from 'next/navigation';
-import { QueryContext } from '@/app/Context/contextProvider';
+
 function SortBy() {
-const  [query, setQuery] =useContext(QueryContext);
-const context = useContext(QueryContext);
-console.log('QueryContext:', context);
+  const [query, setQuery] = useContext(QueryContext);
   const router = useRouter();
+
   const {
-       selectedCategory,
-            setSelectedCategory,
-            selectedSubCategory,
-            setSelectedSubCategory,
-            selectedSizes,
-            setSelectedSizes,
-            selectedSortBy,
-            setSelectedSortBy,
-            selectedMinPrice,
-            setSelectedMinPrice,
-            selectedHighPrice,
-            setSelectedHighPrice,
+    selectedCategory,
+    setSelectedCategory,
+    selectedSubCategory,
+    setSelectedSubCategory,
+    selectedSizes,
+    setSelectedSizes,
+    selectedSortBy,
+    setSelectedSortBy,
+    selectedMinPrice,
+    setSelectedMinPrice,
+    selectedHighPrice,
+    setSelectedHighPrice,
   } = useContext(FilterContext);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -33,38 +32,41 @@ console.log('QueryContext:', context);
     { label: 'Most Popular', value: 'popular' },
   ];
 
-  const handleSelect = async (option) => {
+  const selectedOptionLabel =
+    options.find((opt) => opt.value === selectedSortBy)?.label || 'Sort By';
+
+  const handleSelect = (option) => {
     setSelectedSortBy(option.value);
     setIsOpen(false);
-
-    
-   
-     const query = new URLSearchParams({
-    category: selectedCategory,
-    subcategory: selectedSubCategory,
-    size:selectedSizes,
-    minPrice:selectedMinPrice,
-    highPrice:selectedHighPrice,
-    sortBy:selectedSortBy,
-  }).toString();
-      
-  setQuery(query);
-  
-    
-   
-    
   };
+
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const category = params.get('category');
+    const subcategory = params.get('subcategory');
+    const size = params.get('size')?.split(',') || [];
+    const minPrice = params.get('minPrice');
+    const highPrice = params.get('highPrice');
+    const sortBy = params.get('sortBy');
+
+    if (category) setSelectedCategory(category);
+    if (subcategory) setSelectedSubCategory(subcategory);
+    if (size.length) setSelectedSizes(size);
+    if (minPrice) setSelectedMinPrice(minPrice);
+    if (highPrice) setSelectedHighPrice(highPrice);
+    if (sortBy) setSelectedSortBy(sortBy);
+  }, [query]);
 
   return (
     <div className="relative inline-block text-left group w-fit">
-     
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center md:w-52 h-[42px] justify-between font-bold gap-2 px-4 py-2 text-sm text-gray-800 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition"
       >
-        Sort By <ChevronDown size={16} />
+        {selectedOptionLabel}
+        <ChevronDown size={16} />
       </button>
-
 
       {isOpen && (
         <div className="absolute z-10 mt-2 w-52 rounded-md shadow-md right-0 bg-white border border-gray-200">

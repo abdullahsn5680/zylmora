@@ -6,6 +6,7 @@ import Banner from '@/app/Components/UI/Banner';
 import CardContainer from '@/app/Components/UI/Container/CardContainer';
 import Loader from '@/app/Components/Loader/loader';
 import { LoaderContext } from '@/app/Context/contextProvider';
+import { getCacheStats } from '@/Utils/safeFetch';
 export default function HomeClient() {
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useContext(LoaderContext)
@@ -32,6 +33,8 @@ export default function HomeClient() {
           console.error('Error fetching collections:', err);
         }
   }, [session]);
+
+
 
   if (loading) return <Loader />;
 

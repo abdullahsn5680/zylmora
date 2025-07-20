@@ -37,7 +37,7 @@ function SlideBar() {
     category: selectedCategory,
     subcategory: selectedSubCategory,
   }).toString();
-    router.push(`/Collections?${query}`)
+    router.push(`/Collections`)
 
 
 

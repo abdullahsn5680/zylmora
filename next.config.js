@@ -4,7 +4,7 @@ const withPWA = require('next-pwa')({
   skipWaiting: true,
   disable: process.env.NODE_ENV === 'development',
   runtimeCaching: [
-    // 1. API calls - always network, no cache
+   
     {
       urlPattern: /^\/api\/.*$/,
       handler: 'NetworkOnly',
@@ -15,7 +15,6 @@ const withPWA = require('next-pwa')({
         },
       },
     },
-    // 2. Images - CacheFirst, cache for 30 days
     {
       urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|avif|ico|bmp|tiff|jfif)$/,
       handler: 'CacheFirst',
@@ -30,7 +29,7 @@ const withPWA = require('next-pwa')({
         },
       },
     },
-    // 3. Static assets like JS, CSS - StaleWhileRevalidate
+  
     {
       urlPattern: /\.(?:js|css|woff2?|eot|ttf|otf)$/,
       handler: 'StaleWhileRevalidate',
@@ -38,14 +37,15 @@ const withPWA = require('next-pwa')({
         cacheName: 'static-resources',
         expiration: {
           maxEntries: 100,
-          maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+          maxAgeSeconds: 30 * 24 * 60 * 60,
+          
         },
         cacheableResponse: {
           statuses: [0, 200],
         },
       },
     },
-    // 4. Page navigations (HTML) - StaleWhileRevalidate
+   
     {
       urlPattern: /^\/$/,
       handler: 'StaleWhileRevalidate',
@@ -53,7 +53,7 @@ const withPWA = require('next-pwa')({
         cacheName: 'html-cache',
         expiration: {
           maxEntries: 10,
-          maxAgeSeconds: 24 * 60 * 60, // 1 day
+          maxAgeSeconds: 24 * 60 * 60, 
         },
         cacheableResponse: {
           statuses: [0, 200],

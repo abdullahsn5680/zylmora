@@ -8,7 +8,7 @@ function Card({ prop }) {
 console.log(prop)
 
   return (
-    <div className='flex flex-col gap-3 w-full max-w-xs md:max-w-sm lg:max-w-md transition-all hover:-translate-y-1 shadow-slate-500 duration-300 bg-[#ffffff] shadow border  border-slate-400 hover:shadow-2xl p-2 md:p-3 md:py-4 rounded-2xl'>
+    <div className='flex flex-col gap-3 mx-auto w-[96%] md:max-w-sm lg:max-w-md transition-all hover:-translate-y-1 shadow-slate-500 duration-300 bg-[#ffffff] shadow border  border-slate-400 hover:shadow-2xl p-2 md:p-3 md:py-4 rounded-2xl'>
       <div className="relative w-full aspect-square rounded-xl overflow-hidden">
         <Image
           width={800}

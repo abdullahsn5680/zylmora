@@ -10,9 +10,11 @@ export const FilterContext = createContext();
 export const QueryContext = createContext();
 export const UserContext = createContext();
 export const LoaderContext = createContext();
+export const GridContext = createContext();
 
 function ContextProvider({ children }) {
   const [isSlide, setIsSlide] = useState('false');
+  const [grid,setGrid]=useState('grid-cols-2')
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSubCategory, setSelectedSubCategory] = useState('');
@@ -92,7 +94,9 @@ if(session){
             <AuthAnimationContext.Provider value={[authAnimation, setAuthAnimation]}>
               <UserContext.Provider value={{ user, setUser, session, status }}>
                 <LoaderContext.Provider value={[loader,setLoader]}>
+                  <GridContext.Provider value={[grid,setGrid]}>
                 {children}
+                </GridContext.Provider>
                 </LoaderContext.Provider>
               </UserContext.Provider>
             </AuthAnimationContext.Provider>
