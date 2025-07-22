@@ -1,42 +1,45 @@
 {
   "functions": {
-    "api/Cart/route.js": {
+    "app/api/Cart/route.js": {
       "memory": 256
     },
-    "api/HomePage/route.js": {
+    "app/api/HomePage/route.js": {
       "memory": 256
     },
-    "api/Orders/route.js": {
+    "app/api/Orders/route.js": {
       "memory": 256
     },
-    "api/RelatedProducts/route.js": {
+    "app/api/RelatedProducts/route.js": {
       "memory": 256
     },
-    "api/SignUp/route.js": {
+    "app/api/SignUp/route.js": {
       "memory": 256
     },
-    "api/User/route.js": {
+    "app/api/User/route.js": {
       "memory": 256
     },
-    "api/Wishlist/route.js": {
+    "app/api/Wishlist/route.js": {
       "memory": 256
     },
-    "api/cartOrders/route.js": {
+    "app/api/cartOrders/route.js": {
       "memory": 256
     },
-    "api/getCollectionsProducts/route.js": {
+    "app/api/catagories/route.js": {
       "memory": 256
     },
-    "api/getHome/route.js": {
+    "app/api/getCollectionsProducts/route.js": {
       "memory": 256
     },
-    "api/globalOrders/route.js": {
+    "app/api/getHome/route.js": {
       "memory": 256
     },
-    "api/healthz/route.js": {
+    "app/api/globalOrders/route.js": {
       "memory": 256
     },
-    "api/searchProducts/route.js": {
+    "app/api/healthz/route.js": {
+      "memory": 256
+    },
+    "app/api/searchProducts/route.js": {
       "memory": 256
     }
   }

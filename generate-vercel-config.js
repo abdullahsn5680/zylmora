@@ -12,7 +12,7 @@ fs.readdirSync(apiDir).forEach(folder => {
 
   // Only add if route.js exists in the folder
   if (fs.existsSync(routePath)) {
-    const configKey = `api/${folder}/route.js`;
+  const configKey = `app/api/${folder}/route.js`;
     config.functions[configKey] = { memory: 256 };
   }
 });
