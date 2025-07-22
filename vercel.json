@@ -1,0 +1,43 @@
+{
+  "functions": {
+    "api/Cart/route.js": {
+      "memory": 256
+    },
+    "api/HomePage/route.js": {
+      "memory": 256
+    },
+    "api/Orders/route.js": {
+      "memory": 256
+    },
+    "api/RelatedProducts/route.js": {
+      "memory": 256
+    },
+    "api/SignUp/route.js": {
+      "memory": 256
+    },
+    "api/User/route.js": {
+      "memory": 256
+    },
+    "api/Wishlist/route.js": {
+      "memory": 256
+    },
+    "api/cartOrders/route.js": {
+      "memory": 256
+    },
+    "api/getCollectionsProducts/route.js": {
+      "memory": 256
+    },
+    "api/getHome/route.js": {
+      "memory": 256
+    },
+    "api/globalOrders/route.js": {
+      "memory": 256
+    },
+    "api/healthz/route.js": {
+      "memory": 256
+    },
+    "api/searchProducts/route.js": {
+      "memory": 256
+    }
+  }
+}

@@ -1,4 +1,3 @@
-
 export const config = {
   runtime: 'nodejs',
 };
@@ -8,6 +7,7 @@ import Product from "@/models/Product";
 import dbConnect from "@/Utils/connectDb";
 import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
 import { v2 as cloudinary } from "cloudinary";
+import Catagories from "@/models/Catagories";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -32,7 +32,7 @@ export async function POST(req) {
       images,
       description,
     } = body;
-
+   
     const mainImageUpload = await uploadToCloudinary(main_image, "Products_Img");
     if (!mainImageUpload) {
       return NextResponse.json({ error: "Main image upload failed" }, { status: 500 });
@@ -59,7 +59,17 @@ export async function POST(req) {
 
     const imageUrls = imageUploads.map((item) => item?.url).filter(Boolean);
     const imagePublicIds = imageUploads.map((item) => item?.public_id).filter(Boolean);
-
+    const name = `${category}-${subcategory}`
+    const isExists = await Catagories.findOne({name:name})
+    if(!isExists){
+      const newCat = new Catagories({
+        name:name,
+        image:mainImageUpload.url,
+        cat:category,
+        subCat:subcategory,
+      })
+      await newCat.save();
+    }
     const newProduct = await Product.create({
       Vendor,
       discount,
@@ -89,10 +99,55 @@ export async function PUT(req) {
     const body = await req.json();
     const { _id, ...rest } = body;
 
+   
+    const currentProduct = await Product.findById(_id);
+    if (!currentProduct) {
+      return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
+    }
+
     const updatedProduct = await Product.findByIdAndUpdate(_id, rest, { new: true });
 
-    if (!updatedProduct) {
-      return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
+  
+    const categoryChanged = currentProduct.category !== updatedProduct.category || 
+                           currentProduct.subcategory !== updatedProduct.subcategory;
+
+    if (categoryChanged) {
+    
+      const newCategoryName = `${updatedProduct.category}-${updatedProduct.subcategory}`;
+    
+      const newCategoryExists = await Catagories.findOne({name: newCategoryName});
+      if (!newCategoryExists) {
+        const newCategory = new Catagories({
+          name: newCategoryName,
+          image: updatedProduct.main_image,
+          cat: updatedProduct.category,
+          subCat: updatedProduct.subcategory,
+        });
+        await newCategory.save();
+      } else {
+       
+        await Catagories.findOneAndUpdate(
+          {name: newCategoryName},
+          {image: updatedProduct.main_image}
+        );
+      }
+
+      const oldCategoryName = `${currentProduct.category}-${currentProduct.subcategory}`;
+      const remainingProducts = await Product.countDocuments({
+        category: currentProduct.category,
+        subcategory: currentProduct.subcategory
+      });
+
+      if (remainingProducts === 0) {
+        await Catagories.findOneAndDelete({name: oldCategoryName});
+      }
+    } else {
+     
+      const categoryName = `${updatedProduct.category}-${updatedProduct.subcategory}`;
+      await Catagories.findOneAndUpdate(
+        {name: categoryName},
+        {image: updatedProduct.main_image}
+      );
     }
 
     return NextResponse.json({ success: true, product: updatedProduct }, { status: 200 });
@@ -117,17 +172,28 @@ export async function DELETE(req) {
       return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
     }
 
+    const categoryName = `${product.category}-${product.subcategory}`;
+
     if (product.main_image_public_id) {
       await cloudinary.uploader.destroy(product.main_image_public_id);
     }
 
     if (product.images_public_ids?.length > 0) {
-      for (let publicId of product.images_public_ids) {
-        await cloudinary.uploader.destroy(publicId);
+      for (let i = 0; i < product.images_public_ids.length; i++) {
+        await cloudinary.uploader.destroy(product.images_public_ids[i]);
       }
     }
 
     await Product.findByIdAndDelete(id);
+
+    const remainingProducts = await Product.countDocuments({
+      category: product.category,
+      subcategory: product.subcategory
+    });
+
+    if (remainingProducts === 0) {
+      await Catagories.findOneAndDelete({name: categoryName});
+    }
 
     return NextResponse.json({ success: true, message: "Product deleted" });
   } catch (error) {

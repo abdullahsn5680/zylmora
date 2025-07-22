@@ -18,7 +18,6 @@ export async function POST(req) {
     await dbConnect()
     for (let index = 0; index < body.length; index++) {
          const collection=  body[index]
-         console.log(collection)
         
         const existing = await Collection.findOne({name:collection.name})
         if(existing){
@@ -33,20 +32,6 @@ export async function POST(req) {
   }
 }
 
-
-export async function DELETE(req) {
-  try {
-    const body = await req.json();
-    await dbConnect()
-    for (let index = 0; index < body.length; index++) {
-           const Delete = await Collection.findByIdAndDelete({_id:body[index].id});
-         }
-    return NextResponse.json({ success: true, });
-  } catch (error) {
-    console.error('POST /api/collections error:', error);
-    return NextResponse.json({ success: false, message: 'Server error' }, { status: 500 });
-  }
-}
 export const config = {
   runtime: 'nodejs',
 };

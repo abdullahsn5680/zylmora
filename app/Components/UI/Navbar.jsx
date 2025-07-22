@@ -9,6 +9,7 @@ import Announcemnt from '../alerts/announcemnt';
 
 function Navbar() {
   const [categories] = useContext(CollectionContext);
+  const [confirmCatagory,setCofrimCategory]=useState('')
   const [hovered, setHovered] = useState(null);
   const timeoutRef = useRef(null);
   const router = useRouter();
@@ -61,7 +62,7 @@ function Navbar() {
               onMouseLeave={handleMouseLeave}
             >
               <div
-                onMouseEnter={() => setSelectedCategory(category.name)}
+                onMouseEnter={() =>{ setCofrimCategory(category.name)}}
                 className="cursor-pointer text-[14px] px-2 py-1 hover:bg-gray-900 rounded-sm"
               >
                 {category.name}
@@ -70,12 +71,13 @@ function Navbar() {
               {hovered === category._id && (
                 <div
                   className="absolute top-full left-0 flex flex-col bg-gray-900 text-slate-200 text-sm font-medium mt-4 w-[150px] rounded shadow-lg z-20 p-2"
-                  onMouseEnter={() => handleMouseEnter(category._id)}
+                  onMouseEnter={() =>{ handleMouseEnter(category._id)}}
                 >
                   {category.subs?.map((sub, index) => (
                     <div
                       key={index}
                       onClick={() => {
+                        setSelectedCategory(confirmCatagory)
                         setSelectedSubCategory(sub);
                         performAction(); 
                       }}

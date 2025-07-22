@@ -254,7 +254,7 @@ const hasActiveFilters = useMemo(() => {
       )}
       </div>
 
-      <div className="sm:hidden flex flex-col gap-4 w-full">
+      <div className=" lg:hidden flex  flex-col gap-4 w-full">
         
         {hasActiveFilters && (
           <button

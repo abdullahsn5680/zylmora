@@ -2,16 +2,15 @@
 
 import { useContext, useState, useEffect } from 'react';
 import { Funnel } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
+
 import Align from '@/app/Components/Opeartions/Align';
 import Filter from '@/app/Components/Opeartions/filter';
 import SortBy from '@/app/Components/Opeartions/SortBY';
 import Card from '@/app/Components/UI/Card/Card';
 import Loader from '@/app/Components/Loader/loader';
 import Nextpage from '@/app/Components/UI/NextPage/Nextpage';
-import { FilterContext, GridContext, QueryContext } from '@/app/Context/contextProvider';
+import { FilterContext, GridContext, QueryContext, SlideBarContext } from '@/app/Context/contextProvider';
 import { safeFetch } from '@/Utils/safeFetch';
-
 export default function ClientPage() {
   const [query, setQuery] = useContext(QueryContext);
   const [grid,setGrid]=useContext(GridContext)
@@ -25,7 +24,7 @@ export default function ClientPage() {
     toProduct: 0,
     totalFilteredProducts: 0,
   });
-
+ const [isSlide, setIsSlide] = useContext(SlideBarContext)
   const {
     selectedCategory,
     selectedSubCategory,
@@ -88,7 +87,17 @@ useEffect(() => {
   selectedHighPrice,
 ]);
 
-
+  const performanFilter = (route) => {
+    if (isSlide !=='false') {
+      setIsSlide('false');
+      setTimeout(() => {
+        setIsSlide(route);
+      }, 500);
+    } else {
+if(isSlide == 'false'){setIsSlide(route);}
+      
+    }
+  };
   useEffect(() => {
     if (!query) return;
 
@@ -136,7 +145,7 @@ useEffect(() => {
      
       <div className="oprations lg:hidden flex justify-between items-center py-3">
         <div className="flex gap-1 text-slate-700 font-bold">
-          <Funnel className="w-6 h-6" />
+          <Funnel onClick={()=>{performanFilter('filter')}} className="w-6 h-6" />
           Filter
         </div>
         <Align Funtion={[grid, setGrid]} />

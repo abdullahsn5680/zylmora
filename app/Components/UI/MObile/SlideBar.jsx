@@ -5,6 +5,7 @@ import { Search } from 'lucide-react'
 import { CollectionContext } from '@/app/Context/contextProvider'
 import { FilterContext } from '@/app/Context/contextProvider'
 import { useRouter } from 'next/navigation'
+import Filter from '../../Opeartions/filter'
 function SlideBar() {
   const [categories] = useContext(CollectionContext)
   const [isSlide, setIsSlide] = useContext(SlideBarContext)
@@ -99,7 +100,10 @@ function SlideBar() {
           </div>
         </div>
       )}
-    </div>
+
+  {isSlide==='filter'&&
+  <Filter/>}
+  </div>
   )
 }
 

@@ -81,22 +81,6 @@ export default function CollectionsAdminPage() {
       alert('Error saving to DB.');
     }
 
-    if(deleted){
-      try {
-      console.log('Deleted from DB:'); 
-
-  
-      const res = await fetch('/api/collections', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(deleted),
-      });
-      const data = await res.json();
-    } catch (err) {
-      console.error(err);
-      alert('Error saving to DB.');
-    }
-    }
   };
 return (
   <div className="min-h-screen bg-white text-black px-4 py-6 md:px-10 md:py-8">
