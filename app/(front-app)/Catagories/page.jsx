@@ -4,16 +4,13 @@ import { safeFetch } from '@/Utils/safeFetch';
 import Loader from '@/app/Components/Loader/loader';
 import { useRouter } from 'next/navigation';
 function page() {
-  
   const [categoriesData, setCategoriesData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const router =useRouter();
-
   useEffect(() => {
     fetchCategories();
   }, []);
-
   const fetchCategories = async () => {
     try {
       setLoading(true);
@@ -30,13 +27,11 @@ function page() {
       setLoading(false);
     }
   };
-
   if (loading) {
     return (
    <Loader/>
     );
   }
-
   const performAction = (cat,subCat) => {
     const query = new URLSearchParams({
       category: cat,
