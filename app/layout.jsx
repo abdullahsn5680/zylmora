@@ -37,7 +37,7 @@ export default function RootLayout({ children }) {
               {children}
           
             </div>
-          <div className="fixed bottom-18 z-50 right-5">
+          <div className="fixed bottom-18 z-50 right-3">
   <a 
     href="https://wa.me/923243040120?text=Hello%20I%20am%20interested%20in%20Zylmora%20products" 
     target="_blank" 
