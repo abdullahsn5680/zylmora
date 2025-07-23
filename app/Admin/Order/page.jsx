@@ -64,7 +64,7 @@ const isAdmin = session?.user?.role
       : orders.filter((o) => o.status === selectedStatus);
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10 px-2 md:px-4 flex justify-center">
+    <div className="  bg-gray-100 py-10 px-2 md:px-4 h-ful  flex justify-center">
       
       <div className="bg-white w-full max-w-5xl rounded-xl shadow p-4 md:p-6">
         <div className="mb-4">
@@ -201,6 +201,7 @@ const isAdmin = session?.user?.role
           </div>
         )}
       </div>
+      <div className="py-20"></div>
     </div>
   );
 }

@@ -68,7 +68,7 @@ function ProductPage() {
 
   useEffect(() => {
     if (selectedAddress&&update==0) {
-      alert(`hit ${update}`)
+      
       const parsed = parseAddressString(selectedAddress);
       setCountry(parsed.country || '');
       setPostalCode(parsed.postalCode || '');
