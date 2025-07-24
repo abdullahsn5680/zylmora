@@ -32,7 +32,8 @@ export default function RootLayout({ children }) {
               <Navbar />
             </div>
            
-            <div className="absolute top-[14vh]  bottom-8  w-full">
+            <div className="absolute top-[14vh] pb-36 bottom-8 h-fit bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50
+              w-full">
           
               {children}
           

@@ -363,7 +363,7 @@ const total = subtotal + shipping;
   if(showProceed){
     return(
    <div className="min-h-screen w-screen bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50">
-  {/* Header */}
+ 
   <div className="bg-white/90 backdrop-blur-sm shadow-sm border-b border-gray-100">
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-6">
       <div className="flex items-center justify-between">
@@ -520,7 +520,7 @@ const total = subtotal + shipping;
           </div>
 
           {selectedAddress && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-slate-50 rounded-xl border border-gray-100">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6  rounded-xl ">
               <div>
                 <label className="block text-sm font-semibold text-slate-600 mb-2">
                   Street Address
@@ -591,7 +591,6 @@ const total = subtotal + shipping;
           )}
         </div>
 
-        {/* Payment Method */}
         <div className="bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl rounded-2xl p-8 border border-gray-100 transition-all duration-500">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
@@ -613,8 +612,8 @@ const total = subtotal + shipping;
                 className="w-5 h-5 text-slate-600 mr-4"
               />
               <div className="flex-1">
-                <p className="font-semibold text-slate-800">Cash on Delivery (COD)</p>
-                <p className="text-sm text-slate-600 mt-1">Pay when you receive your order</p>
+                <p className="font-semibold  text-slate-800">Cash on Delivery (COD)</p>
+                <p className="md:text-sm text-[10px]  text-slate-600 mt-1">Pay when you receive your order</p>
               </div>
               <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                 <span className="text-emerald-600 text-lg">💵</span>
@@ -641,7 +640,7 @@ const total = subtotal + shipping;
         </div>
       </div>
 
-      {/* Right Column - Order Summary */}
+      
       <div className="space-y-6">
         <div className="bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl rounded-2xl p-8 border border-gray-100 sticky top-6 transition-all duration-500">
           <div className="flex items-center gap-3 mb-6">
@@ -653,7 +652,8 @@ const total = subtotal + shipping;
           
           <div className="space-y-4 mb-8">
             {Orders.map((item) => (
-              <div key={item.id} className="group flex items-center gap-4 p-4 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all duration-300 border border-gray-100">
+              <div key={item.id} className="group  items-center p-4 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all duration-300 border border-gray-100">
+                <div className="flex items-center  p-4 gap-4">
                 <div className="w-16 h-16 bg-white rounded-xl overflow-hidden border-2 border-gray-100 shadow-sm">
                   <img
                     src={item.image}
@@ -672,12 +672,24 @@ const total = subtotal + shipping;
                     Qty: {item.quantity}
                   </p>
                 </div>
-                <div className="text-right">
-                  <div className="text-sm font-semibold text-slate-800">
+                    <div className="text-right hidden 
+                sm:block">
+                  <div className="text-sm  font-semibold text-slate-800">
                     Rs. {(item.price * item.quantity).toLocaleString()}
                   </div>
                   {item.cut_price && (
-                    <div className="text-xs text-slate-500 line-through">
+                    <div className="text-xs   text-slate-500 line-through">
+                      Rs. {(item.cut_price * item.quantity).toLocaleString()}
+                    </div>
+                  )}
+                </div>
+                </div>
+                <div className="text-right flex justify-end items-center gap-2 sm:hidden">
+                  <div className="text-sm  font-semibold text-slate-800">
+                    Rs. {(item.price * item.quantity).toLocaleString()}
+                  </div>
+                  {item.cut_price && (
+                    <div className="text-xs   text-slate-500 line-through">
                       Rs. {(item.cut_price * item.quantity).toLocaleString()}
                     </div>
                   )}
@@ -733,7 +745,6 @@ const total = subtotal + shipping;
     </div>
   </div>
 
-  {/* Success Modal */}
   {sucess == true && (
     <div className="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center p-4 z-50">
       <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl max-w-md w-full p-8 border border-gray-100">
@@ -756,7 +767,6 @@ const total = subtotal + shipping;
     </div>
   )}
 
-  {/* Error Modal */}
   {Alert == true && (
     <div className="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center p-4 z-50">
       <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl max-w-md w-full p-8 border border-gray-100">
@@ -784,7 +794,7 @@ const total = subtotal + shipping;
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50">
-  {/* Header Section */}
+  
   <div className="bg-white/90 backdrop-blur-sm shadow-sm border-b border-gray-100">
     <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
       <div className="flex items-center justify-between">
@@ -1040,7 +1050,7 @@ const total = subtotal + shipping;
         )}
       </div>
 
-      {/* Order Summary */}
+     
       <div className="bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-lg border border-gray-100 p-6 sm:p-8 h-fit sticky top-6">
         <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-xl flex items-center justify-center shadow-md">
