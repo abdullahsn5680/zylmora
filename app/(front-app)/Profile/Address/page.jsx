@@ -334,7 +334,6 @@ export default function AddressManager() {
 
   return (
  
-  
   <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50">
     <div className="bg-white/90 backdrop-blur-sm shadow-sm border-b border-gray-100">
     <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
@@ -361,176 +360,219 @@ export default function AddressManager() {
     </div>
   </div>
 
-
-         
-
       <div className="max-w-4xl mx-auto px-4 py-12">
        
-        <div className="space-y-6 mb-8">
-          {addresses.map((addr, index) => (
-            <div key={index} className="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 overflow-hidden border border-gray-100">
-              {editingIndex === index ? (
-                <div className="p-8">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center">
-                      <Edit3 className="text-white" size={20} />
-                    </div>
-                    <h3 className="text-2xl font-bold text-slate-800">Edit Address</h3>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <input
-                      type="text"
-                      value={editStreet}
-                      onChange={(e) => setEditStreet(e.target.value)}
-                      className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-300 bg-gray-50/50 hover:bg-white"
-                      placeholder="Street Address / House No *"
-                      required
-                    />
-                    
-                    <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
-                      <input
-                        type="checkbox"
-                        id="editVillageToggle"
-                        checked={editShowVillageField}
-                        onChange={(e) => {
-                          setEditShowVillageField(e.target.checked);
-                          if (e.target.checked) {
-                            setEditVillage(editCity);
-                            setEditCity('');
-                          } else {
-                            setEditCity(editVillage);
-                            setEditVillage('');
-                          }
-                        }}
-                        className="w-5 h-5 text-slate-600 rounded focus:ring-slate-500"
-                      />
-                      <label htmlFor="editVillageToggle" className="text-slate-700 font-medium">
-                        I live in a village
-                      </label>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {editShowVillageField ? (
-                        <input
-                          type="text"
-                          value={editVillage}
-                          onChange={(e) => setEditVillage(e.target.value)}
-                          className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-300 bg-gray-50/50 hover:bg-white"
-                          placeholder="Village *"
-                          required
-                        />
-                      ) : (
-                        <input
-                          type="text"
-                          value={editCity}
-                          onChange={(e) => setEditCity(e.target.value)}
-                          className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-300 bg-gray-50/50 hover:bg-white"
-                          placeholder="City *"
-                          required
-                        />
-                      )}
-                      
-                      <input
-                        type="text"
-                        value={editDistrict}
-                        onChange={(e) => setEditDistrict(e.target.value)}
-                        className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-300 bg-gray-50/50 hover:bg-white"
-                        placeholder="District *"
-                        required
-                      />
-                      
-                      <input
-                        type="text"
-                        value={editProvince}
-                        onChange={(e) => setEditProvince(e.target.value)}
-                        className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-300 bg-gray-50/50 hover:bg-white"
-                        placeholder="Province / State *"
-                        required
-                      />
-                      
-                      <input
-                        type="text"
-                        value={editPostalCode}
-                        onChange={(e) => setEditPostalCode(e.target.value)}
-                        className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-300 bg-gray-50/50 hover:bg-white"
-                        placeholder="Postal Code (Optional)"
-                      />
-                      
-                      <input
-                        type="text"
-                        value={editCountry}
-                        onChange={(e) => setEditCountry(e.target.value)}
-                        className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-300 bg-gray-50/50 hover:bg-white"
-                        placeholder="Country *"
-                        required
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-end gap-4 mt-8">
-                    <button
-                      onClick={() => {
-                        setEditingIndex(null);
-                        resetEditFields();
-                      }}
-                      className="px-6 py-3 text-slate-600 hover:text-slate-800 font-medium transition-all duration-300 hover:bg-slate-100 rounded-xl"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleSaveEditedAddress}
-                      className="px-8 py-3 bg-gradient-to-r from-slate-600 to-slate-800 text-white rounded-xl hover:from-slate-700 hover:to-slate-900 font-medium transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2"
-                    >
-                      <Check size={18} />
-                      Save 
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="p-8">
-                  <div className="flex flex-col items-start justify-between">
-                    <div className="flex  justify-between w-full">
-                      {index === defaultIndex && (
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-700 rounded-full text-sm font-semibold mb-4 shadow-sm">
-                          <Star size={14} fill="currentColor" />
-                          Default 
-                        </div>
-                      )}
-                       {index !== defaultIndex && (
-                        <div className=" ">
-                         
-                        </div>
-                      )}
-                        <div className="flex items-center gap-2 ml-6">
-                    
-                      <button
-                        onClick={() => handleEditAddress(index)}
-                        className="group p-3 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-300 transform hover:scale-110"
-                        title="Edit address"
-                      >
-                        <Edit3 size={20} />
-                      </button>
-                      <button
-                        onClick={() => setDeleteConfirm(index)}
-                        className="group p-3 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300 transform hover:scale-110"
-                        title="Delete address"
-                      >
-                        <Trash2 size={20} />
-                      </button>
-                    </div>
-                     
-                    </div>
-                   <p className="text-slate-700 text-md leading-relaxed font-medium">{addr}</p>
-                  </div>
-                </div>
-              )}
-              
-              
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-slate-400 via-slate-600 to-slate-800 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-t-3xl"></div>
+        {addresses.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-96 space-y-6 mt-8">
+            <div className="relative">
+              <svg 
+                className="w-32 h-32 text-slate-300" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={1.5} 
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" 
+                />
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={1.5} 
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" 
+                />
+              </svg>
+              <div className="absolute -top-2 -right-2 w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
             </div>
-          ))}
-        </div>
+            
+            <div className="text-center space-y-2">
+              <h3 className="text-2xl font-bold text-slate-700">No Addresses Added</h3>
+              <p className="text-slate-500 max-w-md">
+                You haven't added any addresses yet. Add your first address to get started with deliveries.
+              </p>
+            </div>
+            
+            <button
+              onClick={() => setShowAddForm(true)}
+              className="group bg-gradient-to-r from-slate-600 to-slate-800 text-white px-8 py-4 rounded-2xl hover:from-slate-700 hover:to-slate-900 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-3 font-semibold text-lg"
+            >
+              <Plus size={24} />
+              Add Your First Address
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-6 mb-8">
+            {addresses.map((addr, index) => (
+              <div key={index} className="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 overflow-hidden border border-gray-100">
+                {editingIndex === index ? (
+                  <div className="p-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center">
+                        <Edit3 className="text-white" size={20} />
+                      </div>
+                      <h3 className="text-2xl font-bold text-slate-800">Edit Address</h3>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <input
+                        type="text"
+                        value={editStreet}
+                        onChange={(e) => setEditStreet(e.target.value)}
+                        className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-300 bg-gray-50/50 hover:bg-white"
+                        placeholder="Street Address / House No *"
+                        required
+                      />
+                      
+                      <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
+                        <input
+                          type="checkbox"
+                          id="editVillageToggle"
+                          checked={editShowVillageField}
+                          onChange={(e) => {
+                            setEditShowVillageField(e.target.checked);
+                            if (e.target.checked) {
+                              setEditVillage(editCity);
+                              setEditCity('');
+                            } else {
+                              setEditCity(editVillage);
+                              setEditVillage('');
+                            }
+                          }}
+                          className="w-5 h-5 text-slate-600 rounded focus:ring-slate-500"
+                        />
+                        <label htmlFor="editVillageToggle" className="text-slate-700 font-medium">
+                          I live in a village
+                        </label>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {editShowVillageField ? (
+                          <input
+                            type="text"
+                            value={editVillage}
+                            onChange={(e) => setEditVillage(e.target.value)}
+                            className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-300 bg-gray-50/50 hover:bg-white"
+                            placeholder="Village *"
+                            required
+                          />
+                        ) : (
+                          <input
+                            type="text"
+                            value={editCity}
+                            onChange={(e) => setEditCity(e.target.value)}
+                            className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-300 bg-gray-50/50 hover:bg-white"
+                            placeholder="City *"
+                            required
+                          />
+                        )}
+                        
+                        <input
+                          type="text"
+                          value={editDistrict}
+                          onChange={(e) => setEditDistrict(e.target.value)}
+                          className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-300 bg-gray-50/50 hover:bg-white"
+                          placeholder="District *"
+                          required
+                        />
+                        
+                        <input
+                          type="text"
+                          value={editProvince}
+                          onChange={(e) => setEditProvince(e.target.value)}
+                          className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-300 bg-gray-50/50 hover:bg-white"
+                          placeholder="Province / State *"
+                          required
+                        />
+                        
+                        <input
+                          type="text"
+                          value={editPostalCode}
+                          onChange={(e) => setEditPostalCode(e.target.value)}
+                          className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-300 bg-gray-50/50 hover:bg-white"
+                          placeholder="Postal Code (Optional)"
+                        />
+                        
+                        <input
+                          type="text"
+                          value={editCountry}
+                          onChange={(e) => setEditCountry(e.target.value)}
+                          className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-300 bg-gray-50/50 hover:bg-white"
+                          placeholder="Country *"
+                          required
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-end gap-4 mt-8">
+                      <button
+                        onClick={() => {
+                          setEditingIndex(null);
+                          resetEditFields();
+                        }}
+                        className="px-6 py-3 text-slate-600 hover:text-slate-800 font-medium transition-all duration-300 hover:bg-slate-100 rounded-xl"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleSaveEditedAddress}
+                        className="px-8 py-3 bg-gradient-to-r from-slate-600 to-slate-800 text-white rounded-xl hover:from-slate-700 hover:to-slate-900 font-medium transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2"
+                      >
+                        <Check size={18} />
+                        Save 
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-8">
+                    <div className="flex flex-col items-start justify-between">
+                      <div className="flex  justify-between w-full">
+                        {index === defaultIndex && (
+                          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-700 rounded-full text-sm font-semibold mb-4 shadow-sm">
+                            <Star size={14} fill="currentColor" />
+                            Default 
+                          </div>
+                        )}
+                         {index !== defaultIndex && (
+                          <div className=" ">
+                           
+                          </div>
+                        )}
+                          <div className="flex items-center gap-2 ml-6">
+                      
+                        <button
+                          onClick={() => handleEditAddress(index)}
+                          className="group p-3 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-300 transform hover:scale-110"
+                          title="Edit address"
+                        >
+                          <Edit3 size={20} />
+                        </button>
+                        <button
+                          onClick={() => setDeleteConfirm(index)}
+                          className="group p-3 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300 transform hover:scale-110"
+                          title="Delete address"
+                        >
+                          <Trash2 size={20} />
+                        </button>
+                      </div>
+                       
+                      </div>
+                     <p className="text-slate-700 text-md leading-relaxed font-medium">{addr}</p>
+                    </div>
+                  </div>
+                )}
+                
+                
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-slate-400 via-slate-600 to-slate-800 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-t-3xl"></div>
+              </div>
+            ))}
+          </div>
+        )}
 
        
         {showAddForm ? (
@@ -672,36 +714,40 @@ export default function AddressManager() {
             </div>
           </div>
         ) : (
-          <button
-            onClick={() => setShowAddForm(true)}
-            className="group w-full bg-white rounded-3xl shadow-lg border border-gray-100 p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 overflow-hidden relative"
-          >
-            <div className="flex items-center justify-center gap-4 text-slate-600 group-hover:text-slate-800">
-              <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 group-hover:from-slate-600 group-hover:to-slate-800 rounded-xl flex items-center justify-center transition-all duration-300 shadow-inner">
-                <Plus size={24} className="group-hover:text-white transition-colors duration-300" />
+          addresses.length > 0 && (
+            <button
+              onClick={() => setShowAddForm(true)}
+              className="group w-full bg-white rounded-3xl shadow-lg border border-gray-100 p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 overflow-hidden relative"
+            >
+              <div className="flex items-center justify-center gap-4 text-slate-600 group-hover:text-slate-800">
+                <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 group-hover:from-slate-600 group-hover:to-slate-800 rounded-xl flex items-center justify-center transition-all duration-300 shadow-inner">
+                  <Plus size={24} className="group-hover:text-white transition-colors duration-300" />
+                </div>
+                <span className="text-xl font-semibold">Add New Address</span>
               </div>
-              <span className="text-xl font-semibold">Add New Address</span>
-            </div>
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-slate-400 via-slate-600 to-slate-800 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-t-3xl"></div>
-          </button>
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-slate-400 via-slate-600 to-slate-800 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-t-3xl"></div>
+            </button>
+          )
         )}
 
-        <div className="flex justify-end mt-12">
-          <button
-            onClick={handleSaveToDB}
-            disabled={loading}
-            className="px-10 py-4 bg-gradient-to-r from-green-600 to-emerald-700 text-white rounded-xl hover:from-green-700 hover:to-emerald-800 disabled:from-green-400 disabled:to-emerald-500 font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-3 text-lg"
-          >
-            {loading ? (
-              <>
-                <Loader2 size={20} className="animate-spin" />
-                Saving Changes...
-              </>
-            ) : (
-              'Save All Changes'
-            )}
-          </button>
-        </div>
+        {addresses.length > 0 && (
+          <div className="flex justify-end mt-12">
+            <button
+              onClick={handleSaveToDB}
+              disabled={loading}
+              className="px-10 py-4 bg-gradient-to-r from-green-600 to-emerald-700 text-white rounded-xl hover:from-green-700 hover:to-emerald-800 disabled:from-green-400 disabled:to-emerald-500 font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-3 text-lg"
+            >
+              {loading ? (
+                <>
+                  <Loader2 size={20} className="animate-spin" />
+                  Saving Changes...
+                </>
+              ) : (
+                'Save All Changes'
+              )}
+            </button>
+          </div>
+        )}
       </div>
 
      

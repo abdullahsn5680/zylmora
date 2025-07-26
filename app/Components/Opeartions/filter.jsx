@@ -143,8 +143,8 @@ const hasActiveFilters = useMemo(() => {
 
 
   return (
-    <div className="w-full p-4 flex gap-4  sm:flex-row sm:items-start sm:justify-start">
-      <div className="flex items-center gap-2 font-[700] justify-center text-gray-700 text-md h-12 sm:h-[35px]">
+    <div className="w-full p-4 flex gap-4 sm:flex-row sm:items-start sm:justify-start">
+      <div className="md:flex hidden md:flex-row flex-col items-center gap-2 font-[700] justify-center text-gray-700 text-md h-12 sm:h-[35px]">
         <Funnel className="w-6 h-6" />
         <span>Refined By</span>
       </div>
@@ -241,11 +241,14 @@ const hasActiveFilters = useMemo(() => {
           </div>
         )}
       </div>
-      <div className="">
+      
+
+      <div className=" lg:hidden flex  flex-col gap-4 w-full h-screen">
+     <div className="">
             {hasActiveFilters && (
         <button
           onClick={clearAllFilters}
-          className="border border-red-300 px-4 py-2 rounded-md flex justify-between text-white  items-center gap-2 bg-red-600 font-bold w-60"
+          className="border border-red-300 px-4 py-2 rounded-md flex justify-between text-white w-full  items-center gap-2 bg-red-600 font-bold md:w-60"
         >
          
           Clear Filters
@@ -253,19 +256,6 @@ const hasActiveFilters = useMemo(() => {
         </button>
       )}
       </div>
-
-      <div className=" lg:hidden flex  flex-col gap-4 w-full">
-        
-        {hasActiveFilters && (
-          <button
-            onClick={clearAllFilters}
-            className="flex items-center justify-center gap-2 px-4 py-2 text-sm text-red-600 border border-red-300 rounded-md hover:bg-red-50 transition-colors w-full"
-          >
-            <X size={16} />
-            Clear All Filters
-          </button>
-        )}
-
         <div className="border border-gray-300 rounded-lg p-4 w-full">
           <span className="block mb-2 text-lg font-medium text-gray-800">Price</span>
           <div className="flex items-center gap-2 mb-4">

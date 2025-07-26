@@ -319,7 +319,7 @@ function SlideBar() {
             </div>
 
           
-            <div className="flex-1 overflow-y-auto p-4">
+            <div className="flex overflow-y-auto p-4">
               <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-slate-200/50 shadow-sm">
                 <Filter />
               </div>

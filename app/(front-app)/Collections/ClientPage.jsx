@@ -133,67 +133,85 @@ if(isSlide == 'false'){setIsSlide(route);}
   if (loading) return <Loader />;
 
   return (
-    <div className="px-3 w-full mx-auto   flex flex-col">
-   <div className="filters w-full hidden  lg:flex items-center justify-between bg-white/80 backdrop-blur-lg rounded-2xl border border-slate-200/50 shadow-lg p-6 mb-6 hover:shadow-xl transition-all duration-300">
-        <div className="flex-1 mr-6">
-          <Filter />
-        </div>
-        <div className="flex-shrink-0">
-          <SortBy />
-        </div>
-      </div>
- 
-      <div className="separator w-full h-px bg-gradient-to-r from-transparent via-slate-400 to-transparent mb-8 hidden lg:flex relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-300/50 to-transparent blur-sm"></div>
-      </div>
+    <div className="px-3 w-full mx-auto flex flex-col bg-slate-50 min-h-screen">
 
-      <div className="operations lg:hidden mt-5 flex  z-1 justify-between items-center py-4 px-5 bg-white/90 backdrop-blur-lg rounded-2xl border border-slate-200/50 shadow-lg mb-6 hover:shadow-xl transition-all duration-300">
-        <button
-          onClick={() => performanFilter('filter')}
-          className="flex items-center gap-2 text-slate-700 font-bold hover:text-slate-900 transition-all duration-300 group"
-        >
-          <div className="p-2 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all duration-300 group-hover:scale-105 group-active:scale-95">
-            <Funnel className="w-5 h-5 transition-transform duration-300 group-hover:rotate-3" />
-          </div>
-          <span className="hidden sm:inline transition-all duration-300 group-hover:translate-x-1">Filter</span>
-        </button>
-        
-        <div className="flex items-center gap-4">
-          <Align Funtion={[grid, setGrid]} />
-          <div className="w-px h-6 bg-slate-300"></div>
-          
-          <SortBy />
-        </div>
-      </div>
-
-      <div
-        className={`items w-full grid  mt-5  justify-center items-center gap-2  ${grid} lg:grid-cols-4 xl:grid-cols-4`}
-      >
-        {!selectedCategory || !selectedSubCategory ? (
-          <p className="col-span-full text-center text-gray-500">
-            Please select both category and subcategory.
-          </p>
-        ) : products.length === 0 ? (
-          <p className="col-span-full text-center text-gray-500">
-            No products found for this category/subcategory.
-          </p>
-        ) : (
-          products.map((data) => <Card key={data._id} prop={data} />)
-        )}
-      </div>
-
-
-      {pagination.totalFilteredProducts > 0 && (
-        <div className="w-full justify-center items-center mt-10">
-          <Nextpage
-            currentPage={pagination.currentPage}
-            totalPages={pagination.totalPages}
-            from={pagination.fromProduct}
-            to={pagination.toProduct}
-            total={pagination.totalFilteredProducts}
-          />
-        </div>
-      )}
+  <div className="filters w-full hidden mt-10 lg:flex items-center justify-between bg-white/90 backdrop-blur-xl rounded-2xl border border-slate-200/60 shadow-lg hover:shadow-2xl p-6 mb-8 transition-all duration-500 hover:-translate-y-1">
+    <div className="flex-1 mr-6">
+      <Filter />
     </div>
+    <div className="flex-shrink-0">
+      <SortBy />
+    </div>
+  </div>
+
+  
+  <div className="separator w-full h-px bg-gradient-to-r from-transparent via-slate-400/60 to-transparent mb-8 hidden lg:flex relative">
+    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-300/30 to-transparent blur-sm"></div>
+    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-slate-400 rounded-full opacity-60"></div>
+  </div>
+
+  
+  <div className="operations lg:hidden mt-5 flex z-10 justify-between items-center py-4 px-5 bg-white/95 backdrop-blur-xl rounded-2xl border border-slate-200/60 shadow-lg hover:shadow-2xl mb-8 transition-all duration-500 hover:-translate-y-1">
+    <button
+      onClick={() => performanFilter('filter')}
+      className="flex items-center gap-3 text-slate-700 font-semibold hover:text-slate-900 transition-all duration-300 group"
+    >
+      <div className="p-2.5 bg-slate-100 hover:bg-slate-800 hover:text-white rounded-xl transition-all duration-300 group-hover:scale-105 group-active:scale-95 shadow-sm">
+        <Funnel className="w-5 h-5 transition-transform duration-300 group-hover:rotate-3" />
+      </div>
+      <span className="hidden sm:inline transition-all duration-300 group-hover:translate-x-1 text-sm font-medium">Filter</span>
+    </button>
+    
+    <div className="flex items-center gap-4">
+      <Align Funtion={[grid, setGrid]} />
+      <div className="w-px h-6 bg-slate-300/60"></div>
+      <SortBy />
+    </div>
+  </div>
+
+  
+  <div className={`items w-full grid mt-5 justify-center gap-4 sm:gap-6 ${grid} lg:grid-cols-4 xl:grid-cols-4 transition-all duration-300`}>
+    {!selectedCategory || !selectedSubCategory ? (
+      <div className="col-span-full flex flex-col justify-center items-center h-96 bg-white rounded-2xl shadow-lg border border-slate-200/50 transition-all duration-300 hover:shadow-xl">
+        <div className="text-6xl mb-4 opacity-60">🏬</div>
+        <h3 className="text-xl font-semibold text-slate-800 mb-2">Selection Required</h3>
+        <p className="text-slate-500 text-center max-w-md">
+          Please select both category and subcategory to view products.
+        </p>
+      </div>
+    ) : products.length === 0 ? (
+      <div className="col-span-full flex flex-col justify-center items-center h-96 bg-white rounded-2xl shadow-lg border border-slate-200/50 transition-all duration-300 hover:shadow-xl">
+        <div className="text-6xl mb-4 opacity-60">🚫</div>
+        <h3 className="text-xl font-semibold text-slate-800 mb-2">No Collection Found</h3>
+        <p className="text-slate-500 text-center max-w-md">
+          No products found for this category/subcategory combination.
+        </p>
+        <div className="mt-4 px-4 py-2 bg-slate-100 text-slate-600 rounded-full text-sm">
+          Try adjusting your filters
+        </div>
+      </div>
+    ) : (
+      products.map((data) => (
+        <div key={data._id} className="group">
+          <Card prop={data} />
+        </div>
+      ))
+    )}
+  </div>
+
+  {pagination.totalFilteredProducts > 0 && (
+    <div className="w-full flex justify-center items-center mt-12 mb-8">
+      <div className="bg-white rounded-2xl shadow-lg border border-slate-200/50 p-6 hover:shadow-xl transition-all duration-300">
+        <Nextpage
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          from={pagination.fromProduct}
+          to={pagination.toProduct}
+          total={pagination.totalFilteredProducts}
+        />
+      </div>
+    </div>
+  )}
+</div>
   );
 }
