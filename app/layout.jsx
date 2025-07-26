@@ -5,7 +5,6 @@ import NavbarM from './Components/UI/MObile/NavbarM';
 import SlideBar from './Components/UI/MObile/SlideBar';
 import AuthSessionProvider from './Provider/Auth/AuthSessionProvider';
 import ContextProvider from './Context/contextProvider';
-import LoaderProvider from './Provider/loader/loaderProvider';
 export const metadata = {
   title: 'Zylmora – Cozy, Stylish, and Everyday Wear for All',
   description: 'Build your nest of comfort and fashion.',
@@ -31,13 +30,11 @@ export default function RootLayout({ children }) {
             <div className="hidden lg:flex fixed top-0 left-0 right-0 z-10">
               <Navbar />
             </div>
-           
-            <div className="absolute top-[14vh] pb-36 bottom-8 h-fit bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50
-              w-full">
-          
-              {children}
-          
-            </div>
+    <main className="pt-[14vh] min-h-[calc(100vh-14vh-4rem)] pb-16 bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50 w-full">
+  {children}
+</main>
+
+
           <div className="fixed bottom-18 z-50 right-3">
   <a 
     href="https://wa.me/923243040120?text=Hello%20I%20am%20interested%20in%20Zylmora%20products" 

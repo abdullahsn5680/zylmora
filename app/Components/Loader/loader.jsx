@@ -2,8 +2,8 @@ import React from 'react';
 
 function Loader() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 w-screen h-screen flex items-center justify-center">
-      <div className="text-center bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-16 border border-white/20 max-w-md">
+    <div className="min-h-screen  border-0 border-transparent w-screen h-screen flex items-center justify-center">
+      <div className="text-center rounded-3xl p-16 max-w-md">
       
         <div className="relative mb-8 flex justify-center">
           <div className="animate-spin rounded-full h-20 w-20 border-4 border-gray-200 border-t-indigo-600"></div>

@@ -123,7 +123,7 @@ const menuOptions = [
 
   return (
 <div className="min-h-screen bg-gradient-to-br pb-20 from-slate-50 via-gray-50 to-stone-50 px-4 py-10">
-  {/* Header */}
+ 
   <div className="max-w-3xl mx-auto text-center mb-8">
     <div className="inline-flex items-center gap-3 mb-4">
       <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-700 rounded-full flex items-center justify-center shadow-md">
@@ -138,7 +138,6 @@ const menuOptions = [
     </p>
   </div>
 
-  {/* Option List */}
   <div className="max-w-2xl mx-auto space-y-4">
     {menuOptions.map((option, index) => (
       <div

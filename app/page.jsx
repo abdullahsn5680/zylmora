@@ -39,15 +39,15 @@ export default function HomeClient() {
   if (loading) return <Loader />;
 
   return (
-    <div className="md:px-[50px]  w-full overflow-x-hidden">
-      <div className="banner w-full">
-        <Banner url={content?.banner_Url} />
-      </div>
-      <div className="conatiners w-full">
-        {content?.Items?.map((data) => (
-          <CardContainer key={data.id} prop={data} />
-        ))}
-      </div>
-    </div>
+<div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50 w-full overflow-x-hidden">
+  <div className="banner w-full">
+    <Banner url={content?.banner_Url} />
+  </div>
+  <div className="containers w-full px-4 md:px-[50px] py-8">
+    {content?.Items?.map((data) => (
+      <CardContainer key={data.id} prop={data} />
+    ))}
+  </div>
+</div>
   );
 }
