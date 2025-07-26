@@ -15,9 +15,25 @@ function AddCart({prop}) {
   }
   
   return (
-    <div className='w-full'>
-      <button onClick={()=>performAction(prop._id)} type="button" className="text-gray-900 hover:text-white  border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-extrabold border-2 rounded-lg text-sm py-1 px-2 md:px-5 md:py-2.5 text-center w-full ">Quick Add</button>
-    </div>
+ <div className='w-full'>
+  <button 
+    onClick={() => performAction(prop._id)} 
+    type="button" 
+    className="group relative w-full bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-900 text-white font-bold text-sm md:text-base px-4 py-3 md:px-6 md:py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 ease-out hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-slate-300/50 active:scale-95 overflow-hidden"
+  >
+    <span className="relative z-10 flex items-center justify-center gap-2">
+      <span className="transition-all duration-300 group-hover:scale-105">
+        Quick Add
+      </span>
+      <span className="text-lg group-hover:translate-x-1 transition-transform duration-300">
+        ⚡
+      </span>
+    </span>
+    
+    {/* Animated shine effect */}
+    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"></div>
+  </button>
+</div>
   )
 }
 
