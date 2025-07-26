@@ -11,8 +11,6 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-
-
   return (
     <html lang="en">
    
@@ -25,12 +23,12 @@ export default function RootLayout({ children }) {
             <div className="hidden lg:flex fixed top-0 left-0 right-0 z-10">
               <Navbar />
             </div>
-    <main className="pt-[14vh] min-h-[calc(100vh-14vh-4rem)] pb-16 bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50 w-full">
+    <main className="pt-[14vh] min-h-[calc(100vh-14vh-4rem)] pb-32 bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50 w-full">
   {children}
 </main>
 
 
-          <div className="fixed bottom-18 z-50 right-3">
+          <div className="fixed bottom-22 z-50 right-3">
   <a 
     href="https://wa.me/923243040120?text=Hello%20I%20am%20interested%20in%20Zylmora%20products" 
     target="_blank" 

@@ -133,27 +133,41 @@ if(isSlide == 'false'){setIsSlide(route);}
   if (loading) return <Loader />;
 
   return (
-    <div className="px-3 w-full mx-auto  flex flex-col">
+    <div className="px-3 w-full mx-auto   flex flex-col">
+   <div className="filters w-full hidden  lg:flex items-center justify-between bg-white/80 backdrop-blur-lg rounded-2xl border border-slate-200/50 shadow-lg p-6 mb-6 hover:shadow-xl transition-all duration-300">
+        <div className="flex-1 mr-6">
+          <Filter />
+        </div>
+        <div className="flex-shrink-0">
+          <SortBy />
+        </div>
+      </div>
  
-      <div className="filters w-full hidden lg:flex items-center justify-between">
-        <Filter />
-        <SortBy />
+      <div className="separator w-full h-px bg-gradient-to-r from-transparent via-slate-400 to-transparent mb-8 hidden lg:flex relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-300/50 to-transparent blur-sm"></div>
       </div>
 
-      <div className="seprator w-full h-[1px] bg-slate-300 mt-5 hidden lg:flex"></div>
-
-     
-      <div className="oprations lg:hidden flex justify-between items-center py-3">
-        <div className="flex gap-1 text-slate-700 font-bold">
-          <Funnel onClick={()=>{performanFilter('filter')}} className="w-6 h-6" />
-          Filter
+      <div className="operations lg:hidden mt-5 flex  z-1 justify-between items-center py-4 px-5 bg-white/90 backdrop-blur-lg rounded-2xl border border-slate-200/50 shadow-lg mb-6 hover:shadow-xl transition-all duration-300">
+        <button
+          onClick={() => performanFilter('filter')}
+          className="flex items-center gap-2 text-slate-700 font-bold hover:text-slate-900 transition-all duration-300 group"
+        >
+          <div className="p-2 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all duration-300 group-hover:scale-105 group-active:scale-95">
+            <Funnel className="w-5 h-5 transition-transform duration-300 group-hover:rotate-3" />
+          </div>
+          <span className="hidden sm:inline transition-all duration-300 group-hover:translate-x-1">Filter</span>
+        </button>
+        
+        <div className="flex items-center gap-4">
+          <Align Funtion={[grid, setGrid]} />
+          <div className="w-px h-6 bg-slate-300"></div>
+          
+          <SortBy />
         </div>
-        <Align Funtion={[grid, setGrid]} />
-        <SortBy />
       </div>
 
       <div
-        className={`items w-full grid  mt-5  justify-center items-center gap-3  ${grid} lg:grid-cols-4 xl:grid-cols-4`}
+        className={`items w-full grid  mt-5  justify-center items-center gap-2  ${grid} lg:grid-cols-4 xl:grid-cols-4`}
       >
         {!selectedCategory || !selectedSubCategory ? (
           <p className="col-span-full text-center text-gray-500">

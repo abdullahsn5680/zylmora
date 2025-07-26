@@ -24,7 +24,7 @@ function CardContainer({prop}) {
         </div>
       </div>
       
-      <div className="items w-full grid mx-auto lg:grid-cols-4 md:grid-cols-3 grid-cols-2 justify-center items-center gap-4 md:gap-6">
+      <div className="items w-full grid mx-auto gap-2 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 justify-center items-center  md:gap-6">
         {prop.products.map((data) => (
           <Card key={data._id} prop={data}/>
         ))}

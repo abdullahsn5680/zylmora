@@ -1,4 +1,3 @@
-
 export const config = {
   runtime: 'nodejs',
 };
@@ -54,23 +53,41 @@ export async function POST(req) {
       }, { status: 400 });
     }
 
-    const imageUploads = await Promise.all(
-      (images || []).slice(0, 4).map((base64) => uploadToCloudinary(base64, "Products_Img"))
-    );
+    const imageUploads = [];
+    const imagesToProcess = images || [];
+    const maxImages = imagesToProcess.length > 4 ? 4 : imagesToProcess.length;
+    
+    for (let i = 0; i < maxImages; i++) {
+      const uploadResult = await uploadToCloudinary(imagesToProcess[i], "Products_Img");
+      imageUploads.push(uploadResult);
+    }
 
-    const imageUrls = imageUploads.map((item) => item?.url).filter(Boolean);
-    const imagePublicIds = imageUploads.map((item) => item?.public_id).filter(Boolean);
-    const name = `${category}-${subcategory}`
-    const isExists = await Catagories.findOne({name:name})
-    if(!isExists){
+    
+    const imageUrls = [];
+    const imagePublicIds = [];
+    
+    for (let i = 0; i < imageUploads.length; i++) {
+      if (imageUploads[i] && imageUploads[i].url) {
+        imageUrls.push(imageUploads[i].url);
+      }
+      if (imageUploads[i] && imageUploads[i].public_id) {
+        imagePublicIds.push(imageUploads[i].public_id);
+      }
+    }
+
+    const name = `${category}-${subcategory}`;
+    const isExists = await Catagories.findOne({name: name});
+    
+    if (!isExists) {
       const newCat = new Catagories({
-        name:name,
-        image:mainImageUpload.url,
-        cat:category,
-        subCat:subcategory,
-      })
+        name: name,
+        image: mainImageUpload.url,
+        cat: category,
+        subCat: subcategory,
+      });
       await newCat.save();
     }
+    
     const newProduct = await Product.create({
       Vendor,
       discount,
@@ -99,23 +116,84 @@ export async function PUT(req) {
     await dbConnect();
     const body = await req.json();
     const { _id, ...rest } = body;
-
-   
     const currentProduct = await Product.findById(_id);
     if (!currentProduct) {
       return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
     }
+    const {
+      title,
+      price,
+      cut_price,
+      Vendor,
+      discount,
+      category,
+      subcategory,
+      sizes,
+      main_image,
+      images,
+      description,
+    } = rest;
+    
+    const mainImageUpload = await uploadToCloudinary(main_image, "Products_Img");
+    if (!mainImageUpload) {
+      return NextResponse.json({ error: "Main image upload failed" }, { status: 500 });
+    }
 
-    const updatedProduct = await Product.findByIdAndUpdate(_id, rest, { new: true });
+    const imageUploads = [];
+    const imagesToProcess = images || [];
+    const maxImages = imagesToProcess.length > 4 ? 4 : imagesToProcess.length;
+    
+    for (let i = 0; i < maxImages; i++) {
+      const uploadResult = await uploadToCloudinary(imagesToProcess[i], "Products_Img");
+      imageUploads.push(uploadResult);
+    }
 
+   
+    const imageUrls = [];
+    const imagePublicIds = [];
+    
+    for (let i = 0; i < imageUploads.length; i++) {
+      if (imageUploads[i] && imageUploads[i].url) {
+        imageUrls.push(imageUploads[i].url);
+      }
+      if (imageUploads[i] && imageUploads[i].public_id) {
+        imagePublicIds.push(imageUploads[i].public_id);
+      }
+    }
+
+    if (currentProduct.main_image_public_id) {
+      await cloudinary.uploader.destroy(currentProduct.main_image_public_id);
+    }
+
+    if (currentProduct.images_public_ids && currentProduct.images_public_ids.length > 0) {
+      for (let i = 0; i < currentProduct.images_public_ids.length; i++) {
+        await cloudinary.uploader.destroy(currentProduct.images_public_ids[i]);
+      }
+    }
+    
   
+    const updatedProduct = await Product.findByIdAndUpdate(_id, {
+      Vendor,
+      discount,
+      title,
+      price,
+      cut_price,
+      category,
+      subcategory,
+      sizes,
+      description,
+      main_image: mainImageUpload.url,
+      main_image_public_id: mainImageUpload.public_id,
+      images: imageUrls,
+      images_public_ids: imagePublicIds,
+    }, { new: true });
+
     const categoryChanged = currentProduct.category !== updatedProduct.category || 
                            currentProduct.subcategory !== updatedProduct.subcategory;
 
     if (categoryChanged) {
-    
       const newCategoryName = `${updatedProduct.category}-${updatedProduct.subcategory}`;
-    
+      
       const newCategoryExists = await Catagories.findOne({name: newCategoryName});
       if (!newCategoryExists) {
         const newCategory = new Catagories({
@@ -126,7 +204,6 @@ export async function PUT(req) {
         });
         await newCategory.save();
       } else {
-       
         await Catagories.findOneAndUpdate(
           {name: newCategoryName},
           {image: updatedProduct.main_image}
@@ -143,7 +220,6 @@ export async function PUT(req) {
         await Catagories.findOneAndDelete({name: oldCategoryName});
       }
     } else {
-     
       const categoryName = `${updatedProduct.category}-${updatedProduct.subcategory}`;
       await Catagories.findOneAndUpdate(
         {name: categoryName},
@@ -179,7 +255,7 @@ export async function DELETE(req) {
       await cloudinary.uploader.destroy(product.main_image_public_id);
     }
 
-    if (product.images_public_ids?.length > 0) {
+    if (product.images_public_ids && product.images_public_ids.length > 0) {
       for (let i = 0; i < product.images_public_ids.length; i++) {
         await cloudinary.uploader.destroy(product.images_public_ids[i]);
       }

@@ -43,15 +43,25 @@ if(isSlide == 'false'){setIsSlide('search');}else{
   };
 
   return (
-    <div className='text-white bg-black w-full'>
-      <ul className='flex w-full justify-around items-center h-[9vh]'>
-        <li className='cursor-pointer hover:text-gray-500' onClick={slide}><AlignJustify /></li>
-        <li className='cursor-pointer hover:text-gray-500' onClick={performanSearch}><SearchCheck /></li>
-        <li className="brandName text-center text-[25px]" onClick={()=>router.push('/')}>✦ZYLMORA✦</li>
-        <li className='cursor-pointer hover:text-gray-500' onClick={()=>router.push('/Profile')}><User2 /></li>
-        <li className='cursor-pointer hover:text-gray-500' onClick={()=>router.push('/Profile/Cart')}><ShoppingBag /></li>
+    <div className='bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 w-full shadow-2xl border-b border-slate-700'>
+      <ul className='flex w-full justify-around items-center h-[9vh] px-2'>
+        <li className='cursor-pointer hover:text-slate-300 transition-all duration-300 hover:scale-110 p-3 rounded-xl hover:bg-slate-700 hover:shadow-lg' onClick={slide}>
+          <AlignJustify className="w-5 h-5 text-slate-100" />
+        </li>
+        <li className='cursor-pointer hover:text-slate-300 transition-all duration-300 hover:scale-110 p-3 rounded-xl hover:bg-slate-700 hover:shadow-lg' onClick={performanSearch}>
+          <SearchCheck className="w-5 h-5 text-slate-100" />
+        </li>
+        <li className="brandName text-center text-2xl font-bold bg-gradient-to-r from-white via-slate-200 to-white bg-clip-text text-transparent hover:scale-105 transition-all duration-300 cursor-pointer px-4 py-2 rounded-lg" onClick={()=>router.push('/')}>
+          ✦ZYLMORA✦
+        </li>
+        <li className='cursor-pointer hover:text-slate-300 transition-all duration-300 hover:scale-110 p-3 rounded-xl hover:bg-slate-700 hover:shadow-lg' onClick={()=>router.push('/Profile')}>
+          <User2 className="w-5 h-5 text-slate-100" />
+        </li>
+        <li className='cursor-pointer hover:text-slate-300 transition-all duration-300 hover:scale-110 p-3 rounded-xl hover:bg-slate-700 hover:shadow-lg' onClick={()=>router.push('/Profile/Cart')}>
+          <ShoppingBag className="w-5 h-5 text-slate-100" />
+        </li>
       </ul>
-       <div className="announcement w-full  "><Announcemnt/></div>
+       <div className="announcement w-full shadow-sm"><Announcemnt/></div>
     </div>
   );
 }

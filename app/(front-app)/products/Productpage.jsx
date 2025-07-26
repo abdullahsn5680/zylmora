@@ -271,364 +271,435 @@ setSucess(true)
   
   if (showOrderForm) {
     return (
-      <div className="min-h-screen bg-gray-50 pb-20">
-      
-        <div className="lg:hidden bg-white shadow-sm p-4 flex items-center gap-3">
-          <button onClick={() => setShowOrderForm(false)} className="p-2 hover:bg-gray-100 rounded-lg">
-            <ArrowLeft size={20} />
-          </button>
-          <h1 className="text-lg font-semibold">Complete Order</h1>
-        </div>
-
-        <div className="lg:flex lg:min-h-screen">
-        
-          <div className="lg:w-1/2 bg-white lg:overflow-y-auto">
-            <div className="p-6 lg:p-8">
-            
-              <div className="hidden lg:flex items-center gap-3 mb-6">
-                <button onClick={() => setShowOrderForm(false)} className="p-2 hover:bg-gray-100 rounded-lg">
-                  <ArrowLeft size={20} />
-                </button>
-                <h1 className="text-2xl font-bold">Complete Your Order</h1>
-              </div>
-
-            
-              <div className="lg:hidden mb-6 p-4 bg-gray-50 rounded-lg">
-                <div className="flex gap-4">
-                  <div className="w-16 h-16 relative">
-                    <Image
-                      src={product.main_image || '/placeholder.png'}
-                      alt={product.title}
-                      fill
-                      className="object-cover rounded-lg"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-sm">{product.title}</h3>
-                    <p className="text-xs text-gray-600">Size: {Size.size}</p>
-                    <p className="text-xs text-gray-600">Quantity: {Counter}</p>
-                    <p className="text-sm font-semibold text-red-600">
-                      Rs {(product.cut_price * Counter).toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-           
-              <div className="mb-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <User size={20} className="text-gray-600" />
-                  <h2 className="text-lg font-semibold">Contact Information</h2>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name *
-                    </label>
-                    <input
-                      type="text"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Enter first name"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name *
-                    </label>
-                    <input
-                      type="text"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Enter last name"
-                      required
-                    />
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email *
-                    </label>
-                    <div className="relative">
-                      <Mail size={18} className="absolute left-3 top-3.5 text-gray-400" />
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="Enter email address"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone *
-                    </label>
-                    <div className="relative">
-                      <Phone size={18} className="absolute left-3 top-3.5 text-gray-400" />
-                      <input
-                        type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="Enter phone number"
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <MapPin size={20} className="text-gray-600" />
-                  <h2 className="text-lg font-semibold">Delivery Address</h2>
-                </div>
-
-              
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Select Address *
-                  </label>
-                  {user?.address && user.address.length > 0 ? (
-                    <select
-                      value={selectedAddress}
-                      onChange={(e) => {setSelectedAddress(e.target.value);setUpdate(0)}}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      required
-                    >
-                      <option value="">Select an address</option>
-                      {user.address.map((addr, index) => (
-                        <option key={index} value={addr}>
-                          {addr.length > 60 ? `${addr.substring(0, 60)}...` : addr}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                      <p className="text-sm text-yellow-800 mb-2">No addresses found</p>
-                      <button
-                        onClick={() => router.push('/Profile/Address')}
-                        className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 text-sm"
-                      >
-                        Add Address
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                 {selectedAddress && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Street Address
-                      </label>
-                      <input
-                        type="text"
-                        value={streetAddress}
-                        onChange={(e)=>{setStreetAddress(e.target.value); setUpdate(update+1);}}
-                        className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50"
-                       
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        City
-                      </label>
-                      <input
-                        type="text"
-                        value={city}
-                        onChange={(e)=>{setCity(e.target.value); setUpdate(update+1);}}
-                        className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50"
-                       
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        District
-                      </label>
-                      <input
-                        type="text"
-                        value={district}
-                          onChange={(e)=>{setDistrict(e.target.value); setUpdate(update+1);}}
-                        className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50"
-                       
-                      />
-                    </div>
-                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Province
-                      </label>
-                      <input
-                        type="text"
-                        value={province}
-                          onChange={(e)=>{setProvince(e.target.value); setUpdate(update+1);}}
-                        className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50"
-                        
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Postal Code
-                      </label>
-                      <input
-                        type="text"
-                        value={postalCode}
-                          onChange={(e)=>{setPostalCode(e.target.value); setUpdate(update+1);}}
-                        className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50"
-                   
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Country
-                      </label>
-                      <input
-                        type="text"
-                        value={country}
-                          onChange={(e)=>{setCountry(e.target.value); setUpdate(update+1);}}
-                        className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50"
-                        
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-
-             
-              <div className="mb-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <CreditCard size={20} className="text-gray-600" />
-                  <h2 className="text-lg font-semibold">Payment Method</h2>
-                </div>
-                
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="cod"
-                      checked={paymentMethod === 'cod'}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="mr-3"
-                    />
-                    <div className="flex-1">
-                      <p className="font-medium">Cash on Delivery (COD)</p>
-                      <p className="text-sm text-gray-600">Pay when you receive your order</p>
-                    </div>
-                  </label>
-                  
-                  <label className="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 opacity-50">
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="card"
-                      disabled
-                      className="mr-3"
-                    />
-                    <div className="flex-1">
-                      <p className="font-medium">Credit/Debit Card</p>
-                      <p className="text-sm text-gray-600">Coming soon</p>
-                    </div>
-                  </label>
-                </div>
-              </div>
-
-           
-              <div className="lg:hidden">
-                <button
-                  onClick={handleSubmitOrder}
-                  className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                >
-                  Complete Order - Rs {calculateTotal().toLocaleString()}
-                </button>
-              </div>
-            </div>
-          </div>
-
+    <div className="min-h-screen w-screen bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50">
+    
+     <div className="bg-white/90 backdrop-blur-sm shadow-sm border-b border-gray-100">
+       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-6">
+         <div className="flex items-center justify-between">
+           <div className="flex items-center gap-4">
+             <div className="w-12 h-12 bg-gradient-to-br from-slate-600 to-slate-800 rounded-xl flex items-center justify-center shadow-lg">
+               <span className="text-2xl">🛒</span>
+             </div>
+             <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">Checkout</h1>
+           </div>
+           <div className="w-20"></div>
+         </div>
+       </div>
+     </div>
+   
+     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-8">
+       <div className="grid lg:grid-cols-2 gap-8">
        
-          <div className="hidden lg:block lg:w-1/2 bg-gray-50 border-l border-gray-200">
-            <div className="p-8 sticky top-0">
-              <div className="flex items-center gap-2 mb-6">
-                <Package size={20} className="text-gray-600" />
-                <h2 className="text-lg font-semibold">Order Summary</h2>
-              </div>
-
-            
-              <div className="bg-white rounded-lg p-6 mb-6">
-                <div className="flex gap-4 mb-4">
-                  <div className="w-20 h-20 relative">
-                    <Image
-                      src={product.main_image || '/placeholder.png'}
-                      alt={product.title}
-                      fill
-                      className="object-cover rounded-lg"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold mb-1">{product.title}</h3>
-                    <p className="text-sm text-gray-600 mb-1">Vendor: {product.Vendor}</p>
-                    <p className="text-sm text-gray-600">Size: {Size.size}</p>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center py-2 border-t">
-                  <span className="text-sm">Quantity:</span>
-                  <span className="font-medium">{Counter}</span>
-                </div>
-                <div className="flex justify-between items-center py-2">
-                  <span className="text-sm">Unit Price:</span>
-                  <span className="font-medium">Rs {product.cut_price?.toLocaleString()}</span>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-lg p-6 mb-6">
-                <div className="flex justify-between items-center py-2">
-                  <span>Subtotal:</span>
-                  <span>Rs {(product.cut_price * Counter).toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between items-center py-2">
-                  <span>Shipping:</span>
-                  <span>Rs 250</span>
-                </div>
-                <div className="border-t pt-2 mt-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold">Total:</span>
-                    <span className="text-lg font-bold text-blue-600">
-                      Rs {calculateTotal().toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <button
-                onClick={handleSubmitOrder}
-                className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-              >
-                Complete Order
-              </button>
-
-              <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-sm text-green-800">
-                  🔒 Your order is safe
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-            
-      </div>
-    );
-  }
-
-  
+         <div className="space-y-8">
+         
+           <div className="lg:hidden bg-white/90 backdrop-blur-sm shadow-lg rounded-2xl p-6 border border-gray-100">
+             <div className="flex items-center gap-3">
+               <button 
+                 onClick={() => setShowOrderForm(false)} 
+                 className="group p-2 hover:bg-slate-100 rounded-xl transition-all duration-300 hover:-translate-x-0.5"
+               >
+                 <ArrowLeft size={20} className="text-slate-600 group-hover:text-slate-800" />
+               </button>
+               <h1 className="text-xl font-bold text-slate-800">Complete Order</h1>
+             </div>
+           </div>
+   
+         
+           <div className="hidden lg:flex items-center gap-4 mb-8">
+             <button 
+               onClick={() =>  setShowOrderForm(false)} 
+               className="group p-3 hover:bg-white/90 backdrop-blur-sm border border-gray-200 hover:border-gray-300 rounded-xl transition-all duration-300 hover:-translate-x-0.5 shadow-sm hover:shadow-md"
+             >
+               <ArrowLeft size={20} className="text-slate-600 group-hover:text-slate-800" />
+             </button>
+             <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Complete Your Order</h1>
+           </div>
+   
+           <div className="bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl rounded-2xl p-8 border border-gray-100 transition-all duration-500">
+             <div className="flex items-center gap-3 mb-6">
+               <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                 <User size={20} className="text-white" />
+               </div>
+               <h2 className="text-xl font-bold text-slate-800">Contact Information</h2>
+             </div>
+             
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+               <div>
+                 <label className="block text-sm font-semibold text-slate-600 mb-2">
+                   First Name *
+                 </label>
+                 <input
+                   type="text"
+                   value={firstName}
+                   onChange={(e) => setFirstName(e.target.value)}
+                   className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-400 focus:border-transparent bg-slate-50 focus:bg-white hover:border-gray-300 transition-all duration-300"
+                   placeholder="Enter first name"
+                   required
+                 />
+               </div>
+               <div>
+                 <label className="block text-sm font-semibold text-slate-600 mb-2">
+                   Last Name *
+                 </label>
+                 <input
+                   type="text"
+                   value={lastName}
+                   onChange={(e) => setLastName(e.target.value)}
+                   className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-400 focus:border-transparent bg-slate-50 focus:bg-white hover:border-gray-300 transition-all duration-300"
+                   placeholder="Enter last name"
+                   required
+                 />
+               </div>
+             </div>
+             
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+               <div>
+                 <label className="block text-sm font-semibold text-slate-600 mb-2">
+                   Email *
+                 </label>
+                 <div className="relative">
+                   <Mail size={18} className="absolute left-4 top-4 text-slate-400" />
+                   <input
+                     type="email"
+                     value={email}
+                     onChange={(e) => setEmail(e.target.value)}
+                     className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-400 focus:border-transparent bg-slate-50 focus:bg-white hover:border-gray-300 transition-all duration-300"
+                     placeholder="Enter email address"
+                     required
+                   />
+                 </div>
+               </div>
+               <div>
+                 <label className="block text-sm font-semibold text-slate-600 mb-2">
+                   Phone *
+                 </label>
+                 <div className="relative">
+                   <Phone size={18} className="absolute left-4 top-4 text-slate-400" />
+                   <input
+                     type="tel"
+                     value={phone}
+                     onChange={(e) => setPhone(e.target.value)}
+                     className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-400 focus:border-transparent bg-slate-50 focus:bg-white hover:border-gray-300 transition-all duration-300"
+                     placeholder="Enter phone number"
+                     required
+                   />
+                 </div>
+               </div>
+             </div>
+           </div>
+   
+         
+           <div className="bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl rounded-2xl p-8 border border-gray-100 transition-all duration-500">
+             <div className="flex items-center gap-3 mb-6">
+               <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+                 <MapPin size={20} className="text-white" />
+               </div>
+               <h2 className="text-xl font-bold text-slate-800">Delivery Address</h2>
+             </div>
+   
+             <div className="mb-6">
+               <label className="block text-sm font-semibold text-slate-600 mb-2">
+                 Select Address *
+               </label>
+               {user?.address && user.address.length > 0 ? (
+                 <select
+                   value={selectedAddress}
+                   onChange={(e) => { setSelectedAddress(e.target.value); setUpdate(0) }}
+                   className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-slate-400 focus:border-transparent bg-slate-50 focus:bg-white hover:border-gray-300 transition-all duration-300"
+                   required
+                 >
+                   <option value="">Select an address</option>
+                   {user.address.map((addr, index) => (
+                     <option key={index} value={addr}>
+                       {addr.length > 60 ? `${addr.substring(0, 60)}...` : addr}
+                     </option>
+                   ))}
+                 </select>
+               ) : (
+                 <div className="p-6 bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-xl">
+                   <p className="text-sm text-amber-800 mb-3 font-medium">No addresses found</p>
+                   <button
+                     onClick={() => router.push('/Profile/Address')}
+                     className="px-6 py-3 bg-gradient-to-r from-amber-500 to-yellow-500 text-white rounded-xl hover:from-amber-600 hover:to-yellow-600 text-sm font-semibold transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+                   >
+                     Add Address
+                   </button>
+                 </div>
+               )}
+             </div>
+   
+             {selectedAddress && (
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6  rounded-xl ">
+                 <div>
+                   <label className="block text-sm font-semibold text-slate-600 mb-2">
+                     Street Address
+                   </label>
+                   <input
+                     type="text"
+                     value={streetAddress}
+                     onChange={(e) => { setStreetAddress(e.target.value); setUpdate(update + 1); }}
+                     className="w-full p-4 border border-gray-200 rounded-xl bg-white hover:border-gray-300 transition-all duration-300"
+                   />
+                 </div>
+                 <div>
+                   <label className="block text-sm font-semibold text-slate-600 mb-2">
+                     City
+                   </label>
+                   <input
+                     type="text"
+                     value={city}
+                     onChange={(e) => { setCity(e.target.value); setUpdate(update + 1); }}
+                     className="w-full p-4 border border-gray-200 rounded-xl bg-white hover:border-gray-300 transition-all duration-300"
+                   />
+                 </div>
+                 <div>
+                   <label className="block text-sm font-semibold text-slate-600 mb-2">
+                     District
+                   </label>
+                   <input
+                     type="text"
+                     value={district}
+                     onChange={(e) => { setDistrict(e.target.value); setUpdate(update + 1); }}
+                     className="w-full p-4 border border-gray-200 rounded-xl bg-white hover:border-gray-300 transition-all duration-300"
+                   />
+                 </div>
+                 <div className="md:col-span-2">
+                   <label className="block text-sm font-semibold text-slate-600 mb-2">
+                     Province
+                   </label>
+                   <input
+                     type="text"
+                     value={province}
+                     onChange={(e) => { setProvince(e.target.value); setUpdate(update + 1); }}
+                     className="w-full p-4 border border-gray-200 rounded-xl bg-white hover:border-gray-300 transition-all duration-300"
+                   />
+                 </div>
+                 <div>
+                   <label className="block text-sm font-semibold text-slate-600 mb-2">
+                     Postal Code
+                   </label>
+                   <input
+                     type="text"
+                     value={postalCode}
+                     onChange={(e) => { setPostalCode(e.target.value); setUpdate(update + 1); }}
+                     className="w-full p-4 border border-gray-200 rounded-xl bg-white hover:border-gray-300 transition-all duration-300"
+                   />
+                 </div>
+                 <div className="md:col-span-2">
+                   <label className="block text-sm font-semibold text-slate-600 mb-2">
+                     Country
+                   </label>
+                   <input
+                     type="text"
+                     value={country}
+                     onChange={(e) => { setCountry(e.target.value); setUpdate(update + 1); }}
+                     className="w-full p-4 border border-gray-200 rounded-xl bg-white hover:border-gray-300 transition-all duration-300"
+                   />
+                 </div>
+               </div>
+             )}
+           </div>
+   
+           <div className="bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl rounded-2xl p-8 border border-gray-100 transition-all duration-500">
+             <div className="flex items-center gap-3 mb-6">
+               <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                 </svg>
+               </div>
+               <h2 className="text-xl font-bold text-slate-800">Payment Method</h2>
+             </div>
+   
+             <div className="space-y-4">
+               <label className="group flex items-center p-6 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-slate-300 hover:bg-slate-50 transition-all duration-300 has-[:checked]:border-slate-400 has-[:checked]:bg-slate-50">
+                 <input
+                   type="radio"
+                   name="payment"
+                   value="cod"
+                   checked={paymentMethod === 'cod'}
+                   onChange={(e) => setPaymentMethod(e.target.value)}
+                   className="w-5 h-5 text-slate-600 mr-4"
+                 />
+                 <div className="flex-1">
+                   <p className="font-semibold  text-slate-800">Cash on Delivery (COD)</p>
+                   <p className="md:text-sm text-[10px]  text-slate-600 mt-1">Pay when you receive your order</p>
+                 </div>
+                 <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                   <span className="text-emerald-600 text-lg">💵</span>
+                 </div>
+               </label>
+               
+               <label className="flex items-center p-6 border-2 border-gray-200 rounded-xl cursor-not-allowed opacity-50 bg-gray-50">
+                 <input
+                   type="radio"
+                   name="payment"
+                   value="card"
+                   disabled
+                   className="w-5 h-5 mr-4"
+                 />
+                 <div className="flex-1">
+                   <p className="font-semibold text-gray-600">Credit/Debit Card</p>
+                   <p className="text-sm text-gray-500 mt-1">Coming soon</p>
+                 </div>
+                 <div className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center">
+                   <span className="text-gray-400 text-lg">💳</span>
+                 </div>
+               </label>
+             </div>
+           </div>
+         </div>
+   
+         
+         <div className="space-y-6">
+           <div className="bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl rounded-2xl p-8 border border-gray-100 sticky top-6 transition-all duration-500">
+             <div className="flex items-center gap-3 mb-6">
+               <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                 <span className="text-white text-lg">📋</span>
+               </div>
+               <h2 className="text-xl font-bold text-slate-800">Order Summary</h2>
+             </div>
+             
+             <div className="space-y-4 mb-8">
+              
+                 <div className="group  items-center p-4 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all duration-300 border border-gray-100">
+                   <div className="flex items-center  p-4 gap-4">
+                   <div className="w-16 h-16 bg-white rounded-xl overflow-hidden border-2 border-gray-100 shadow-sm">
+                     <img
+                       src={product.main_image}
+                       alt={product.title}
+                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                     />
+                   </div>
+                   <div className="flex-1 min-w-0">
+                     <h3 className="text-sm font-semibold text-slate-800 truncate">
+                       {product.title}
+                     </h3>
+                     <p className="text-xs text-slate-500 mt-1">
+                       {product.vendor} • Size: {Size.size}
+                     </p>
+                     <p className="text-xs text-slate-500">
+                       Qty: {Counter}
+                     </p>
+                   </div>
+                       <div className="text-right hidden 
+                   sm:block">
+                     <div className="text-sm  font-semibold text-slate-800">
+                       Rs. {(product.cut_price ).toLocaleString()}
+                     </div>
+                     {product.cut_price && (
+                       <div className="text-xs   text-slate-500 line-through">
+                         Rs. {(product.price ).toLocaleString()}
+                       </div>
+                     )}
+                   </div>
+                   </div>
+                   <div className="text-right flex justify-end items-center gap-2 sm:hidden">
+                     <div className="text-sm  font-semibold text-slate-800">
+                       Rs. {(product.price ).toLocaleString()}
+                     </div>
+                     {product.cut_price && (
+                       <div className="text-xs   text-slate-500 line-through">
+                         Rs. {(product.cut_price ).toLocaleString()}
+                       </div>
+                     )}
+                   </div>
+                 </div>
+          
+             </div>
+   
+             <div className="space-y-3 text-sm border-t border-gray-200 pt-6">
+               <div className="flex justify-between">
+                 <span className="text-slate-600">Subtotal</span>
+                 <span className="font-medium text-slate-800">Rs. {(product.cut_price * Counter).toLocaleString()}</span>
+               </div>
+               <div className="flex justify-between">
+                 <span className="text-slate-600">Shipping</span>
+                 <span className="text-emerald-600 font-medium">Free</span>
+               </div>
+               <div className="flex justify-between font-bold text-lg border-t border-gray-200 pt-3">
+                 <span className="text-slate-800">Total</span>
+                 <span className="text-slate-800">Rs. {calculateTotal().toLocaleString()}</span>
+               </div>
+             </div>
+   
+             <p className="text-xs text-slate-500 mt-4 mb-6 text-center">
+               Tax included and shipping calculated at checkout
+             </p>
+   
+             <button
+               onClick={handleSubmitOrder}
+               disabled={loading}
+               className="w-full bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-900 text-white py-4 rounded-xl font-bold text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+             >
+              {loading ? (
+                 <div className="flex items-center justify-center gap-2">
+                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                   PROCESSING...
+                 </div>
+               ) : (
+                 'PLACE ORDER'
+               )} 
+             </button>
+   
+             <div className="mt-6 pt-6 border-t border-gray-200">
+               <div className="flex items-center justify-center gap-2 text-xs text-slate-500">
+                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                 </svg>
+                 <span>Secure SSL Encrypted Payment</span>
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+   
+     {sucess == true && (
+       <div className="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center p-4 z-50">
+         <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl max-w-md w-full p-8 border border-gray-100">
+           <div className="text-center">
+             <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+               </svg>
+             </div>
+             <h3 className="text-xl font-bold text-slate-800 mb-2">Success!</h3>
+             <p className="text-slate-600 mb-6">Task performed successfully.</p>
+             <button
+               onClick={() => setShowOrderForm(false)}
+               className="px-8 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+             >
+               Go Back
+             </button>
+           </div>
+         </div>
+       </div>
+     )}
+   
+     {Alert == true && (
+       <div className="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center p-4 z-50">
+         <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl max-w-md w-full p-8 border border-gray-100">
+           <div className="text-center">
+             <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+               </svg>
+             </div>
+             <h3 className="text-xl font-bold text-slate-800 mb-2">Error</h3>
+             <p className="text-slate-600 mb-6">Something went wrong.</p>
+             <button
+               onClick={() => setAlert(false)}
+               className="px-8 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+             >
+               Ok
+             </button>
+           </div>
+         </div>
+       </div>
+     )}
+   </div>
+     );
+   }
   return (
  <div className='mt-12 pb-15  max-w-7xl mx-auto'>
       
@@ -641,7 +712,7 @@ setSucess(true)
     
       <div className="main flex flex-col lg:flex-row justify-between gap-8 lg:gap-16 px-6 mb-16">
     
-        <div className="relative w-full lg:w-1/2">
+        <div className="relative w-full lg:w-[40vw]">
           <div className="aspect-square rounded-2xl overflow-hidden bg-gray-50 shadow-lg border border-gray-100">
             <Image
               width={800}
@@ -655,15 +726,14 @@ setSucess(true)
 
       
         <div className="info w-full lg:w-1/2 flex flex-col justify-start">
-        
-          <div className="mb-6">
-            <h1 className="text-4xl lg:text-5xl font-light text-gray-900 leading-tight tracking-tight mb-2">
-              {product?.title || 'Product Title'}
-            </h1>
-            <div className="w-16 h-0.5 bg-gray-900"></div>
-          </div>
+       
 
-          
+            <div className="text-center mb-16">
+          <h2 className="text-4xl font-extralight text-gray-900 mb-6 tracking-wider">
+          {product?.title || 'Product Title'}
+          </h2>
+          <div className="w-16 h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent mx-auto"></div>
+        </div>
           <div className="p_info text-gray-600 mb-6 space-y-2">
             <p className="flex items-center gap-2">
               <span className="font-medium text-gray-900">Vendor:</span>
@@ -762,20 +832,20 @@ setSucess(true)
         </div>
       </div>
 
-      <div className="more_img mb-20 w-full">
+      <div className="more_img mb-20 w-full ">
         <ImageViewer images={product?.images || []} />
       </div>
 
      
       <div className="description mb-20  px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-light text-gray-900 mb-4 tracking-wide">
-            Product Description
+      <div className="text-center mb-16">
+          <h2 className="text-4xl font-extralight text-gray-900 mb-6 tracking-wider">
+           Prodcut Description
           </h2>
-          <div className="w-24 h-0.5 bg-gray-900 mx-auto"></div>
+          <div className="w-16 h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent mx-auto"></div>
         </div>
 
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl  ">
           {(product?.description || dummyDescription).map((data) => (
             <div className="text-gray-700 leading-relaxed" key={data.id}>
               {data.id === 1 ? (
@@ -792,13 +862,13 @@ setSucess(true)
       </div>
 
       <div className="related_products">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-light text-gray-900 mb-4 tracking-wide">
+       
+  <div className="text-center mb-16">
+          <h2 className="text-4xl font-extralight text-gray-900 mb-6 tracking-wider">
             Related Products
           </h2>
-          <div className="w-24 h-0.5 bg-gray-900 mx-auto"></div>
+          <div className="w-16 h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent mx-auto"></div>
         </div>
-
         <div className="relative">
      
           <div className="hidden md:flex justify-between items-center absolute top-1/2 left-0 right-0 px-4 z-10 -translate-y-1/2">
@@ -819,8 +889,8 @@ setSucess(true)
          
           <div ref={scrollRef} className="flex overflow-x-auto gap-6 px-16 no-scrollbar scroll-smooth">
             {relatedProducts.map((item) => (
-              <div className="min-w-[280px] py-6" key={item._id}>
-                <Card prop={item} />
+              <div className="  py-6" key={item._id}>
+                <Card prop={item} isRelated={true} />
               </div>
             ))}
           </div>

@@ -43,7 +43,7 @@ export default function HomeClient() {
   <div className="banner w-full">
     <Banner url={content?.banner_Url} />
   </div>
-  <div className="containers w-full px-4 md:px-[50px] py-8">
+  <div className="containers w-full px-1 md:px-[50px] py-8">
     {content?.Items?.map((data) => (
       <CardContainer key={data.id} prop={data} />
     ))}
