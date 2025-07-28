@@ -6,11 +6,33 @@ import Banner from '@/app/Components/UI/Banner';
 import CardContainer from '@/app/Components/UI/Container/CardContainer';
 import Loader from '@/app/Components/Loader/loader';
 import { LoaderContext } from '@/app/Context/contextProvider';
-import { getCacheStats } from '@/Utils/safeFetch';
+import { FilterContext } from './Context/contextProvider';
 export default function HomeClient() {
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useContext(LoaderContext)
   const {session}=useContext(UserContext)
+    const {
+       selectedCategory,
+            setSelectedCategory,
+            selectedSubCategory,
+            setSelectedSubCategory,
+            selectedSizes,
+            setSelectedSizes,
+            selectedSortBy,
+            setSelectedSortBy,
+            selectedMinPrice,
+            setSelectedMinPrice,
+            selectedHighPrice,
+            setSelectedHighPrice,
+    } = useContext(FilterContext);
+    useEffect(()=>{
+setSelectedCategory('');
+setSelectedSubCategory('');
+setSelectedHighPrice('');
+setSelectedMinPrice('');
+setSelectedSizes('');
+setSelectedSortBy('');
+    },[])
   useEffect(() => {
     try {
       setLoading(true)

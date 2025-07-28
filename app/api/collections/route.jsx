@@ -16,9 +16,14 @@ export async function POST(req) {
   try {
     const body = await req.json();
     await dbConnect()
+
+   const allColl =await  Collection.find();
+     
+       if(allColl.length> body.length){
+         await Collection.deleteMany({})
+       }
     for (let index = 0; index < body.length; index++) {
          const collection=  body[index]
-        
         const existing = await Collection.findOne({name:collection.name})
         if(existing){
        const update = await Collection.findOneAndUpdate({name:collection.name},collection)

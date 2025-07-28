@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState, useContext } from 'react';
-import { AlignJustify, SearchCheck, Heart, Search, ShoppingBag, User2 } from 'lucide-react';
+import { AlignJustify, SearchCheck, Heart, Search, ShoppingBag, User2,X } from 'lucide-react';
 import Announcemnt from '../../alerts/announcemnt';
 import { SlideBarContext } from '@/app/Context/contextProvider';
 import { useRouter } from 'next/navigation';
@@ -19,14 +19,7 @@ function NavbarM() {
 }
     }
   };
-      useEffect(() => {
-          router.prefetch('/');
-        router.prefetch('/Profile');
-        router.prefetch('/Authentication');
-        router.prefetch('/Profile/Wishlist');
-        router.prefetch('/Profile/Cart');
-        router.prefetch('/Collections');
-      }, []);
+   
     
   const performanSearch = () => {
     if (isSlide == 'slide') {
@@ -48,9 +41,7 @@ if(isSlide == 'false'){setIsSlide('search');}else{
         <li className='cursor-pointer hover:text-slate-300 transition-all duration-300 hover:scale-110 p-3 rounded-xl hover:bg-slate-700 hover:shadow-lg' onClick={slide}>
           <AlignJustify className="w-5 h-5 text-slate-100" />
         </li>
-        <li className='cursor-pointer hover:text-slate-300 transition-all duration-300 hover:scale-110 p-3 rounded-xl hover:bg-slate-700 hover:shadow-lg' onClick={performanSearch}>
-          <SearchCheck className="w-5 h-5 text-slate-100" />
-        </li>
+       <li onClick={()=>{performanSearch()}}> <SearchCheck className="w-5 h-5 text-slate-100" /></li>
         <li className="brandName text-center text-2xl font-bold bg-gradient-to-r from-white via-slate-200 to-white bg-clip-text text-transparent hover:scale-105 transition-all duration-300 cursor-pointer px-4 py-2 rounded-lg" onClick={()=>router.push('/')}>
           ✦ZYLMORA✦
         </li>

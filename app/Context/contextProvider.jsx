@@ -19,11 +19,12 @@ function ContextProvider({ children }) {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSubCategory, setSelectedSubCategory] = useState('');
   const [selectedSizes, setSelectedSizes] = useState([]);
-  const [selectedSortBy, setSelectedSortBy] = useState('default');
+  const [selectedSortBy, setSelectedSortBy] = useState('');
   const [selectedMinPrice, setSelectedMinPrice] = useState();
   const [selectedHighPrice, setSelectedHighPrice] = useState();
   const [authAnimation, setAuthAnimation] = useState(true);
   const [query, setQuery] = useState('');
+    const [q, setQ] = useState('');
   const [user, setUser] = useState();
   const [loader,setLoader]=useState(true)
 
@@ -88,6 +89,8 @@ if(session){
             setSelectedMinPrice,
             selectedHighPrice,
             setSelectedHighPrice,
+            q,
+            setQ,
           }}
         >
           <QueryContext.Provider value={[query,setQuery]}>

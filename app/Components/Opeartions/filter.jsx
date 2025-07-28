@@ -22,7 +22,7 @@ function Filter() {
     setSelectedHighPrice,
   } = useContext(FilterContext);
 
-  const sizes = ['XS', 'S', 'M', 'L', 'XL','XXL'];
+  const sizes = ['XS', 'S', 'M', 'L', 'XL'];
   const [showPrice, setShowPrice] = useState(false);
   const [showSize, setShowSize] = useState(false);
   const [min, setMin] = useState('');
@@ -89,7 +89,7 @@ if (!size.length) {
     if (selectedSortBy) queryParams.set('sortBy', selectedSortBy);
 
     window.history.replaceState(null, '', `?${queryParams.toString()}`);
-    setQuery(queryParams.toString()); 
+  
   };
 
   const handleReset = () => {
@@ -118,7 +118,7 @@ if (!size.length) {
     if (selectedSubCategory) queryParams.set('subcategory', selectedSubCategory);
     
     window.history.replaceState(null, '', `?${queryParams.toString()}`);
-    setQuery(queryParams.toString());
+   
   };
 
 
@@ -196,6 +196,7 @@ const hasActiveFilters = useMemo(() => {
             </button>
           </div>
         )}
+           
       </div>
 
       <div className="hidden sm:block relative">
@@ -210,7 +211,7 @@ const hasActiveFilters = useMemo(() => {
         </button>
 
         {showSize && (
-          <div className="absolute z-10 mt-2 bg-white border border-gray-300 rounded-lg p-4 w-64 shadow-lg">
+          <div className="absolute z-10 mt-2 bg-white border  border-gray-300 rounded-lg p-4 w-64 shadow-lg">
             <div className="flex flex-wrap gap-2 mb-4">
               {sizes.map((size, idx) => (
                 <span
@@ -222,7 +223,7 @@ const hasActiveFilters = useMemo(() => {
                         : [...prev, size]
                     );
                   }}
-                  className={`cursor-pointer px-3 py-1 border rounded-md text-sm ${
+                  className={`cursor-pointer px-3 py-1  border rounded-md text-sm ${
                     selectedLocalSizes.includes(size)
                       ? 'bg-red-100 border-red-400'
                       : 'hover:bg-red-100 border-gray-300'
@@ -240,87 +241,96 @@ const hasActiveFilters = useMemo(() => {
             </button>
           </div>
         )}
+          
       </div>
-      
+        <div className="hidden sm:block relative">             
+    {hasActiveFilters && (         
+      <button           
+        onClick={clearAllFilters}           
+        className="border border-red-300 px-4 py-3 w-[110px] rounded-md flex justify-between text-white items-center gap-1 bg-red-600 font-bold text-xs"         
+      >                     
+        Clear Filters            
+              
+      </button>       
+    )}       
+  </div>    
 
-      <div className=" lg:hidden flex  flex-col gap-4 w-full h-screen">
-     <div className="">
-            {hasActiveFilters && (
-        <button
-          onClick={clearAllFilters}
-          className="border border-red-300 px-4 py-2 rounded-md flex justify-between text-white w-full  items-center gap-2 bg-red-600 font-bold md:w-60"
-        >
-         
-          Clear Filters
-           <X size={16} />
-        </button>
-      )}
-      </div>
-        <div className="border border-gray-300 rounded-lg p-4 w-full">
-          <span className="block mb-2 text-lg font-medium text-gray-800">Price</span>
-          <div className="flex items-center gap-2 mb-4">
-            <div className="flex items-center gap-1">
-              <span className="text-sm text-gray-500">Rs</span>
-              <input
-                type="number"
-                placeholder="Min"
-                value={min}
-                onChange={(e) => setMin(e.target.value)}
-                className="w-24 px-2 py-1 border border-gray-300 rounded-md"
-              />
-            </div>
-            <span className="text-sm text-gray-500">to</span>
-            <div className="flex items-center gap-1">
-              <span className="text-sm text-gray-500">Rs</span>
-              <input
-                type="number"
-                placeholder="Max"
-                value={max}
-                onChange={(e) => setMax(e.target.value)}
-                className="w-24 px-2 py-1 border border-gray-300 rounded-md"
-              />
-            </div>
-          </div>
-          <button
-            onClick={applyFilters}
-            className="w-full bg-black text-white py-2 rounded-md text-sm hover:bg-gray-800"
-          >
-            Apply
-          </button>
-        </div>
-       
-        <div className="border border-gray-300 rounded-lg p-4 w-full">
-          <span className="block mb-2 text-lg font-medium text-gray-800">Size</span>
-          <ul className="flex flex-wrap gap-3 mb-4">
-            {sizes.map((size, idx) => (
-              <li
-                key={idx}
-                onClick={() => {
-                  setSelectedLocalSizes((prev) =>
-                    prev.includes(size)
-                      ? prev.filter((s) => s !== size)
-                      : [...prev, size]
-                  );
-                }}
-                className={`border cursor-pointer rounded-md px-4 py-2 transition text-sm ${
-                  selectedLocalSizes.includes(size)
-                    ? 'bg-red-100 border-red-400 text-gray-900'
-                    : 'hover:bg-red-100 border-gray-300 text-gray-700'
-                }`}
-              >
-                {size}
-              </li>
-            ))}
-          </ul>
-          <button
-            onClick={applyFilters}
-            className="w-full bg-black text-white py-2 rounded-md text-sm hover:bg-gray-800"
-          >
-            Apply
-          </button>
-        </div>
-        
-      </div>
+     <div className="lg:hidden flex flex-col gap-4 w-full max-w-[95%] h-screen">      
+  <div className="w-full">             
+    {hasActiveFilters && (         
+      <button           
+        onClick={clearAllFilters}           
+        className="border border-red-300 px-2 py-2 rounded-md flex justify-between text-white w-full items-center gap-1 bg-red-600 font-bold text-xs"         
+      >                     
+        Clear Filters            
+        <X size={14} />         
+      </button>       
+    )}       
+  </div>         
+  
+  <div className="border border-gray-300 rounded-lg p-3 w-full">           
+    <span className="block mb-2 text-sm font-medium text-gray-800">Price</span>           
+    <div className="flex flex-col gap-2 mb-3">             
+      <div className="flex items-center gap-1">               
+        <span className="text-xs text-gray-500">Rs</span>               
+        <input                 
+          type="number"                 
+          placeholder="Min"                 
+          value={min}                 
+          onChange={(e) => setMin(e.target.value)}                 
+          className="flex-1 px-2 py-1 border border-gray-300 w-full rounded-md text-xs"               
+        />             
+      </div>             
+      <div className="flex items-center gap-1">               
+        <span className="text-xs text-gray-500">Rs</span>               
+        <input                 
+          type="number"                 
+          placeholder="Max"                 
+          value={max}                 
+          onChange={(e) => setMax(e.target.value)}                 
+          className="flex-1 px-2 py-1 border border-gray-300  w-full  rounded-md text-xs"               
+        />             
+      </div>           
+    </div>           
+    <button             
+      onClick={applyFilters}             
+      className="w-full bg-black text-white py-2 rounded-md text-xs hover:bg-gray-800"           
+    >             
+      Apply           
+    </button>         
+  </div>                 
+  
+  <div className="border border-gray-300 rounded-lg p-3 w-full">           
+    <span className="block mb-2 text-sm font-medium text-gray-800">Size</span>           
+    <ul className="flex flex-wrap gap-1 mb-3">             
+      {sizes.map((size, idx) => (               
+        <li                 
+          key={idx}                 
+          onClick={() => {                   
+            setSelectedLocalSizes((prev) =>                     
+              prev.includes(size)                       
+                ? prev.filter((s) => s !== size)                       
+                : [...prev, size]                   
+            );                 
+          }}                 
+          className={`border cursor-pointer rounded-md px-2 py-1 transition text-xs ${                   
+            selectedLocalSizes.includes(size)                     
+              ? 'bg-red-100 border-red-400 text-gray-900'                     
+              : 'hover:bg-red-100 border-gray-300 text-gray-700'                 
+          }`}               
+        >                 
+          {size}               
+        </li>             
+      ))}           
+    </ul>           
+    <button             
+      onClick={applyFilters}             
+      className="w-full bg-black text-white py-2 rounded-md text-xs hover:bg-gray-800"           
+    >             
+      Apply           
+    </button>         
+  </div>                
+</div>
     </div>
   );
 }

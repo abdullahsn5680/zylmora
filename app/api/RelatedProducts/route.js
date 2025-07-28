@@ -18,7 +18,7 @@ export async function GET(req) {
     if (subcategory && subcategory !== "") filter.subcategory = subcategory;
     const products = await Product.find(filter)
       .limit(10);
-        console.log(products)
+       
 
         return NextResponse.json({
             success: true,

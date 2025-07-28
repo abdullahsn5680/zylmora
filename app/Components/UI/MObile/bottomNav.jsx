@@ -8,13 +8,7 @@ export default function BottomNavbar() {
   const router = useRouter();
   const [activeItem, setActiveItem] = useState('');
 
-  useEffect(() => {
-    router.prefetch('/');
-    router.prefetch('/Profile');
-    router.prefetch('/Profile/Cart');
-    router.prefetch('/Catagories');
-    router.prefetch('/Profile/Orders');
-  }, [router]);
+ 
 
   const handleItemClick = (itemName) => {
     setActiveItem(itemName);

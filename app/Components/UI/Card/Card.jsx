@@ -9,7 +9,9 @@ function Card({ prop,isRelated }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
   const router = useRouter();
-
+ if (isRelated){
+  alert(isRelated)
+ }
   const savingsAmount = prop.discount !== 0 ? prop.price - prop.cut_price : 0;
   const isOnSale = prop.discount > 0;
   const isNew = prop.discount !== 0;

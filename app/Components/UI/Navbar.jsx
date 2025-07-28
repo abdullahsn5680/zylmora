@@ -1,34 +1,46 @@
 'use client';
-import { Heart, Package, Search, ShoppingBag, User2 } from 'lucide-react';
+import { Heart, Package, Search, ShoppingBag, User2,Ban,X } from 'lucide-react';
 import Link from 'next/link';
 
-import React, { useState, useRef, useContext,useEffect } from 'react';
+import React, { useState, useRef, useContext,useEffect, } from 'react';
 import { useRouter } from 'next/navigation';
-import { CollectionContext, FilterContext } from '@/app/Context/contextProvider';
+import { CollectionContext, FilterContext, QueryContext } from '@/app/Context/contextProvider';
 import Announcemnt from '../alerts/announcemnt';
 
 function Navbar() {
   const [categories] = useContext(CollectionContext);
-  const [confirmCatagory,setCofrimCategory]=useState('')
+  const [confirmCatagory,setCofrimCategory]=useState('');
+    const [query, setQuery] = useContext(QueryContext);
+  const [q,setQ]=useContext(QueryContext);
   const [hovered, setHovered] = useState(null);
   const timeoutRef = useRef(null);
   const router = useRouter();
-   useEffect(() => {
-       
-    router.prefetch('/Authentication');
-    router.prefetch('/Profile/Wishlist');
-    router.prefetch('/Profile/Cart');
-     router.prefetch('/Profile/Orders');
-    router.prefetch('/Collections');
-  }, []);
-
-  const {
+  const [sq,setSq]=useState('');
+    const {
     selectedCategory,
     setSelectedCategory,
     selectedSubCategory,
     setSelectedSubCategory,
+    selectedSizes,
+    selectedMinPrice,
+    selectedHighPrice,
+    selectedSortBy,
   } = useContext(FilterContext);
-
+   const KeyDown=(e)=>{
+    if(e.key=='Enter'){
+     const queryParams = new URLSearchParams();
+    if (selectedCategory) queryParams.set('category', selectedCategory);
+    if (selectedSubCategory) queryParams.set('subcategory', selectedSubCategory);
+     if (sq) queryParams.set('q', sq);
+   const query = queryParams.toString()
+    router.push(`/Collections?${query}`);
+    }
+   }
+useEffect(()=>{
+    const params = new URLSearchParams(window.location.search);
+     const Q = params.get('q');
+  setSq(Q)
+},[])
   const handleMouseEnter = (id) => {
     clearTimeout(timeoutRef.current);
     setHovered(id);
@@ -40,13 +52,33 @@ function Navbar() {
     }, 500);
   };
 
-  const performAction = () => {
-    const query = new URLSearchParams({
-      category: selectedCategory,
-      subcategory: selectedSubCategory,
-    }).toString();
-    router.push(`/Collections`);
+  const performAction = (confirmCatagory,sub) => {
+    const queryParams = new URLSearchParams();
+    if (confirmCatagory) queryParams.set('category', confirmCatagory);
+    if (sub) queryParams.set('subcategory', sub);
+    setQ('')
+    setSq()
+   const query = queryParams.toString()
+    window.history.replaceState(null, '', `?${query}`);
+    router.push(`/Collections?${query}`);
   };
+ 
+ const handleRemove=() => {
+  const queryParams = new URLSearchParams()
+  setQ('');
+  setSq('')
+    if(selectedCategory) queryParams.set('category',selectedCategory);
+     if(selectedSubCategory) queryParams.set('subcategory',selectedSubCategory);
+      if(selectedSizes.length) queryParams.set('size',selectedSizes);
+       if(selectedMinPrice) queryParams.set('minPrice',selectedMinPrice);
+        if(selectedHighPrice) queryParams.set('highPrice',selectedHighPrice);
+        if(selectedSortBy) queryParams.set('sortBy',selectedSortBy);
+     
+  const queryStr = queryParams.toString();
+
+  setQuery(queryStr);
+  window.history.replaceState(null, '', `?${queryStr}`);
+}
 
   return (
   <div className=''>
@@ -78,9 +110,8 @@ function Navbar() {
                     <div
                       key={index}
                       onClick={() => {
-                        setSelectedCategory(confirmCatagory)
-                        setSelectedSubCategory(sub);
-                        performAction(); 
+                       
+                        performAction(confirmCatagory,sub); 
                       }}
                       className="hover:bg-slate-100 hover:text-slate-900 p-2 w-full rounded-md transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-sm"
                     >
@@ -117,14 +148,33 @@ function Navbar() {
             </Link>
           </li>
         </ul>
-        <div className="searchbar flex items-center bg-white text-slate-800 rounded-xl px-4 py-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-slate-200">
-          <Search className="w-4 h-4 text-slate-600" />
-          <input
-            type="text"
-            placeholder="Search products..."
-            className="bg-transparent outline-none px-3 text-sm placeholder-slate-500 w-40"
-          />
-        </div>
+    <div className="searchbar flex items-center bg-white text-slate-800 rounded-xl px-4 py-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-slate-200">
+  <Search className="w-4 h-4 text-slate-600" />
+  <input
+
+    onKeyDown={(e) => KeyDown(e)}
+    type="text"
+    value={sq||''}
+    onChange={(e) => setSq(e.target.value)}
+    placeholder="Search products..."
+    className="bg-transparent outline-none px-3 text-sm placeholder-slate-500 w-40 flex-1"
+  />
+  
+  
+  {sq && (
+    <>
+      <div className="w-px h-6 bg-slate-300/60" role="separator"></div>
+      <button
+        onClick={() => handleRemove()}
+        className="ml-2 p-1 rounded-full hover:bg-slate-100 transition-colors duration-200 group"
+        aria-label="Clear search"
+        type="button"
+      >
+        <X className="w-4 h-4 text-slate-400 group-hover:text-slate-600" />
+      </button>
+    </>
+  )}
+</div>
       </div>
        
     </nav>
