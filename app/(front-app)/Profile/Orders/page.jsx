@@ -221,8 +221,9 @@ export default function OrdersPage() {
 
   
   {selectedOrder && (
-    <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center px-4">
-      <div className="bg-white max-w-lg w-full rounded-2xl sm:rounded-3xl shadow-2xl relative overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-slate-900/80   backdrop-blur-sm flex items-center justify-center px-4">
+      <div className="  relative -z-50 overflow-hidden rounded-3xl">
+      <div className="bg-white h-[90vh] pb-50  max-w-lg w-full overflow-y-auto">
        
         <div className="relative bg-gradient-to-r from-slate-600 to-slate-800 p-6 sm:p-8">
           <button
@@ -455,7 +456,9 @@ export default function OrdersPage() {
             )}
           </div>
         </div>
+        </div>
       </div>
+
     </div>
   )}
 </div>

@@ -9,9 +9,7 @@ function Card({ prop,isRelated }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
   const router = useRouter();
- if (isRelated){
-  alert(isRelated)
- }
+ 
   const savingsAmount = prop.discount !== 0 ? prop.price - prop.cut_price : 0;
   const isOnSale = prop.discount > 0;
   const isNew = prop.discount !== 0;
@@ -30,7 +28,7 @@ function Card({ prop,isRelated }) {
 
   return (
     <div
-      className={`group relative flex flex-col  ${related &&'w-[180px] md:w-[280px]'} w-full mx-auto transition-all duration-300 ease-in-out cursor-pointer`}
+      className={`group relative flex flex-col  ${related &&'w-[180px] md:w-[280px]'} ${!related &&'w-full'}  mx-auto transition-all duration-300 ease-in-out cursor-pointer`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleCardClick}

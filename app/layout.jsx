@@ -4,6 +4,7 @@ import MobileNavbar from './Components/UI/MObile/bottomNav';
 import NavbarM from './Components/UI/MObile/NavbarM';
 import SlideBar from './Components/UI/MObile/SlideBar';
 import AuthSessionProvider from './Provider/Auth/AuthSessionProvider';
+import Footer from './Components/UI/Footer';
 import ContextProvider from './Context/contextProvider';
 export const metadata = {
   title: 'Zylmora – Cozy, Stylish, and Everyday Wear for All',
@@ -25,6 +26,7 @@ export default function RootLayout({ children }) {
             </div>
     <main className="pt-[14vh] min-h-[calc(100vh-14vh-4rem)] pb-32 bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50 w-full">
   {children}
+  <Footer/>
 </main>
 
 
@@ -40,7 +42,7 @@ export default function RootLayout({ children }) {
     </svg>
   </a>
 </div>
-   
+     
             <div className="top-0 fixed z-20 md:hidden">
               <SlideBar />
             </div>

@@ -182,5 +182,4 @@ useEffect(()=>{
     </div>
   );
 }
-
 export default Navbar;
