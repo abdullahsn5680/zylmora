@@ -173,20 +173,19 @@ function ImageViewer({ images }) {
 
   function LoadingSpinner() {
     return (
-      <div className="w-8 h-8 border-3 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+      <div className="w-8 h-8 border-3 border-slate-300 border-t-slate-800 rounded-full animate-spin"></div>
     );
   }
 
-  // Create thumbnail buttons
   let thumbnailButtons = [];
   for (let i = 0; i < displayImages.length; i++) {
     let isActive = current === i;
-    let buttonClass = "relative min-w-24 w-24 h-24 rounded-lg overflow-hidden transition-all duration-200 ";
+    let buttonClass = "relative min-w-24 w-24 h-24 rounded-md overflow-hidden transition-all duration-300 hover:scale-105 ";
     
     if (isActive) {
-      buttonClass += "ring-2 ring-blue-500 ring-offset-2 shadow-lg";
+      buttonClass += "ring-2 ring-slate-800 ring-offset-2 shadow-lg";
     } else {
-      buttonClass += "hover:shadow-md opacity-70 hover:opacity-100";
+      buttonClass += "hover:shadow-lg opacity-70 hover:opacity-100 border border-slate-200";
     }
 
     thumbnailButtons.push(
@@ -204,16 +203,16 @@ function ImageViewer({ images }) {
     );
   }
 
-  // Create mobile dots
+
   let mobileDots = [];
   for (let i = 0; i < displayImages.length; i++) {
     let isActive = current === i;
-    let dotClass = "transition-all duration-200 ";
+    let dotClass = "transition-all duration-300 ";
     
     if (isActive) {
-      dotClass += "w-8 h-2 bg-gray-800 rounded-full";
+      dotClass += "w-8 h-2 bg-slate-800 rounded-full";
     } else {
-      dotClass += "w-2 h-2 bg-gray-300 hover:bg-gray-400 rounded-full";
+      dotClass += "w-2 h-2 bg-slate-300 hover:bg-slate-400 rounded-full";
     }
 
     mobileDots.push(
@@ -225,7 +224,7 @@ function ImageViewer({ images }) {
     );
   }
 
-  // Create fullscreen dots
+
   let fullscreenDots = [];
   for (let i = 0; i < displayImages.length; i++) {
     let isActive = current === i;
@@ -263,13 +262,13 @@ function ImageViewer({ images }) {
 
   return (
     <>
-      <div className="w-full max-w-7xl mx-auto px-4 py-8">
-        {/* Title */}
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-light text-gray-900 mb-4 tracking-wide">
+      <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-6 lg:py-8">
+       
+        <div className="text-center mb-8 lg:mb-12 bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+          <h2 className="text-2xl lg:text-4xl font-bold text-slate-800 mb-4 tracking-wide">
             Gallery
           </h2>
-          <div className="w-16 h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent mx-auto"></div>
+          <div className="w-16 h-1 bg-gradient-to-r from-slate-300 to-slate-800 mx-auto rounded-full"></div>
         </div>
 
         <style jsx>{`
@@ -282,13 +281,13 @@ function ImageViewer({ images }) {
           }
         `}</style>
 
-        {/* Mobile View */}
+      
         <div className="md:hidden">
           <div className="relative">
-            {/* Main Image Container */}
+           
             <div 
               ref={containerRef}
-              className="relative w-full aspect-square rounded-2xl overflow-hidden bg-gray-100 shadow-xl"
+              className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-50 shadow-sm border border-slate-100 hover:shadow-lg transition-all duration-300"
             >
               {isLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-white/90 backdrop-blur-sm z-20">
@@ -308,41 +307,41 @@ function ImageViewer({ images }) {
                 draggable={false}
               />
 
-              {/* Image Counter */}
-              <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white text-sm px-3 py-1 rounded-full font-medium">
+              
+              <div className="absolute top-4 right-4 bg-slate-800/90 backdrop-blur-sm text-white text-sm px-3 py-1 rounded-full font-medium">
                 {current + 1} / {displayImages.length}
               </div>
 
-              {/* Zoom Controls */}
+            
               <div className="absolute top-4 left-4 flex flex-col gap-2">
                 <button
                   onClick={handleZoomIn}
                   disabled={zoomLevel >= 3}
-                  className="p-2 bg-black/50 backdrop-blur-sm text-white rounded-full transition-all duration-200 hover:bg-black/60 disabled:opacity-50"
+                  className="p-2 bg-slate-100 text-slate-800 hover:bg-slate-800 hover:text-white rounded-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed border border-slate-200"
                 >
                   <ZoomIn size={16} />
                 </button>
                 <button
                   onClick={handleZoomOut}
                   disabled={zoomLevel <= 1}
-                  className="p-2 bg-black/50 backdrop-blur-sm text-white rounded-full transition-all duration-200 hover:bg-black/60 disabled:opacity-50"
+                  className="p-2 bg-slate-100 text-slate-800 hover:bg-slate-800 hover:text-white rounded-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed border border-slate-200"
                 >
                   <ZoomOut size={16} />
                 </button>
                 <button
                   onClick={toggleFullscreen}
-                  className="p-2 bg-black/50 backdrop-blur-sm text-white rounded-full transition-all duration-200 hover:bg-black/60"
+                  className="p-2 bg-slate-100 text-slate-800 hover:bg-slate-800 hover:text-white rounded-md transition-all duration-300 border border-slate-200"
                 >
                   <Maximize2 size={16} />
                 </button>
               </div>
             </div>
 
-            {/* Navigation Controls */}
+         
             <div className="flex justify-between items-center mt-6 px-4">
               <button
                 onClick={handlePrev}
-                className="p-3 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-full shadow-sm transition-all duration-200"
+                className="p-3 bg-slate-100 text-slate-800 hover:bg-slate-800 hover:text-white hover:scale-105 rounded-md shadow-sm hover:shadow-lg transition-all duration-300 border border-slate-200"
               >
                 <ChevronLeft size={20} />
               </button>
@@ -353,7 +352,7 @@ function ImageViewer({ images }) {
               
               <button
                 onClick={handleNext}
-                className="p-3 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-full shadow-sm transition-all duration-200"
+                className="p-3 bg-slate-100 text-slate-800 hover:bg-slate-800 hover:text-white hover:scale-105 rounded-md shadow-sm hover:shadow-lg transition-all duration-300 border border-slate-200"
               >
                 <ChevronRight size={20} />
               </button>
@@ -361,16 +360,15 @@ function ImageViewer({ images }) {
           </div>
         </div>
 
-        {/* Desktop View */}
-        <div className="hidden md:block">
-          {/* Main Selected Image */}
+          <div className="hidden md:block">
+         
           <div 
             ref={containerRef}
-            className="relative w-full max-w-4xl mx-auto aspect-[4/3] rounded-lg overflow-hidden bg-gray-100 shadow-lg group mb-8"
+            className="relative w-full max-w-4xl mx-auto aspect-[4/3] rounded-xl overflow-hidden bg-slate-50 shadow-sm border border-slate-100 group mb-8 hover:shadow-lg transition-all duration-300"
           >
             {isLoading && (
               <div className="absolute inset-0 flex items-center justify-center bg-white/90 backdrop-blur-sm z-20">
-                <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+                <div className="w-12 h-12 border-4 border-slate-300 border-t-slate-800 rounded-full animate-spin"></div>
               </div>
             )}
             
@@ -387,12 +385,12 @@ function ImageViewer({ images }) {
             />
 
             {/* Controls Overlay */}
-            <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <div className="flex items-center gap-1 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full">
+            <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div className="flex items-center gap-1 bg-slate-800/90 backdrop-blur-sm px-3 py-1 rounded-md">
                 <button
                   onClick={handleZoomOut}
                   disabled={zoomLevel <= 1}
-                  className="p-1 text-white hover:bg-white/20 rounded transition-all duration-200 disabled:opacity-50"
+                  className="p-1 text-white hover:bg-white/20 rounded transition-all duration-300 disabled:opacity-50"
                 >
                   <ZoomOut size={14} />
                 </button>
@@ -402,51 +400,51 @@ function ImageViewer({ images }) {
                 <button
                   onClick={handleZoomIn}
                   disabled={zoomLevel >= 3}
-                  className="p-1 text-white hover:bg-white/20 rounded transition-all duration-200 disabled:opacity-50"
+                  className="p-1 text-white hover:bg-white/20 rounded transition-all duration-300 disabled:opacity-50"
                 >
                   <ZoomIn size={14} />
                 </button>
               </div>
               <button
                 onClick={toggleFullscreen}
-                className="p-2 bg-black/50 backdrop-blur-sm text-white rounded-full transition-all duration-200 hover:bg-black/60"
+                className="p-2 bg-slate-800/90 backdrop-blur-sm text-white rounded-md transition-all duration-300 hover:bg-slate-700/90"
               >
                 <Maximize2 size={14} />
               </button>
             </div>
 
-            {/* Image Counter */}
-            <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-sm text-white text-sm px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+           
+            <div className="absolute bottom-4 left-4 bg-slate-800/90 backdrop-blur-sm text-white text-sm px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {current + 1} of {displayImages.length}
             </div>
 
-            {/* Hint Text */}
+          
             {zoomLevel === 1 && (
-              <div className="absolute bottom-4 right-4 bg-black/50 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <div className="absolute bottom-4 right-4 bg-slate-800/90 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 Double-click to zoom
               </div>
             )}
           </div>
 
-          {/* Horizontal Sliding Thumbnails */}
-          <div className="relative group">
-            {/* Navigation Buttons */}
-            <div className="hidden md:flex justify-between items-center absolute top-1/2 left-0 right-0 px-4 z-10 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+         
+          <div className="relative group bg-white rounded-xl p-6 shadow-sm border border-slate-100 hover:shadow-lg transition-all duration-300">
+       
+            <div className="hidden md:flex justify-between items-center absolute top-1/2 left-0 right-0 px-4 z-10 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <button
                 onClick={handlePrev}
-                className="bg-white shadow-lg border border-gray-200 px-3 py-3 rounded-full text-gray-700 hover:bg-gray-50 hover:shadow-xl transition-all duration-200"
+                className="bg-slate-100 text-slate-800 hover:bg-slate-800 hover:text-white hover:scale-105 shadow-sm hover:shadow-lg px-3 py-3 rounded-md transition-all duration-300 border border-slate-200"
               >
                 <ChevronLeft size={20} />
               </button>
               <button
                 onClick={handleNext}
-                className="bg-white shadow-lg border border-gray-200 px-3 py-3 rounded-full text-gray-700 hover:bg-gray-50 hover:shadow-xl transition-all duration-200"
+                className="bg-slate-100 text-slate-800 hover:bg-slate-800 hover:text-white hover:scale-105 shadow-sm hover:shadow-lg px-3 py-3 rounded-md transition-all duration-300 border border-slate-200"
               >
                 <ChevronRight size={20} />
               </button>
             </div>
 
-            {/* Scrollable Thumbnails Container */}
+         
             <div className="flex overflow-x-auto gap-4 px-16 py-4 no-scrollbar scroll-smooth">
               {thumbnailButtons}
             </div>
@@ -454,13 +452,13 @@ function ImageViewer({ images }) {
         </div>
       </div>
 
-      {/* Fullscreen Modal */}
+     
       {isFullscreen && (
-        <div className="fixed inset-0 bg-black/95 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-slate-900/95 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="relative w-full h-full max-w-7xl mx-auto p-4">
             <button
               onClick={toggleFullscreen}
-              className="absolute top-6 right-6 p-3 bg-white/10 backdrop-blur-sm text-white rounded-full border border-white/20 transition-all duration-200 hover:bg-white/20 z-10"
+              className="absolute top-6 right-6 p-3 bg-slate-100/20 backdrop-blur-sm text-white rounded-md border border-white/20 transition-all duration-300 hover:bg-slate-100/30 z-10"
             >
               <X size={24} />
             </button>
@@ -477,15 +475,15 @@ function ImageViewer({ images }) {
               />
             </div>
 
-            {/* Fullscreen Controls */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/20 backdrop-blur-md px-6 py-3 rounded-full border border-white/20">
-              <button onClick={handlePrev} className="p-2 text-white hover:bg-white/20 rounded-full transition-all duration-200">
+            
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-slate-800/20 backdrop-blur-md px-6 py-3 rounded-md border border-white/20">
+              <button onClick={handlePrev} className="p-2 text-white hover:bg-white/20 rounded-md transition-all duration-300">
                 <ChevronLeft size={20} />
               </button>
               <div className="flex gap-2">
                 {fullscreenDots}
               </div>
-              <button onClick={handleNext} className="p-2 text-white hover:bg-white/20 rounded-full transition-all duration-200">
+              <button onClick={handleNext} className="p-2 text-white hover:bg-white/20 rounded-md transition-all duration-300">
                 <ChevronRight size={20} />
               </button>
             </div>

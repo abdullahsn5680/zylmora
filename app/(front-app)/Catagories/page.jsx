@@ -14,7 +14,7 @@ function page() {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      const response = await safeFetch('/api/catagories', {}, 36);
+      const response = await safeFetch('/api/catagories', {}, 3600000);
       if (response.success) {
         setCategoriesData(response.categories || []);
       } else {

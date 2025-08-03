@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { UserContext } from '@/app/Context/contextProvider';
+import ProdcutInfo from '@/app/Components/pages/prodcuts/ProdcutInfo';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight, Heart, ArrowLeft, MapPin, CreditCard, Package, User, Phone, Mail } from 'lucide-react';
@@ -9,7 +10,11 @@ import ImageViewer from '@/app/Components/UI/Img/ImageViewer';
 import Card from '@/app/Components/UI/Card/Card';
 import Loader from '@/app/Components/Loader/loader';
 import { safeFetch } from '@/Utils/safeFetch';
-
+import ProductReviews from '@/app/Components/pages/prodcuts/Review';
+import RelatedProdcuts from '@/app/Components/pages/prodcuts/RelatedProdcuts';
+import ProdcutDescription from '@/app/Components/pages/prodcuts/ProductDescription';
+import NotLogin from '@/app/Components/alerts/NotLogin';
+import Sucess from '@/app/Components/alerts/Sucess';
 function ProductPage() {
   const router = useRouter();
   const [finalAddress,setFinalAddresses]=useState('')
@@ -18,9 +23,9 @@ function ProductPage() {
   const searchParams = useSearchParams();
   const [Counter, setCounter] = useState(1);
   const [Size, setSize] = useState(0);
-  const scrollRef = useRef(null);
+  
   const [loading, setLoading] = useState(true);
-  const [relatedProducts, setRP] = useState([]);
+
   const [product, setProduct] = useState({});
   const [showOrderForm, setShowOrderForm] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState('');
@@ -120,25 +125,7 @@ function ProductPage() {
     getProduct();
   }, [slug]);
 
-  useEffect(() => {
-    if (!product._id || !product.category || !product.subcategory) return;
-
-    const getRp = async () => {
-      const Query = new URLSearchParams({
-        category: product.category,
-        subcategory: product.subcategory,
-      });
-      const res = await safeFetch(`/api/RelatedProducts/?${Query.toString()}`);
-      const data = res
-      if (data.success) {
-        const related = data.products.filter(p => p._id !== product._id);
-        setRP(related);
-      }
-    };
-
-    getRp();
-  }, [product._id, product.category, product.subcategory]);
-
+ 
   const handleAddWishlist = async () => {
     if (!product) return;
     if (!session?.user?.email) return setConfirmLogin(false)
@@ -654,48 +641,9 @@ setSucess(true)
        </div>
      </div>
    
-     {sucess == true && (
-       <div className="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center p-4 z-50">
-         <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl max-w-md w-full p-8 border border-gray-100">
-           <div className="text-center">
-             <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-               </svg>
-             </div>
-             <h3 className="text-xl font-bold text-slate-800 mb-2">Success!</h3>
-             <p className="text-slate-600 mb-6">Task performed successfully.</p>
-             <button
-               onClick={() => setShowOrderForm(false)}
-               className="px-8 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
-             >
-               Go Back
-             </button>
-           </div>
-         </div>
-       </div>
-     )}
+     {sucess == true && (<Sucess/> )}
    
-     {Alert == true && (
-       <div className="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center p-4 z-50">
-         <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl max-w-md w-full p-8 border border-gray-100">
-           <div className="text-center">
-             <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
-               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-               </svg>
-             </div>
-             <h3 className="text-xl font-bold text-slate-800 mb-2">Error</h3>
-             <p className="text-slate-600 mb-6">Something went wrong.</p>
-             <button
-               onClick={() => setAlert(false)}
-               className="px-8 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
-             >
-               Ok
-             </button>
-           </div>
-         </div>
-       </div>
+     {Alert == true && (<Alert/>
      )}
    </div>
      );
@@ -704,249 +652,28 @@ setSucess(true)
  <div className='mt-12 pb-15  max-w-7xl mx-auto'>
       
       <div className="navigation px-6 flex items-center gap-3 text-sm text-gray-600 mb-8">
-        <div className="home font-medium hover:text-gray-900 cursor-pointer transition-colors">Home</div>
-        <span className="text-gray-400">•</span>
-        <div className="title text-gray-900 font-medium">{product?.title || 'Product Title'}</div>
+      <div className="home font-medium hover:text-gray-900 cursor-pointer transition-colors">Home</div>
+      <span className="text-gray-400">•</span>
+      <div className="title text-gray-900 font-medium">{product?.title || 'Product Title'}</div>
       </div>
 
-    
-      <div className="main flex flex-col lg:flex-row justify-between gap-8 lg:gap-16 px-6 mb-16">
-    
-        <div className="relative w-full lg:w-[40vw]">
-          <div className="aspect-square rounded-2xl overflow-hidden bg-gray-50 shadow-lg border border-gray-100">
-            <Image
-              width={800}
-              height={800}
-              src={product?.main_image || '/placeholder.png'}
-              alt={product?.title || 'Product'}
-              className='w-full h-full object-contain rounded-2xl hover:scale-105 transition-transform duration-500'
-            />
-          </div>
-        </div>
-
-      
-        <div className="info w-full lg:w-1/2 flex flex-col justify-start">
-       
-
-            <div className="text-center mb-16">
-          <h2 className="text-4xl font-extralight text-gray-900 mb-6 tracking-wider">
-          {product?.title || 'Product Title'}
-          </h2>
-          <div className="w-16 h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent mx-auto"></div>
-        </div>
-          <div className="p_info text-gray-600 mb-6 space-y-2">
-            <p className="flex items-center gap-2">
-              <span className="font-medium text-gray-900">Vendor:</span>
-              <span className="text-gray-700">{product?.Vendor || 'Vendor'}</span>
-            </p>
-            <p className="flex items-center gap-2">
-              <span className="font-medium text-gray-900">Category:</span>
-              <span className="text-gray-700">{product?.subcategory || 'General'}</span>
-            </p>
-          </div>
-
-          <div className="sizes mb-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-3">Size</h3>
-            <div className="flex gap-3">
-              {(product?.sizes || ['XS', 'M', 'L']).map((size, index) => (
-                <span
-                  key={index}
-                  onClick={() => setSize(size)}
-                  className={`cursor-pointer px-4 py-2 border-2 rounded-lg font-medium transition-all duration-200 ${
-                    Size === size
-                      ? 'bg-gray-900 text-white border-gray-900 shadow-md'
-                      : 'border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50'
-                  }`}
-                >
-                  {size.size}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="mb-8">
-            <div className="text-3xl font-light text-gray-900">
-              <span className="text-2xl text-gray-600">PKR</span> {product?.cut_price || '0'}
-            </div>
-          </div>
-
-         
-          <div className="order mb-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-3">Quantity</h3>
-            <div className="flex items-center gap-4 mb-6">
-              <div className="flex items-center border-2 border-gray-300 rounded-lg">
-                <button 
-                  className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
-                  onClick={() => Counter > 1 && setCounter(Counter - 1)}
-                >
-                  −
-                </button>
-                <div className="px-6 py-2 border-l border-r border-gray-300 font-medium text-gray-900">
-                  {Counter}
-                </div>
-                <button 
-                  className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
-                  onClick={() => setCounter(Counter + 1)}
-                >
-                  +
-                </button>
-              </div>
-              
-              <button
-                onClick={handleAddWishlist}
-                className="p-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
-              >
-                <Heart className="w-5 h-5 text-gray-600" />
-              </button>
-            </div>
-
-            <div className="flex gap-4">
-              <button
-                onClick={handleAddCart}
-                disabled={!Size}
-                className={`flex-1 py-3 px-6 rounded-lg font-medium transition-all duration-200 ${
-                  !Size 
-                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
-                    : 'bg-gray-900 text-white hover:bg-gray-800 shadow-md hover:shadow-lg'
-                }`}
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-
-      
-          <div className="butNowBtn">
-            <button
-              onClick={handleBuyNow}
-              disabled={!Size}
-              className={`w-full py-3 px-6 rounded-lg font-medium border-2 transition-all duration-200 ${
-                !Size 
-                  ? 'bg-gray-200 text-gray-500 cursor-not-allowed border-gray-200' 
-                  : 'bg-white text-gray-900 border-gray-900 hover:bg-gray-900 hover:text-white'
-              }`}
-            >
-              Buy Now
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="more_img mb-20 w-full ">
-        <ImageViewer images={product?.images || []} />
-      </div>
-
-     
-      <div className="description mb-20  px-6">
-      <div className="text-center mb-16">
-          <h2 className="text-4xl font-extralight text-gray-900 mb-6 tracking-wider">
-           Prodcut Description
-          </h2>
-          <div className="w-16 h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent mx-auto"></div>
-        </div>
-
-        <div className="max-w-4xl  ">
-          {(product?.description || dummyDescription).map((data) => (
-            <div className="text-gray-700 leading-relaxed" key={data.id}>
-              {data.id === 1 ? (
-                <p className="text-lg mb-6 font-light">{data.line}</p>
-              ) : (
-                <p className="mb-3 flex items-start gap-3">
-                  <span className="text-gray-400 mt-1">•</span>
-                  <span>{data.line}</span>
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="related_products">
-       
-  <div className="text-center mb-16">
-          <h2 className="text-4xl font-extralight text-gray-900 mb-6 tracking-wider">
-            Related Products
-          </h2>
-          <div className="w-16 h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent mx-auto"></div>
-        </div>
-        <div className="relative">
-     
-          <div className="hidden md:flex justify-between items-center absolute top-1/2 left-0 right-0 px-4 z-10 -translate-y-1/2">
-            <button 
-              onClick={() => scrollRef.current.scrollBy({ left: -300, behavior: 'smooth' })} 
-              className="bg-white shadow-lg border border-gray-200 px-3 py-3 rounded-full text-gray-700 hover:bg-gray-50 hover:shadow-xl transition-all duration-200"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button 
-              onClick={() => scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' })} 
-              className="bg-white shadow-lg border border-gray-200 px-3 py-3 rounded-full text-gray-700 hover:bg-gray-50 hover:shadow-xl transition-all duration-200"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
-
-         
-          <div ref={scrollRef} className="flex overflow-x-auto gap-6 px-16 no-scrollbar scroll-smooth">
-            {relatedProducts.map((item) => (
-              <div className="  py-6" key={item._id}>
-                <Card prop={item} isRelated={true} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-       {confirmLogin !== true && (
-          <div className="fixed inset-0 backdrop-blur-md bg-black/30 bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">Requires Login</h3>
-              <p className="text-gray-600 mb-6">You are not logged in please login first.</p>
-              <div className="flex justify-end gap-3">
-            
-                <button
-                  onClick={() => router.push('./Authentication')}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors"
-                >
-                  Login
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-            {sucess == true && (
-          <div className="fixed inset-0 backdrop-blur-md bg-black/30 bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">Sucess</h3>
-              <p className="text-gray-600 mb-6">Task perfrom sucessfully.</p>
-              <div className="flex justify-end gap-3">
-            
-                <button
-                  onClick={() => setSucess(false)}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium transition-colors"
-                >
-                  Ok
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-            {Alert == true && (
-          <div className="fixed inset-0 backdrop-blur-md bg-black/30 bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">Error</h3>
-              <p className="text-gray-600 mb-6">Some Thing Went Wrong.</p>
-              <div className="flex justify-end gap-3">
-            
-                <button
-                  onClick={() => setAlert(false)}
-                  className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors"
-                >
-                  Ok
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+    <div className=""><ProdcutInfo  product={product}
+  Size={Size}
+  setSize={setSize}
+  Counter={Counter}
+  setCounter={setCounter}
+  handleAddWishlist={handleAddWishlist}
+  handleAddCart={handleAddCart}
+  handleBuyNow={handleBuyNow}
+    />
+</div>
+      <div className="more_img mb-20 w-full "><ImageViewer images={product?.images || []} /> </div>
+      <div className="description"><ProdcutDescription product={product?.description} /></div>
+      <div className=""><ProductReviews/></div>
+      <div className="realetd"><RelatedProdcuts   prop={{pid: product._id,  category: product.category,  subcategory: product.subcategory}}  /></div>
+            {confirmLogin !== true && (<NotLogin/>)}
+            {sucess == true && (<Sucess/>)}
+            {Alert == true && (<Alert/>)}
     </div>
   );
 }

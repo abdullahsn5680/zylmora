@@ -1,16 +1,36 @@
 'use client'
-import React, { useState} from 'react';
+import React, { useState,useEffect} from 'react';
+import { useRouter } from 'next/navigation';
+import { safeFetch } from '@/Utils/safeFetch';
 import Link from 'next/link';
 import { Mail, Phone, MapPin, Facebook, Instagram, Twitter, Youtube, ArrowRight, Heart } from 'lucide-react';
 
 export default function ZylmoraFooter() {
-  const [email, setEmail] = useState('');
-
-  const handleNewsletterSubmit = (e) => {
-    e.preventDefault();
-   
-    console.log('Newsletter signup:', email);
-    setEmail('');
+    const router =useRouter();
+ const performAction = (cat,subCat) => {
+    const query = new URLSearchParams({
+      category: cat,
+      subcategory: subCat,
+    }).toString();
+    router.push(`/Collections?${query}`);
+  };
+    const [categoriesData, setCategoriesData] = useState([]);
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+  const fetchCategories = async () => {
+    try {
+    
+      const response = await safeFetch('/api/catagories', {}, 3600000);
+      if (response.success) {
+        setCategoriesData(response.categories || []);
+      } 
+    } catch (err) {
+      console.error('Error fetching categories:', err);
+     
+    } finally {
+     
+    }
   };
 
   return (
@@ -55,36 +75,14 @@ export default function ZylmoraFooter() {
             <div className="col-span-1">
               <h4 className="text-lg font-bold text-slate-800 mb-6">Shop</h4>
               <ul className="space-y-3">
-                <li>
-                  <Link href="#" className="text-slate-600 hover:text-slate-800 text-sm transition-colors duration-300 relative group">
-                    Men's Collection
+               {categoriesData.map((catagories,id)=>(<li key={id}>
+                  <span  onClick={()=>{performAction(catagories.cat,catagories.subCat)}} className="text-slate-600 hover:text-slate-800 text-sm transition-colors duration-300 relative group">
+                   {catagories.name}
                     <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-300 to-slate-800 group-hover:w-full transition-all duration-300"></div>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-slate-600 hover:text-slate-800 text-sm transition-colors duration-300 relative group">
-                    Women's Collection
-                    <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-300 to-slate-800 group-hover:w-full transition-all duration-300"></div>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-slate-600 hover:text-slate-800 text-sm transition-colors duration-300 relative group">
-                    Accessories
-                    <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-300 to-slate-800 group-hover:w-full transition-all duration-300"></div>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-slate-600 hover:text-slate-800 text-sm transition-colors duration-300 relative group">
-                    New Arrivals
-                    <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-300 to-slate-800 group-hover:w-full transition-all duration-300"></div>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-slate-600 hover:text-slate-800 text-sm transition-colors duration-300 relative group">
-                    Sale Items
-                    <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-300 to-slate-800 group-hover:w-full transition-all duration-300"></div>
-                  </Link>
-                </li>
+                  </span>
+                </li>))} 
+                
+                
               </ul>
             </div>
 
