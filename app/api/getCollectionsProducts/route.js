@@ -78,9 +78,11 @@ export async function GET(req) {
       }
 
    
-      const allProducts = await Product.find({});
-      
-  
+     let dbFilter = {};
+if (detectedGender) dbFilter.category = detectedGender;
+const allProducts = await Product.find(dbFilter).lean();
+
+
       const fuseOptions = {
         keys: [
           { name: 'title', weight: 0.3 },
@@ -107,7 +109,7 @@ export async function GET(req) {
      filter.category = detectedGender;
       }
 
-   
+
       let searchTerms = query;
       let genderDetectedFromQuery = false;
      

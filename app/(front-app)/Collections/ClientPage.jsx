@@ -1,9 +1,8 @@
 'use client';
 
-import { useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { Ban, Funnel, Search, X } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-
 import Filter from '@/app/Components/Opeartions/filter';
 import SortBy from '@/app/Components/Opeartions/SortBY';
 import Card from '@/app/Components/UI/Card/Card';
@@ -21,9 +20,9 @@ const INITIAL_PAGINATION = {
 };
 
 const SLIDE_TRANSITION_DELAY = 500;
-const DEBOUNCE_DELAY = 300; 
 
 export default function ClientPage() {
+  
   const [query, setQuery] = useContext(QueryContext);
   const [grid, setGrid] = useContext(GridContext);
   const [products, setProducts] = useState([]);
@@ -31,14 +30,16 @@ export default function ClientPage() {
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState(INITIAL_PAGINATION);
   const [isSlide, setIsSlide] = useContext(SlideBarContext);
+  const [currentPage, setCurrentPage] = useState(1);
   
-
-  const debounceRef = useRef(null);
-  const currentRequestRef = useRef(null);
+  
+  const isInitializedRef = useRef(false);
+  const lastQueryRef = useRef('');
+  const abortControllerRef = useRef(null);
   
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const {
     selectedCategory,
     selectedSubCategory,
@@ -56,71 +57,153 @@ export default function ClientPage() {
     q
   } = useContext(FilterContext);
 
-
-  const handleKeyDown = useCallback((e) => {
-    if (e.key === 'Enter') {
-      const queryParams = new URLSearchParams();
-      if (selectedCategory) queryParams.set('category', selectedCategory);
-      if (selectedSubCategory) queryParams.set('subcategory', selectedSubCategory);
-      if (searchQuery.trim()) queryParams.set('q', searchQuery.trim());
-      
-      setQ(searchQuery.trim());
-      const queryString = queryParams.toString();
-      router.push(`/Collections?${queryString}`);
-    }
-  }, [selectedCategory, selectedSubCategory, searchQuery, router, setQ]);
-
-  
-  useEffect(() => {
-    const category = searchParams.get('category');
-    const subcategory = searchParams.get('subcategory');
-    const size = searchParams.get('size')?.split(',').filter(Boolean) || [];
-    const minPrice = searchParams.get('minPrice');
-    const highPrice = searchParams.get('highPrice');
-    const sortBy = searchParams.get('sortBy');
-    const searchQ = searchParams.get('q');
-
-    if (category) setSelectedCategory(category);
-    if (subcategory) setSelectedSubCategory(subcategory);
-    if (size.length) setSelectedSizes(size);
-    if (minPrice) setSelectedMinPrice(minPrice);
-    if (highPrice) setSelectedHighPrice(highPrice);
-    if (sortBy) setSelectedSortBy(sortBy);
-    if (searchQ) {
-      setQ(searchQ);
-      setSearchQuery(searchQ);
-    }
-  }, [searchParams, setSelectedCategory, setSelectedSubCategory, setSelectedSizes, 
-      setSelectedMinPrice, setSelectedHighPrice, setSelectedSortBy, setQ]);
-
-  
-  useEffect(() => {
+ 
+  const generateQuery = useCallback(() => {
     const queryParams = new URLSearchParams();
-    
     if (selectedCategory) queryParams.set('category', selectedCategory);
     if (selectedSubCategory) queryParams.set('subcategory', selectedSubCategory);
     if (selectedSizes.length) queryParams.set('size', selectedSizes.join(','));
     if (selectedMinPrice) queryParams.set('minPrice', selectedMinPrice);
     if (selectedHighPrice) queryParams.set('highPrice', selectedHighPrice);
     if (selectedSortBy) queryParams.set('sortBy', selectedSortBy);
+    if (currentPage) queryParams.set('page', currentPage);
     if (q) queryParams.set('q', q);
+    return queryParams.toString();
+  }, [selectedCategory, selectedSubCategory, selectedSizes, selectedMinPrice, selectedHighPrice, selectedSortBy, currentPage, q]);
 
-    const queryStr = queryParams.toString();
-    setQuery(queryStr);
+  const fetchProducts = useCallback(async (queryString) => {
+    const shouldShowProducts = (selectedCategory && selectedSubCategory) || q;
+
+    if (!shouldShowProducts) {
+      setLoading(false);
+      setProducts([]);
+      setPagination(INITIAL_PAGINATION);
+      return;
+    }
+
+    if (!queryString) {
+      setLoading(false);
+      return;
+    }
+
+  
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
     
+    abortControllerRef.current = new AbortController();
     
-    const newUrl = queryStr ? `?${queryStr}` : window.location.pathname;
+    setLoading(true);
+
+    try {
+      console.log(`Making request: /api/getCollectionsProducts?${queryString}`);
+
+      const response = await safeFetch(
+        `/api/getCollectionsProducts?${queryString}`,
+        { signal: abortControllerRef.current.signal },
+        1
+      );
+
+      
+      if (abortControllerRef.current.signal.aborted) {
+        return;
+      }
+
+      if (response?.success && Array.isArray(response.products)) {
+        setProducts(response.products);
+        setPagination({
+          currentPage: response.currentPage,
+          totalPages: response.totalPages,
+          fromProduct: response.fromProduct,
+          toProduct: response.toProduct,
+          totalFilteredProducts: response.totalFilteredProducts,
+        });
+      } else {
+        setProducts([]);
+        setPagination(INITIAL_PAGINATION);
+      }
+    } catch (error) {
+      if (error.name !== 'AbortError') {
+        console.error('Error fetching products:', error);
+        setProducts([]);
+        setPagination(INITIAL_PAGINATION);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedCategory, selectedSubCategory, q]);
+
+  
+  const handleUpdateAndFetch = useCallback(async () => {
+    const queryString = generateQuery();
+    
+   
+    if (queryString === lastQueryRef.current) {
+      return;
+    }
+    
+    lastQueryRef.current = queryString;
+    setQuery(queryString);
+    
+  
+    const newUrl = queryString ? `?${queryString}` : window.location.pathname;
     window.history.replaceState(null, '', newUrl);
-  }, [
-    selectedCategory,
-    selectedSubCategory,
-    selectedSizes,
-    selectedSortBy,
-    selectedMinPrice,
-    selectedHighPrice,
-    q,
-    setQuery
-  ]);
+    
+    await fetchProducts(queryString);
+  }, [generateQuery, setQuery, fetchProducts]);
+
+ 
+  useEffect(() => {
+    if (isInitializedRef.current) return;
+    
+    const category = searchParams.get('category') || '';
+    const subcategory = searchParams.get('subcategory') || '';
+    const size = searchParams.get('size')?.split(',').filter(Boolean) || [];
+    const minPrice = searchParams.get('minPrice') || '';
+    const highPrice = searchParams.get('highPrice') || '';
+    const sortBy = searchParams.get('sortBy') || '';
+    const searchQ = searchParams.get('q') || '';
+    const pg = Number(searchParams.get('page') || 1);
+
+    setSelectedCategory(category);
+    setSelectedSubCategory(subcategory);
+    setSelectedSizes(size);
+    setSelectedMinPrice(minPrice);
+    setSelectedHighPrice(highPrice);
+    setSelectedSortBy(sortBy);
+    setCurrentPage(pg);
+    setQ(searchQ);
+    setSearchQuery(searchQ);
+    
+    isInitializedRef.current = true;
+  }, [searchParams, setSelectedCategory, setSelectedSubCategory, setSelectedSizes, setSelectedMinPrice, setSelectedHighPrice, setSelectedSortBy, setQ]);
+
+  useEffect(() => {
+    if (!isInitializedRef.current) return;
+
+    const timeoutId = setTimeout(() => {
+      handleUpdateAndFetch();
+    }, 100); 
+
+    return () => clearTimeout(timeoutId);
+  }, [selectedCategory, selectedSubCategory, selectedSizes, selectedMinPrice, selectedHighPrice, selectedSortBy, currentPage, q, handleUpdateAndFetch]);
+
+
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
+
+  
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Enter') {
+      setQ(e.target.value);
+    }
+  }, [setQ]);
+
   const handleFilterSlide = useCallback((route) => {
     if (isSlide !== 'false') {
       setIsSlide('false');
@@ -132,119 +215,10 @@ export default function ClientPage() {
     }
   }, [isSlide, setIsSlide]);
 
-  
-  useEffect(() => {
-    const shouldShowProducts = (selectedCategory && selectedSubCategory) || q;
-    
-    if (!shouldShowProducts) {
-      setLoading(false);
-      setProducts([]);
-      setPagination(INITIAL_PAGINATION);
-      return;
-    }
-
-    if (!query) {
-      setLoading(false);
-      return;
-    }
-
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
-
-    if (currentRequestRef.current) {
-      currentRequestRef.current.abort();
-    }
-
-   
-    debounceRef.current = setTimeout(() => {
-      const abortController = new AbortController();
-      currentRequestRef.current = abortController;
-
-      const fetchProducts = async () => {
-        setLoading(true);
-        
-        try {
-          console.log(`Making request: /api/getCollectionsProducts?${query}`);
-          
-          const response = await safeFetch(
-            `/api/getCollectionsProducts?${query}`, 
-            { signal: abortController.signal }, 
-            3600000
-          );
-        
-          if (abortController.signal.aborted) {
-            console.log('Request was cancelled');
-            return;
-          }
-          
-          if (response?.success && Array.isArray(response.products)) {
-            setProducts(response.products);
-            setPagination({
-              currentPage: response.currentPage,
-              totalPages: response.totalPages,
-              fromProduct: response.fromProduct,
-              toProduct: response.toProduct,
-              totalFilteredProducts: response.totalFilteredProducts,
-            });
-          } else {
-            setProducts([]);
-            setPagination(INITIAL_PAGINATION);
-          }
-        } catch (error) {
-
-          if (!abortController.signal.aborted) {
-            console.error('Error fetching products:', error);
-            setProducts([]);
-            setPagination(INITIAL_PAGINATION);
-          }
-        } finally {
-          if (!abortController.signal.aborted) {
-            setLoading(false);
-          }
-          
-          if (currentRequestRef.current === abortController) {
-            currentRequestRef.current = null;
-          }
-        }
-      };
-
-      fetchProducts();
-    }, DEBOUNCE_DELAY);
-
-  
-    return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-      }
-      if (currentRequestRef.current) {
-        currentRequestRef.current.abort();
-        currentRequestRef.current = null;
-      }
-    };
-  }, [query, q, selectedCategory, selectedSubCategory]);
-
-  
   const handleClearSearch = useCallback(() => {
-    const queryParams = new URLSearchParams();
-    
     setQ('');
     setSearchQuery('');
-    
-    if (selectedCategory) queryParams.set('category', selectedCategory);
-    if (selectedSubCategory) queryParams.set('subcategory', selectedSubCategory);
-    if (selectedSizes.length) queryParams.set('size', selectedSizes.join(','));
-    if (selectedMinPrice) queryParams.set('minPrice', selectedMinPrice);
-    if (selectedHighPrice) queryParams.set('highPrice', selectedHighPrice);
-    if (selectedSortBy) queryParams.set('sortBy', selectedSortBy);
-
-    const queryStr = queryParams.toString();
-    setQuery(queryStr);
-    
-    const newUrl = queryStr ? `?${queryStr}` : window.location.pathname;
-    window.history.replaceState(null, '', newUrl);
-  }, [selectedCategory, selectedSubCategory, selectedSizes, selectedMinPrice, 
-      selectedHighPrice, selectedSortBy, setQ, setQuery]);
+  }, [setQ]);
 
  
   const shouldShowProducts = (selectedCategory && selectedSubCategory) || q;
@@ -256,7 +230,7 @@ export default function ClientPage() {
 
   return (
     <div className="px-3 w-full mx-auto flex flex-col bg-slate-50 min-h-screen">
-     
+    
       <div className="filters w-full hidden mt-10 z-1 lg:flex items-center justify-between bg-white/90 backdrop-blur-xl rounded-2xl border border-slate-200/60 shadow-lg hover:shadow-2xl p-6 mb-8 transition-all duration-500 hover:-translate-y-1">
         <div className="flex-1 mr-6">
           <Filter />
@@ -266,13 +240,12 @@ export default function ClientPage() {
         </div>
       </div>
 
-   
+     
       <div className="separator w-full h-px bg-gradient-to-r from-transparent via-slate-400/60 to-transparent mb-8 hidden lg:flex relative">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-300/30 to-transparent blur-sm"></div>
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-slate-400 rounded-full opacity-60"></div>
       </div>
 
-   
       <div className="operations lg:hidden mt-5 flex z-1 justify-between items-center py-3 px-3 bg-white/95 backdrop-blur-xl rounded-2xl border border-slate-200/60 shadow-lg hover:shadow-2xl mb-8 transition-all duration-500 hover:-translate-y-1">
         <button
           onClick={() => handleFilterSlide('filter')}
@@ -287,7 +260,6 @@ export default function ClientPage() {
           </span>
         </button>
 
-      
         <div className="searchbar flex items-center bg-white text-slate-800 rounded-xl px-3 py-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-slate-200 flex-1 mx-2 max-w-[140px]">
           <Search className="w-3.5 h-3.5 text-slate-600" />
           <input
@@ -320,7 +292,9 @@ export default function ClientPage() {
           </div>
         </div>
       </div>
-   <div className={`items w-full grid mt-5 justify-center gap-2 sm:gap-6 ${grid} lg:grid-cols-4 xl:grid-cols-4 transition-all duration-300`}>
+
+      
+      <div className={`items w-full grid mt-5 justify-center gap-2 sm:gap-6 ${grid} lg:grid-cols-4 xl:grid-cols-4 transition-all duration-300`}>
         {!shouldShowProducts ? (
           <EmptyStateMessage
             icon="🏬"
@@ -343,11 +317,12 @@ export default function ClientPage() {
         )}
       </div>
 
-   
+     
       {pagination.totalFilteredProducts > 0 && (
         <div className="w-full flex justify-center items-center mt-12 mb-8">
           <div className="bg-white rounded-2xl shadow-lg border border-slate-200/50 p-6 hover:shadow-xl transition-all duration-300">
             <Nextpage
+              setCurrentPage={setCurrentPage}
               currentPage={pagination.currentPage}
               totalPages={pagination.totalPages}
               from={pagination.fromProduct}
