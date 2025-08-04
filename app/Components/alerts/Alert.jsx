@@ -1,7 +1,7 @@
 import React from 'react'
 
                  
-function Alert({setAlert}) {
+function Alert({setShowAlert}) {
   return (
       <div className="fixed inset-0 backdrop-blur-md bg-black/30 bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
@@ -10,7 +10,7 @@ function Alert({setAlert}) {
               <div className="flex justify-end gap-3">
             
                 <button
-                  onClick={() => setAlert(false)}
+                  onClick={() => setShowAlert(false)}
                   className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors"
                 >
                   Ok

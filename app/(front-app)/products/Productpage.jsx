@@ -13,6 +13,7 @@ import ProdcutDescription from "@/app/Components/pages/prodcuts/ProductDescripti
 import NotLogin from "@/app/Components/alerts/NotLogin";
 import Sucess from "@/app/Components/alerts/Sucess";
 import Order_Summary from "@/app/Components/pages/Order/Order_Summary";
+import Alert from "@/app/Components/alerts/Alert";
 import Pop_Loader from "@/app/Components/alerts/popLoader";
 import Complete_Order from "@/app/Components/pages/Order/Complete_Order";
 function ProductPage() {
@@ -247,13 +248,13 @@ function ProductPage() {
       <div className="more_img mb-20 w-full ">
         <ImageViewer images={product?.images || []} />{" "}
       </div>
-      <div className="description">
+      <div className="description mb-20 w-full">
         <ProdcutDescription product={product?.description} />
       </div>
-      <div className="">
-        <ProductReviews setPopLoader={setPopLoader} prop ={{pid:product._id,uid:user?._id}} setSucess={setSucess}   setShowAlert={setShowAlert}/>
+      <div className="mb-20 w-full">
+        <ProductReviews setPopLoader={setPopLoader} setConfirmLogin={setConfirmLogin} prop ={{pid:product._id,uid:user?._id}} setSucess={setSucess}   setShowAlert={setShowAlert}/>
       </div>
-      <div className="realetd">
+      <div className="realetd mb-20 w-full">
         <RelatedProdcuts
           prop={{
             pid: product._id,
@@ -263,9 +264,9 @@ function ProductPage() {
         />
       </div>
       {confirmLogin !== true && <NotLogin />}
-       {sucess == true && <Sucess setSucess={setSucess}/>}
-        {showAlert == true && <Alert setShowAlert={setShowAlert} />}
-        {popLoader == true && <Pop_Loader setPopLoader={setPopLoader} />}
+      {sucess == true && <Sucess setSucess={setSucess}/>}
+      {showAlert == true && <Alert setShowAlert={setShowAlert} />}
+      {popLoader == true && <Pop_Loader setPopLoader={setPopLoader} />}
     </div>
   );
 }

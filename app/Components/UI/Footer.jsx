@@ -1,121 +1,128 @@
 'use client'
-import React, { useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { safeFetch } from '@/Utils/safeFetch';
 import Link from 'next/link';
 import { Mail, Phone, MapPin, Facebook, Instagram, Twitter, Youtube, ArrowRight, Heart } from 'lucide-react';
 
 export default function ZylmoraFooter() {
-    const router =useRouter();
- const performAction = (cat,subCat) => {
+  const router = useRouter();
+  
+  const performAction = (cat, subCat) => {
     const query = new URLSearchParams({
       category: cat,
       subcategory: subCat,
     }).toString();
     router.push(`/Collections?${query}`);
   };
-    const [categoriesData, setCategoriesData] = useState([]);
+  
+  const [categoriesData, setCategoriesData] = useState([]);
+  
   useEffect(() => {
     fetchCategories();
   }, []);
+  
   const fetchCategories = async () => {
     try {
-    
       const response = await safeFetch('/api/catagories', {}, 3600000);
       if (response.success) {
         setCategoriesData(response.categories || []);
       } 
     } catch (err) {
       console.error('Error fetching categories:', err);
-     
-    } finally {
-     
     }
   };
 
   return (
     <footer className="bg-white border-t border-slate-100">
-    
-     
-
-      <div className="py-12 lg:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-         
-            <div className="col-span-2 lg:col-span-1">
-              <div className="flex items-center space-x-2 mb-6 group">
-                <div className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                  <span className="text-white font-bold text-xl">Z</span>
+      <div className="py-8 sm:py-12 lg:py-16">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            
+          
+            <div className="col-span-1 sm:col-span-2 lg:col-span-1 text-center sm:text-left">
+              <div className="flex items-center justify-center sm:justify-start space-x-2 mb-4 sm:mb-6 group">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-slate-800 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                  <span className="text-white font-bold text-lg sm:text-xl">Z</span>
                 </div>
-                <span className="text-2xl font-bold text-slate-800 tracking-tight">Zylmoraa</span>
+                <span className="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">Zylmoraa</span>
               </div>
               
-              <p className="text-slate-600 text-sm mb-6 leading-relaxed">
+              <p className="text-slate-600 text-xs sm:text-sm mb-4 sm:mb-6 leading-relaxed max-w-sm mx-auto sm:mx-0">
                 Premium clothing brand dedicated to bringing you the latest fashion trends with exceptional quality and style.
               </p>
-              
-             
-              <div className="flex space-x-3">
+            
+              <div className="flex justify-center sm:justify-start space-x-2 sm:space-x-3">
                 <Link href="#" className="p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-all duration-300 hover:scale-110">
-                  <Facebook className="w-5 h-5" />
+                  <Facebook className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Link>
                 <Link href="#" className="p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-all duration-300 hover:scale-110">
-                  <Instagram className="w-5 h-5" />
+                  <Instagram className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Link>
                 <Link href="#" className="p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-all duration-300 hover:scale-110">
-                  <Twitter className="w-5 h-5" />
+                  <Twitter className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Link>
                 <Link href="#" className="p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-all duration-300 hover:scale-110">
-                  <Youtube className="w-5 h-5" />
+                  <Youtube className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Link>
               </div>
             </div>
 
-            
+           
             <div className="col-span-1">
-              <h4 className="text-lg font-bold text-slate-800 mb-6">Shop</h4>
-              <ul className="space-y-3">
-               {categoriesData.map((catagories,id)=>(<li key={id}>
-                  <span  onClick={()=>{performAction(catagories.cat,catagories.subCat)}} className="text-slate-600 hover:text-slate-800 text-sm transition-colors duration-300 relative group">
-                   {catagories.name}
-                    <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-300 to-slate-800 group-hover:w-full transition-all duration-300"></div>
-                  </span>
-                </li>))} 
-                
-                
+              <h4 className="text-base sm:text-lg font-bold text-slate-800 mb-4 sm:mb-6 text-center sm:text-left">Shop</h4>
+              <ul className="space-y-2 sm:space-y-3">
+                {categoriesData.slice(0, 6).map((category, id) => (
+                  <li key={id} className="text-center sm:text-left">
+                    <span 
+                      onClick={() => { performAction(category.cat, category.subCat) }} 
+                      className="text-slate-600 hover:text-slate-800 text-xs sm:text-sm transition-colors duration-300 relative group cursor-pointer inline-block"
+                    >
+                      {category.name}
+                      <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-300 to-slate-800 group-hover:w-full transition-all duration-300"></div>
+                    </span>
+                  </li>
+                ))}
+                {categoriesData.length > 6 && (
+                  <li className="text-center sm:text-left">
+                    <span className="text-slate-500 text-xs sm:text-sm">
+                      +{categoriesData.length - 6} more
+                    </span>
+                  </li>
+                )}
               </ul>
             </div>
 
-    
+           
             <div className="col-span-1">
-              <h4 className="text-lg font-bold text-slate-800 mb-6">Support</h4>
-              <ul className="space-y-3">
-                <li>
-                  <Link href="#" className="text-slate-600 hover:text-slate-800 text-sm transition-colors duration-300 relative group">
+              <h4 className="text-base sm:text-lg font-bold text-slate-800 mb-4 sm:mb-6 text-center sm:text-left">Support</h4>
+              <ul className="space-y-2 sm:space-y-3">
+                <li className="text-center sm:text-left">
+                  <Link href="#" className="text-slate-600 hover:text-slate-800 text-xs sm:text-sm transition-colors duration-300 relative group inline-block">
                     Size Guide
                     <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-300 to-slate-800 group-hover:w-full transition-all duration-300"></div>
                   </Link>
                 </li>
-                <li>
-                  <Link href="#" className="text-slate-600 hover:text-slate-800 text-sm transition-colors duration-300 relative group">
+                <li className="text-center sm:text-left">
+                  <Link href="#" className="text-slate-600 hover:text-slate-800 text-xs sm:text-sm transition-colors duration-300 relative group inline-block">
                     Shipping Info
                     <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-300 to-slate-800 group-hover:w-full transition-all duration-300"></div>
                   </Link>
                 </li>
-                <li>
-                  <Link href="#" className="text-slate-600 hover:text-slate-800 text-sm transition-colors duration-300 relative group">
+                <li className="text-center sm:text-left">
+                  <Link href="#" className="text-slate-600 hover:text-slate-800 text-xs sm:text-sm transition-colors duration-300 relative group inline-block">
                     Returns & Exchanges
                     <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-300 to-slate-800 group-hover:w-full transition-all duration-300"></div>
                   </Link>
                 </li>
-                <li>
-                  <Link href="#" className="text-slate-600 hover:text-slate-800 text-sm transition-colors duration-300 relative group">
+                <li className="text-center sm:text-left">
+                  <Link href="#" className="text-slate-600 hover:text-slate-800 text-xs sm:text-sm transition-colors duration-300 relative group inline-block">
                     FAQ
                     <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-300 to-slate-800 group-hover:w-full transition-all duration-300"></div>
                   </Link>
                 </li>
-                <li>
-                  <Link href="#" className="text-slate-600 hover:text-slate-800 text-sm transition-colors duration-300 relative group">
+                <li className="text-center sm:text-left">
+                  <Link href="#" className="text-slate-600 hover:text-slate-800 text-xs sm:text-sm transition-colors duration-300 relative group inline-block">
                     Contact Us
                     <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-300 to-slate-800 group-hover:w-full transition-all duration-300"></div>
                   </Link>
@@ -123,36 +130,36 @@ export default function ZylmoraFooter() {
               </ul>
             </div>
 
-          
-            <div className="col-span-2 lg:col-span-1">
-              <h4 className="text-lg font-bold text-slate-800 mb-6">Contact</h4>
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3 group">
-                  <div className="p-2 bg-slate-100 rounded-lg group-hover:bg-slate-200 transition-colors duration-300">
-                    <MapPin className="w-4 h-4 text-slate-600" />
+           
+            <div className="col-span-1 sm:col-span-2 lg:col-span-1">
+              <h4 className="text-base sm:text-lg font-bold text-slate-800 mb-4 sm:mb-6 text-center sm:text-left">Contact</h4>
+              <div className="space-y-3 sm:space-y-4">
+                <div className="flex items-start justify-center sm:justify-start space-x-3 group">
+                  <div className="p-1.5 sm:p-2 bg-slate-100 rounded-lg group-hover:bg-slate-200 transition-colors duration-300 flex-shrink-0">
+                    <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-slate-600" />
                   </div>
-                  <div>
-                    <p className="text-sm text-slate-600 leading-relaxed">
+                  <div className="text-center sm:text-left">
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                       123 Fashion Street<br />
                       New York, NY 10001
                     </p>
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-3 group">
-                  <div className="p-2 bg-slate-100 rounded-lg group-hover:bg-slate-200 transition-colors duration-300">
-                    <Phone className="w-4 h-4 text-slate-600" />
+                <div className="flex items-center justify-center sm:justify-start space-x-3 group">
+                  <div className="p-1.5 sm:p-2 bg-slate-100 rounded-lg group-hover:bg-slate-200 transition-colors duration-300 flex-shrink-0">
+                    <Phone className="w-3 h-3 sm:w-4 sm:h-4 text-slate-600" />
                   </div>
-                  <Link href="tel:+1234567890" className="text-sm text-slate-600 hover:text-slate-800 transition-colors">
+                  <Link href="tel:+1234567890" className="text-xs sm:text-sm text-slate-600 hover:text-slate-800 transition-colors">
                     +1 (234) 567-8900
                   </Link>
                 </div>
                 
-                <div className="flex items-center space-x-3 group">
-                  <div className="p-2 bg-slate-100 rounded-lg group-hover:bg-slate-200 transition-colors duration-300">
-                    <Mail className="w-4 h-4 text-slate-600" />
+                <div className="flex items-center justify-center sm:justify-start space-x-3 group">
+                  <div className="p-1.5 sm:p-2 bg-slate-100 rounded-lg group-hover:bg-slate-200 transition-colors duration-300 flex-shrink-0">
+                    <Mail className="w-3 h-3 sm:w-4 sm:h-4 text-slate-600" />
                   </div>
-                  <Link href="mailto:hello@zylmora.com" className="text-sm text-slate-600 hover:text-slate-800 transition-colors">
+                  <Link href="mailto:hello@zylmora.com" className="text-xs sm:text-sm text-slate-600 hover:text-slate-800 transition-colors break-all">
                     hello@zylmora.com
                   </Link>
                 </div>
@@ -163,19 +170,19 @@ export default function ZylmoraFooter() {
       </div>
 
     
-      <div className="border-t border-slate-100 py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
-            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm text-slate-600">
-              <p className="flex items-center">
-                © 2025 Zylmora. Made with <Heart className="w-4 h-4 mx-1 text-red-500" /> for fashion lovers.
+      <div className="border-t border-slate-100 py-4 sm:py-6">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+          <div className="flex flex-col items-center space-y-3 sm:space-y-4 lg:flex-row lg:justify-between lg:items-center lg:space-y-0">
+            <div className="text-center lg:text-left">
+              <p className="flex items-center justify-center lg:justify-start text-xs sm:text-sm text-slate-600">
+                © 2025 Zylmora. Made with <Heart className="w-3 h-3 sm:w-4 sm:h-4 mx-1 text-red-500" /> for fashion lovers.
               </p>
             </div>
             
-            <div className="flex flex-wrap justify-center lg:justify-end items-center space-x-6 text-sm">
-              <Link href="/Privcay_Policy" className="text-slate-600 hover:text-slate-800 transition-colors duration-300">Privacy Policy</Link>
-              <Link href="/Terms_Conditions" className="text-slate-600 hover:text-slate-800 transition-colors duration-300">Terms of Service</Link>
-              <Link href="/Cookie_Policy" className="text-slate-600 hover:text-slate-800 transition-colors duration-300">Cookie Policy</Link>
+            <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6 text-xs sm:text-sm">
+              <Link href="/Privcay_Policy" className="text-slate-600 hover:text-slate-800 transition-colors duration-300 whitespace-nowrap">Privacy Policy</Link>
+              <Link href="/Terms_Conditions" className="text-slate-600 hover:text-slate-800 transition-colors duration-300 whitespace-nowrap">Terms of Service</Link>
+              <Link href="/Cookie_Policy" className="text-slate-600 hover:text-slate-800 transition-colors duration-300 whitespace-nowrap">Cookie Policy</Link>
             </div>
           </div>
         </div>

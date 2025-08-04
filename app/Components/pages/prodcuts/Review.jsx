@@ -3,7 +3,7 @@ import { Star, ThumbsUp, ThumbsDown, Filter, Search, ChevronDown, User, Heart, P
 import { safeFetch } from '@/Utils/safeFetch';
 
 
-export default function ZylmaProductReviews({prop,setShowAlert,setSucess,setPopLoader}) {
+export default function ZylmaProductReviews({prop,setShowAlert,setSucess,setPopLoader,setConfirmLogin}) {
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [searchTerm, setSearchTerm] = useState('');
@@ -46,10 +46,18 @@ export default function ZylmaProductReviews({prop,setShowAlert,setSucess,setPopL
 
 
   const handleSubmitReview = async () => {
+   
     setPopLoader(true)
     setShowAddReview(false)
     if (!newReview.name || !newReview.title || !newReview.content  || !pid   || !uid ) {
-      return;
+        if(!newReview.name || !newReview.title || !newReview.content  || !pid ){
+       setShowAlert(true)
+        }else{
+          setConfirmLogin(false)
+        }
+       setPopLoader(false)
+    
+  return
     }
     newReview.pid =pid;
     newReview.uid =uid;
@@ -138,24 +146,35 @@ try {
       <div className="max-w-6xl mx-auto px-2 sm:px-4 lg:px-8">
         
        
-        <div className="mb-8 flex items-center justify-between bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-          <div className=''>  
-            <h3 className=" flex gap-2 items-center text-xl lg:text-3xl font-bold text-slate-800 mb-2 transition-colors"> <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="#FFD700">
-  <path d="M24 4l5.09 10.26 11.36 1.65-8.23 8.02 1.94 11.33L24 30.77l-10.16 5.33 1.94-11.33-8.23-8.02 11.36-1.65L24 4z"/>
-</svg>
- Customer Reviews</h3>
-            <p className="text-sm lg:text-base text-slate-600">
-              See what our customers are saying about this product
-            </p>
-          </div>
-          <button
-            onClick={() => setShowAddReview(true)}
-            className="bg-slate-100 text-slate-800 hover:bg-slate-800 hover:text-white hover:scale-105 px-4 py-2 rounded-md font-medium text-sm transition-all duration-300 flex items-center gap-2 shadow-sm hover:shadow-lg"
-          >
-            <Plus className="w-4 h-4" />
-            Add Review
-          </button>
-        </div>
+       <div className="mb-4 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 bg-white rounded-xl sm:rounded-2xl p-3 sm:p-6 shadow-sm border border-slate-100">
+  <div className="">  
+    <h3 className="flex gap-2 items-center text-lg sm:text-xl lg:text-3xl font-bold text-slate-800 mb-1 sm:mb-2 transition-colors"> 
+      <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        width="24" 
+        height="24" 
+        className="sm:w-8 sm:h-8 lg:w-12 lg:h-12 flex-shrink-0" 
+        viewBox="0 0 48 48" 
+        fill="#FFD700"
+      >
+        <path d="M24 4l5.09 10.26 11.36 1.65-8.23 8.02 1.94 11.33L24 30.77l-10.16 5.33 1.94-11.33-8.23-8.02 11.36-1.65L24 4z"/>
+      </svg>
+      Customer Reviews
+    </h3>
+    <p className="text-xs sm:text-sm lg:text-base text-slate-600">
+      See what our customers are saying about this product
+    </p>
+  </div>
+  
+  <button
+    onClick={() => setShowAddReview(true)}
+    className="bg-slate-100 text-slate-800 hover:bg-slate-800 hover:text-white hover:scale-105 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-md font-medium text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-sm hover:shadow-lg whitespace-nowrap self-start sm:self-auto"
+  >
+    <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
+    <span className="hidden xs:inline">Add Review</span>
+    <span className="xs:hidden">Add</span>
+  </button>
+</div>
 
    
         {showAddReview && (
