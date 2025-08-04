@@ -1,85 +1,24 @@
-import React, { useState } from 'react';
-import { Star, ThumbsUp, ThumbsDown, Filter, Search, ChevronDown, User, Heart, Plus, X } from 'lucide-react';
+import React, { useState,useEffect } from 'react';
+import { Star, ThumbsUp, ThumbsDown, Filter, Search, ChevronDown, User, Heart, Plus, X, Trash2 } from 'lucide-react';
+import { safeFetch } from '@/Utils/safeFetch';
 
-export default function ZylmaProductReviews() {
+
+export default function ZylmaProductReviews({prop,setShowAlert,setSucess,setPopLoader}) {
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [searchTerm, setSearchTerm] = useState('');
-  const [likedReviews, setLikedReviews] = useState(new Set());
   const [showAddReview, setShowAddReview] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+  const uid = prop?.uid;
+  const pid = prop?.pid;
   const [newReview, setNewReview] = useState({
     name: '',
     rating: 5,
-    productSize: 'Medium',
-    productColor: 'Black',
     title: '',
     content: ''
   });
 
-  const [reviews, setReviews] = useState([
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      rating: 5,
-      date: "2025-01-15",
-      productSize: "Medium",
-      productColor: "Navy Blue",
-      title: "Absolutely love this piece!",
-      content: "The quality is outstanding and the fit is perfect. I've received so many compliments when wearing this. The fabric feels premium and the stitching is flawless. Definitely worth every penny!",
-      helpful: 24,
-     
-    },
-    {
-      id: 2,
-      name: "Michael Chen",
-      rating: 4,
-      date: "2025-01-12",
-      productSize: "Large",
-      productColor: "Black",
-      title: "Great quality, runs slightly small",
-      content: "Really impressed with the material and craftsmanship. The design is exactly what I was looking for. Only issue is it runs a bit small, so I'd recommend sizing up. Customer service was excellent when I had questions.",
-      helpful: 18,
-      
-    },
-    {
-      id: 3,
-      name: "Emma Rodriguez",
-      rating: 5,
-      date: "2025-01-10",
-      productSize: "Small",
-      productColor: "White",
-      title: "Perfect for any occasion",
-      content: "This has become my go-to piece! I can dress it up for work or down for weekends. The versatility is amazing and it holds up well after multiple washes. Fast shipping too!",
-      helpful: 31,
-    
-    },
-    {
-      id: 4,
-      name: "David Park",
-      rating: 3,
-      date: "2025-01-08",
-      productSize: "Medium",
-      productColor: "Gray",
-      title: "Good but not exceptional",
-      content: "It's a decent piece but I expected more for the price point. The design is nice but the material feels a bit thin. Not bad, just not what I was hoping for based on the photos.",
-      helpful: 12,
-     
-    },
-    {
-      id: 5,
-      name: "Lisa Thompson",
-      rating: 5,
-      date: "2025-01-05",
-      productSize: "Large",
-      productColor: "Rose Gold",
-      title: "Exceeded my expectations!",
-      content: "I was hesitant to order online but this completely exceeded my expectations. The color is even more beautiful in person and the fit is incredibly flattering. Will definitely be ordering more from Zylma!",
-      helpful: 27,
-      
-    }
-  ]);
+  const [reviews, setReviews] = useState([]);
 
   const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
   const ratingDistribution = [5, 4, 3, 2, 1].map(rating => 
@@ -99,56 +38,42 @@ export default function ZylmaProductReviews() {
       case 'oldest': return new Date(a.date) - new Date(b.date);
       case 'highest': return b.rating - a.rating;
       case 'lowest': return a.rating - b.rating;
-      case 'helpful': return b.helpful - a.helpful;
+   
       default: return 0;
     }
   });
 
-  const toggleLike = (reviewId) => {
-    const newLiked = new Set(likedReviews);
-    if (newLiked.has(reviewId)) {
-      newLiked.delete(reviewId);
-    } else {
-      newLiked.add(reviewId);
-    }
-    setLikedReviews(newLiked);
-  };
+
 
   const handleSubmitReview = async () => {
-   
-    if (!newReview.name || !newReview.title || !newReview.content) {
+    setPopLoader(true)
+    setShowAddReview(false)
+    if (!newReview.name || !newReview.title || !newReview.content  || !pid   || !uid ) {
       return;
     }
+    newReview.pid =pid;
+    newReview.uid =uid;
+try {
+  const res = await safeFetch('/api/Review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newReview), 
+      });
+ setReviews(res)
+      setPopLoader(false)
+      setSucess(true);
+  
     
-    setIsSubmitting(true);
-
-   
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    const review = {
-      id: Math.max(...reviews.map(r => r.id)) + 1,
-      name: newReview.name,
-      rating: newReview.rating,
-      date: new Date().toISOString().split('T')[0],
-      productSize: newReview.productSize,
-      productColor: newReview.productColor,
-      title: newReview.title,
-      content: newReview.content,
-      helpful: 0,
-     
-    };
-
-    setReviews([review, ...reviews]);
-    setNewReview({
-      name: '',
-      rating: 5,
-      productSize: 'Medium',
-      productColor: 'Black',
-      title: '',
-      content: ''
-    });
-    setIsSubmitting(false);
-    setShowAddReview(false);
+} catch (error) {
+      setPopLoader(false)
+  setShowAlert(true)
+  console.log(err);
+}
+  
+    setNewReview({ name: '',
+    rating: 5,
+    title: '',
+    content: '',})
   };
 
   const renderStars = (rating, size = 'w-4 h-4', interactive = false, onRatingChange = null) => {
@@ -162,7 +87,52 @@ export default function ZylmaProductReviews() {
       />
     ));
   };
+   useEffect(()=>{
+    async function getData() {
+  try {
+    const params = new URLSearchParams();
+params.set('pid', pid);
+const  query = params.toString();
+        const res = await safeFetch(`/api/Review?${query}`,{},0);
 
+    if (!res) {
+      
+      throw new Error("Failed to fetch reviews");
+    }
+
+    const data = res
+   setReviews(data)
+  } catch (err) {
+    console.error("Caught error:", err.message);
+    return null;
+  }
+}
+getData();
+   },[])
+const handledelete =async(id,uid)=>{
+  setPopLoader(true)
+      const params = new URLSearchParams();
+  params.set('id', id);
+  params.set('uid',uid)
+const  query = params.toString();
+try {
+  const res = await safeFetch(`/api/Review?${query}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+         
+      });
+       setPopLoader(false)
+  setSucess(true)
+  setReviews((prev) => prev.filter(r => r._id !== id)) 
+
+
+} catch (error) {
+      setPopLoader(false)
+  setShowAlert(true)
+  console.log(err);
+}
+}
+   
   return (
     <section className="py-6 lg:py-12">
       <div className="max-w-6xl mx-auto px-2 sm:px-4 lg:px-8">
@@ -357,7 +327,7 @@ export default function ZylmaProductReviews() {
                     <option value="oldest">Oldest</option>
                     <option value="highest">Highest Rated</option>
                     <option value="lowest">Lowest Rated</option>
-                    <option value="helpful">Most Helpful</option>
+                    
                   </select>
                   <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-slate-400 pointer-events-none" />
                 </div>
@@ -367,7 +337,7 @@ export default function ZylmaProductReviews() {
         
             <div className="space-y-4">
               {sortedReviews.slice(0, 3).map((review) => (
-                <div key={review.id} className="bg-white rounded-xl shadow-sm border border-slate-100 p-4 lg:p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div key={review._id} className="bg-white rounded-xl shadow-sm border border-slate-100 p-4 lg:p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                 
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center flex-shrink-0">
@@ -383,12 +353,9 @@ export default function ZylmaProductReviews() {
                           {new Date(review.date).toLocaleDateString()}
                         </span>
                       </div>
-                      <div className="flex flex-wrap gap-1 text-xs text-slate-500">
-                        <span>{review.productSize}</span>
-                        <span>•</span>
-                        <span>{review.productColor}</span>
-                      </div>
+                     
                     </div>
+                   {review?.uid==uid &&<div onClick={()=>handledelete(review._id,uid)} className="flex text-red-600"><Trash2 width={22}/></div>}
                   </div>
 
                
@@ -397,22 +364,7 @@ export default function ZylmaProductReviews() {
                     <p className="text-slate-600 text-sm leading-relaxed line-clamp-3">{review.content}</p>
                   </div>
 
-                  <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                    <button
-                      onClick={() => toggleLike(review.id)}
-                      className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-all duration-300 ${
-                        likedReviews.has(review.id)
-                          ? 'bg-red-50 text-red-600 hover:bg-red-100'
-                          : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
-                      }`}
-                    >
-                      <Heart className={`w-3 h-3 ${likedReviews.has(review.id) ? 'fill-current' : ''}`} />
-                      <span>Helpful ({review.helpful + (likedReviews.has(review.id) ? 1 : 0)})</span>
-                    </button>
-                    <div className="text-xs text-slate-400">
-                      #{review.id}
-                    </div>
-                  </div>
+                
                 </div>
               ))}
             </div>

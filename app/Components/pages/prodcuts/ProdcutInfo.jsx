@@ -3,14 +3,67 @@ import React from 'react'
 import { Heart } from 'lucide-react'
 import Image from 'next/image'
 
-function ProdcutInfo( { product,
+function ProdcutInfo({
+  product,
   Size,
   setSize,
   Counter,
   setCounter,
-  handleAddWishlist,
-  handleAddCart,
-  handleBuyNow}) {
+  session,
+  setConfirmLogin,
+  setSucess,
+  setShowAlert,
+  setShowOrderForm
+}) {
+
+  const handleAddWishlist = async () => {
+    if (!product) return;
+    if (!session?.user?.email) return setConfirmLogin(false)
+
+    try {
+      const res = await fetch('/api/Wishlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: session.user.email, product }),
+      });
+
+      await res.json();
+      setSucess(true)
+    } catch (err) {
+      console.error('Error adding to wishlist:', err);
+      setShowAlert(true)
+    }
+  };
+
+  const handleAddCart = async () => {
+    if (!Size || !product) return;
+    if (!session?.user?.email) return setConfirmLogin(true)
+
+    try {
+      const res = await fetch('/api/Cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: session.user.email,
+          product,
+          quantity: Counter,
+          size: Size.size || Size,
+        }),
+      });
+
+      await res.json();
+      setSucess(true)
+    } catch (err) {
+      console.error('Error adding to cart:', err);
+      setShowAlert(true)
+    }
+  };
+
+  const handleBuyNow = () => {
+    if (!Size || !session?.user?.email) return setConfirmLogin(false);
+    setShowOrderForm(true);
+  };
+ 
   return (
    <div className="main flex flex-col lg:flex-row justify-between gap-6 lg:gap-16 px-2 sm:px-4 lg:px-6 mb-16">
     

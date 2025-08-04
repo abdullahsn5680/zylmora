@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Sucess() {
+function Sucess({setSucess}) {
   return (
      <div className="fixed inset-0 backdrop-blur-md bg-black/30 bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">

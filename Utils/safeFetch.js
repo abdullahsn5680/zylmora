@@ -144,7 +144,17 @@ function getBaseEndpoint(url) {
     return url.split('?')[0];
   }
 }
-
+function shouldInvalidateKey(cacheKey, invalidatedEndpoints) {
+  // Extract URL from cache key (format: "v1:url:options:responseType")
+  const parts = cacheKey.split(':');
+  if (parts.length < 2) return false;
+  
+  const cachedUrl = parts[1];
+  const cachedBaseEndpoint = getBaseEndpoint(cachedUrl);
+  
+  // Check if this cached URL's base endpoint matches any invalidated endpoint
+  return invalidatedEndpoints.includes(cachedBaseEndpoint);
+}
 /**
  * Check if URL is an image based on extension or content-type
  */
@@ -317,17 +327,41 @@ async function cacheImage(url, blob, cacheTime = DEFAULT_IMAGE_CACHE_TIME) {
   }
 }
 
-// Mark endpoint as invalidated
+
 async function markEndpointInvalidated(endpoint) {
   const db = await openDB();
-  const tx = db.transaction(INVALIDATION_STORE_NAME, 'readwrite');
-  const store = tx.objectStore(INVALIDATION_STORE_NAME);
   
-  store.put({
+  // Mark in invalidation store
+  const invalidationTx = db.transaction(INVALIDATION_STORE_NAME, 'readwrite');
+  const invalidationStore = invalidationTx.objectStore(INVALIDATION_STORE_NAME);
+  
+  await invalidationStore.put({
     endpoint,
     invalidatedAt: Date.now(),
     freshFetchCompleted: false
   });
+  
+  // Clear all cache entries that match this endpoint pattern
+  const cacheTx = db.transaction(STORE_NAME, 'readwrite');
+  const cacheStore = cacheTx.objectStore(STORE_NAME);
+  
+  const request = cacheStore.openCursor();
+  let deletedCount = 0;
+  
+  request.onsuccess = (e) => {
+    const cursor = e.target.result;
+    if (cursor) {
+      const cacheKey = cursor.key;
+      if (shouldInvalidateKey(cacheKey, [endpoint])) {
+        cacheStore.delete(cursor.key);
+        deletedCount++;
+        console.log(`Invalidated cache key: ${cacheKey}`);
+      }
+      cursor.continue();
+    } else {
+      console.log(`Invalidated ${deletedCount} cache entries for endpoint: ${endpoint}`);
+    }
+  };
 }
 
 // Check and mark fresh fetch
@@ -343,20 +377,26 @@ async function checkAndMarkFreshFetch(endpoint) {
       const result = request.result;
       
       if (result && !result.freshFetchCompleted) {
+        // Mark as completed but don't remove the invalidation record yet
         store.put({
           ...result,
-          freshFetchCompleted: true
+          freshFetchCompleted: true,
+          completedAt: Date.now()
         });
         resolve(true);
       } else {
-        resolve(false);
+        // Check if invalidation is recent (within last 5 minutes)
+        if (result && result.invalidatedAt && (Date.now() - result.invalidatedAt < 5 * 60 * 1000)) {
+          resolve(true); // Still treat as needing fresh fetch
+        } else {
+          resolve(false);
+        }
       }
     };
     
     request.onerror = () => resolve(false);
   });
 }
-
 // Cache read/write functions (existing)
 async function readFromCache(key) {
   const db = await openDB();
@@ -478,7 +518,7 @@ export async function safeFetch(url, options = {}, cacheTime, session = null, fo
   const normalizedUrl = normalizeURL(fullUrl);
   const method = (options.method || 'GET').toUpperCase();
   const baseEndpoint = getBaseEndpoint(normalizedUrl);
-  
+    const shouldBypassCache = session?.user?.role === true;
   console.log(`SafeFetch - URL: ${normalizedUrl}, Method: ${method}`);
 
   // Auto-detect if this is an image request
@@ -550,7 +590,7 @@ export async function safeFetch(url, options = {}, cacheTime, session = null, fo
 
   // Regular safeFetch logic (existing code)
   const key = `${CACHE_VERSION}:${normalizedUrl}:${JSON.stringify({...options, method})}:${forceResponseType || 'auto'}`;
-  const shouldBypassCache = session?.user?.role === true;
+
 
   // Handle POST, PUT, DELETE requests
   if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
