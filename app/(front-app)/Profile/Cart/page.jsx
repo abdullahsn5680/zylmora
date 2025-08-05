@@ -363,21 +363,7 @@ const total = subtotal + shipping;
   if(showProceed){
     return(
    <div className="min-h-screen w-screen bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50">
- 
-  <div className="bg-white/90 backdrop-blur-sm shadow-sm border-b border-gray-100">
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-slate-600 to-slate-800 rounded-xl flex items-center justify-center shadow-lg">
-            <span className="text-2xl">🛒</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">Checkout</h1>
-        </div>
-        <div className="w-20"></div>
-      </div>
-    </div>
-  </div>
-
+    <Heading icon={'🛒'} name={'Checkout'}/>
   <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-8">
     <div className="grid lg:grid-cols-2 gap-8">
     

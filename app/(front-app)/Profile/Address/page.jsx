@@ -3,18 +3,20 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Trash2, Edit3, Check, Plus, ArrowLeft, MapPin, Star, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { UserContext } from '@/app/Context/contextProvider';
-import Loader from '@/app/Components/Loader/loader';
-
+import { useLoader } from '@/app/Provider/loader/loaderProvider';
+import { useAlert } from '@/app/Provider/Alert/AlertProvider';
+import Heading from '@/app/Components/UI/Heading/Heading';
 export default function AddressManager() {
   const router = useRouter();
   const { session, user, setUser } = useContext(UserContext);
-
+  const {showLoader,hideLoader}=useLoader();
+  const {showAlert} =useAlert();
   const [loading, setLoading] = useState(true);
   const [addresses, setAddresses] = useState([]);
   const [defaultIndex, setDefaultIndex] = useState(0);
   const [editingIndex, setEditingIndex] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [freshAddr,setFreshAddr]=useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
 
   const [newStreet, setNewStreet] = useState('');
@@ -26,8 +28,6 @@ export default function AddressManager() {
   const [newCountry, setNewCountry] = useState('');
   const [showVillageField, setShowVillageField] = useState(false);
 
-  const [success, setSuccess] = useState('');
-   const [Alert, setAlert] = useState('');
   const [editStreet, setEditStreet] = useState('');
   const [editVillage, setEditVillage] = useState('');
   const [editCity, setEditCity] = useState('');
@@ -88,10 +88,11 @@ export default function AddressManager() {
   const handleUseCurrentLocation = async () => {
     try {
       setLocationLoading(true);
-      
+      showLoader();
       if (!navigator.geolocation) {
-        setAlert("Geolocation is not supported by your browser.");
+        showAlert.info("Geolocation is not supported by your browser.");
         setLocationLoading(false);
+        hideLoader();
         return;
       }
 
@@ -145,12 +146,13 @@ export default function AddressManager() {
           setNewProvince(province);
           setNewPostalCode(postalCode);
           setNewCountry(country);
-          
+          hideLoader();
           setLocationLoading(false);
         } catch (error) {
           console.error('Error processing location data:', error);
-          setAlert("Unable to process location data. Please enter address manually.");
+          showAlert.info("Unable to process location data. Please enter address manually.");
           setLocationLoading(false);
+          hideLoader();
         }
       }, (error) => {
         console.error('Geolocation error:', error);
@@ -171,12 +173,14 @@ export default function AddressManager() {
             break;
         }
         
-        setAlert(errorMessage);
+        showAlert.info(errorMessage);
+        hideLoader();
         setLocationLoading(false);
       }, options);
     } catch (error) {
       console.error('Error in handleUseCurrentLocation:', error);
-      setAlert("Something went wrong while retrieving the address. Please enter manually.");
+      showAlert.info("Something went wrong while retrieving the address. Please enter manually.");
+      hideLoader();
       setLocationLoading(false);
     }
   };
@@ -194,7 +198,7 @@ export default function AddressManager() {
     }
 
     if (requiredFields.some(field => !field.trim())) {
-      return setAlert(`Please fill required fields (${requiredFieldNames.join(', ')}).`);
+      return showAlert.info(`Please fill required fields (${requiredFieldNames.join(', ')}).`);
     }
 
     const addressParts = [newStreet.trim()];
@@ -248,7 +252,7 @@ export default function AddressManager() {
     }
 
     if (requiredFields.some(field => !field.trim())) {
-      return setAlert(`Please fill required fields (${requiredFieldNames.join(', ')}).`);
+      return showAlert.info(`Please fill required fields (${requiredFieldNames.join(', ')}).`);
     }
 
     const addressParts = [editStreet.trim()];
@@ -270,14 +274,15 @@ export default function AddressManager() {
     setAddresses(updated);
     setEditingIndex(null);
     resetEditFields();
+    setFreshAddr(true);
   };
 
   const deleteAddress = (index) => {
     if (addresses.length === 1) {
-      setAlert('At least one address is required.');
+      showAlert.info('At least one address is required.');
       return;
     }
-
+   
     const updated = [...addresses];
     updated.splice(index, 1);
     setAddresses(updated);
@@ -288,15 +293,23 @@ export default function AddressManager() {
       setDefaultIndex(prev => prev - 1);
     }
 
-    setDeleteConfirm(null);
+setFreshAddr(true);
   };
 
-  const handleSetDefault = (index) => {
-    setDefaultIndex(index);
-  };
+const handleDel =(index)=>{
+showAlert.delete('Are you wan to delete this address',()=>{
+  deleteAddress(index); },{
+    title: "Delete Address",
+    confirmText: "Delete",
+    cancelText: "Cancel",
+    onCancel: () => {console.log('User cancel the action')}
+  }
+)
+}
 
   const handleSaveToDB = async () => {
     try {
+      showLoader();
       setLoading(true);
       const res = await fetch('/api/User', {
         method: 'POST',
@@ -310,56 +323,40 @@ export default function AddressManager() {
       });
 
       const result = await res.json();
+      hideLoader();
       setLoading(false);
       if (!res.ok) {
-        setAlert(result.message || 'Failed to save');
+        showAlert.error('Unable to save address')
+        
         return;
       }
 
       setUser(result.data);
-      setSuccess('Addresses updated!');
+      showAlert.success('Addresses updated!');
     } catch (error) {
       console.error('Failed to save:', error);
-      setAlert('Something went wrong.');
+      showAlert.error('Something went wrong');
+      hideLoader();
       setLoading(false);
+      setFreshAddr(false)
     }
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 800);
+    const timer = setTimeout(() =>{ setLoading(false);}, 800);
     return () => clearTimeout(timer);
   }, []);
 
-  if (loading) return <Loader />;
+   useEffect(()=>{
+    if(freshAddr){
+    handleSaveToDB();}
+  }
+  ,[addresses])
 
   return (
  
   <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50">
-    <div className="bg-white/90 backdrop-blur-sm shadow-sm border-b border-gray-100">
-    <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
-      <div className="flex items-center justify-between">
-        <button
-          onClick={() => router.back()}
-          className="group flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 bg-white/80 hover:bg-slate-100 rounded-xl sm:rounded-xl md:rounded-2xl text-slate-700 transition-all duration-300 border border-gray-200 shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
-        >
-          <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          <span className="text-sm sm:text-base font-medium">Back</span>
-        </button>
-        
-        <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-slate-600 to-slate-800 rounded-xl sm:rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg">
-            <span className="text-lg sm:text-xl md:text-2xl"> <MapPin className="text-white" size={28} /></span>
-          </div>
-          <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-slate-800 tracking-tight">
-            Our Address
-          </h1>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <Heading icon={'🗺️'} name={'Address'}/>
       <div className="max-w-4xl mx-auto px-4 py-12">
        
         {addresses.length === 0 ? (
@@ -553,7 +550,8 @@ export default function AddressManager() {
                           <Edit3 size={20} />
                         </button>
                         <button
-                          onClick={() => setDeleteConfirm(index)}
+                          onClick={() =>{ handleDel() }
+}
                           className="group p-3 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300 transform hover:scale-110"
                           title="Delete address"
                         >
@@ -751,73 +749,9 @@ export default function AddressManager() {
       </div>
 
      
-      {deleteConfirm !== null && (
-        <div className="fixed inset-0 backdrop-blur-md bg-black/30 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-8 transform animate-in zoom-in-90 duration-300">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-700 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Trash2 className="text-white" size={24} />
-              </div>
-              <h3 className="text-2xl font-bold text-slate-800 mb-3">Delete Address</h3>
-              <p className="text-slate-600 mb-8 leading-relaxed">Are you sure you want to delete this address? This action cannot be undone and will remove it permanently.</p>
-              <div className="flex justify-center gap-4">
-                <button
-                  onClick={() => setDeleteConfirm(null)}
-                  className="px-6 py-3 text-slate-600 hover:text-slate-800 font-medium transition-all duration-300 hover:bg-slate-100 rounded-xl"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => deleteAddress(deleteConfirm)}
-                  className="px-8 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl hover:from-red-700 hover:to-red-800 font-medium transition-all duration-300 transform hover:scale-105 shadow-lg"
-                >
-                  Delete Address
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+  
 
-      {success && (
-        <div className="fixed inset-0 backdrop-blur-md bg-black/30 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-8 transform animate-in zoom-in-90 duration-300">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-700 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Check className="text-white" size={24} />
-              </div>
-              <h3 className="text-2xl font-bold text-slate-800 mb-3">Success!</h3>
-              <p className="text-slate-600 mb-8 leading-relaxed">{success}</p>
-              <button
-                onClick={() => setSuccess('')}
-                className="px-8 py-3 bg-gradient-to-r from-slate-600 to-slate-800 text-white rounded-xl hover:from-slate-700 hover:to-slate-900 font-medium transition-all duration-300 transform hover:scale-105 shadow-lg"
-              >
-                Continue
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {Alert && (
-        <div className="fixed inset-0 backdrop-blur-md bg-black/30 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-8 transform animate-in zoom-in-90 duration-300">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <span className="text-white text-2xl">⚠️</span>
-              </div>
-              <h3 className="text-2xl font-bold text-slate-800 mb-3">Attention Required</h3>
-              <p className="text-slate-600 mb-8 leading-relaxed">{Alert}</p>
-              <button
-                onClick={() => setAlert('')}
-                className="px-8 py-3 bg-gradient-to-r from-slate-600 to-slate-800 text-white rounded-xl hover:from-slate-700 hover:to-slate-900 font-medium transition-all duration-300 transform hover:scale-105 shadow-lg"
-              >
-                Got it
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+     
     </div>
   );
 } 

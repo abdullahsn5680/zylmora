@@ -1,7 +1,7 @@
 import React from 'react'
 
 function ProdcutDescription(prop) {
-    console.log(prop)
+    
     const description = prop;
   return (
  

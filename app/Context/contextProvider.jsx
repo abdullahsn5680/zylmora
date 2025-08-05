@@ -9,9 +9,10 @@ export const CollectionContext = createContext();
 export const FilterContext = createContext();
 export const QueryContext = createContext();
 export const UserContext = createContext();
+
 export const LoaderContext = createContext();
 export const GridContext = createContext();
-
+export const AlertContext =createContext();
 function ContextProvider({ children }) {
   const [isSlide, setIsSlide] = useState('false');
   const [grid,setGrid]=useState('grid-cols-2')

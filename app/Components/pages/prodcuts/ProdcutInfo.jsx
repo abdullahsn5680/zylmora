@@ -2,7 +2,10 @@
 import React from 'react'
 import { Heart } from 'lucide-react'
 import Image from 'next/image'
-
+import { useRouter } from 'next/navigation'
+import { useAlert } from '@/app/Provider/Alert/AlertProvider'
+import { safeFetch } from '@/Utils/safeFetch'
+import { useLoader } from '@/app/Provider/loader/loaderProvider'
 function ProdcutInfo({
   product,
   Size,
@@ -10,37 +13,42 @@ function ProdcutInfo({
   Counter,
   setCounter,
   session,
-  setConfirmLogin,
-  setSucess,
-  setShowAlert,
+
   setShowOrderForm
 }) {
-
+  const {showAlert} = useAlert();
+  const {showLoader,hideLoader} =useLoader();
+   
+  const router=useRouter();
+      
   const handleAddWishlist = async () => {
     if (!product) return;
-    if (!session?.user?.email) return setConfirmLogin(false)
-
+    if (!session?.user?.email) return handelLogin();
+    
     try {
-      const res = await fetch('/api/Wishlist', {
+      showLoader();
+      const res = await safeFetch('/api/Wishlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: session.user.email, product }),
       });
 
-      await res.json();
-      setSucess(true)
+      await res
+      hideLoader();
+     showAlert.success("Added to wishlist successfully");
     } catch (err) {
       console.error('Error adding to wishlist:', err);
-      setShowAlert(true)
+    showAlert.error("Unable to add to wishlist")
     }
   };
 
   const handleAddCart = async () => {
     if (!Size || !product) return;
-    if (!session?.user?.email) return setConfirmLogin(true)
+    if (!session?.user?.email) return handelLogin();
 
     try {
-      const res = await fetch('/api/Cart', {
+      showLoader();
+      const res = await safeFetch('/api/Cart', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -51,19 +59,30 @@ function ProdcutInfo({
         }),
       });
 
-      await res.json();
-      setSucess(true)
+      await res
+      hideLoader();
+    showAlert.success("Added to cart successfully");
     } catch (err) {
       console.error('Error adding to cart:', err);
-      setShowAlert(true)
+       showAlert.error("Unable to load to cart")
     }
   };
 
   const handleBuyNow = () => {
-    if (!Size || !session?.user?.email) return setConfirmLogin(false);
+    if (!Size || !session?.user?.email) return handelLogin();
+
     setShowOrderForm(true);
   };
- 
+   const handelLogin=()=>{
+    showAlert.confirm('You need to be logged in to continue. Would you like to login now?',
+  () => {router.push('/Authentication')}, 
+  {
+    title: "Login Required",
+    confirmText: "Login",
+    cancelText: "Cancel",
+    onCancel: () => {console.log('User cancel the action')}
+  })
+   }
   return (
    <div className="main flex flex-col lg:flex-row justify-between gap-6 lg:gap-16 px-2 sm:px-4 lg:px-6 mb-16">
     

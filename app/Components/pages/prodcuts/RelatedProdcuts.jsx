@@ -1,10 +1,12 @@
 'use client'
 import React, { useRef, useState, useEffect } from 'react'
+
 import Card from '../../UI/Card/Card';
 import { safeFetch } from '@/Utils/safeFetch';
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 function RelatedProducts({ prop }) {
+
   const { pid, category, subcategory } = prop
   const scrollRef = useRef(null);
   const [relatedProducts, setRP] = useState([]);

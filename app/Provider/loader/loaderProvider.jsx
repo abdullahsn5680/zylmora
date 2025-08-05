@@ -1,18 +1,39 @@
 'use client';
-import React, { useContext } from 'react';
-import Loader from '@/app/Components/Loader/loader';
-import { LoaderContext } from '@/app/Context/contextProvider';
+import React, { createContext, useContext, useState } from 'react';
+import PopLoader from '@/app/Components/alerts/popLoader';
+export const LoaderContext = createContext();
 
-function LoaderProvider({ children }) {
-  const [loader] = useContext(LoaderContext);
+export function LoaderProvider({ children }) {
+  const [loader, setLoader] = useState({
+    isVisible: false,
+    title: "Loading...",
+    message: "We're working on your request. Almost there!",
+    showProgress: true,
+    autoProgress: true,
+    initialProgress: 0,
+    onComplete: null
+  });
+  const showLoader = (options = {}) => {
+    setLoader({ 
+      ...loader,
+      isVisible: true,
+      ...options
+    });
+  };
+  const hideLoader = () => {
+    setLoader(prev => ({ ...prev, isVisible: false }));
+  };
 
   return (
-    <div className="w-full h-full">
+    <LoaderContext.Provider value={{ showLoader, hideLoader }}>
       {children}
- {/* <div className={`${loader&&'hidden'}`}>{children}</div>
- <div className={`${loader&&'flex'} fixed w-full`}><Loader/></div> */}
-    </div>
+      <PopLoader {...loader} />
+    </LoaderContext.Provider>
   );
 }
 
-export default LoaderProvider;
+export function useLoader() {
+  const context = useContext(LoaderContext);
+  if (!context) throw new Error('useLoader must be used within LoaderProvider');
+  return context;
+}

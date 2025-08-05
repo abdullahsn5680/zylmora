@@ -1,9 +1,11 @@
+'use client'
 import React, { useState,useEffect } from 'react';
 import { Star, ThumbsUp, ThumbsDown, Filter, Search, ChevronDown, User, Heart, Plus, X, Trash2 } from 'lucide-react';
 import { safeFetch } from '@/Utils/safeFetch';
-
-
-export default function ZylmaProductReviews({prop,setShowAlert,setSucess,setPopLoader,setConfirmLogin}) {
+import { useAlert } from '@/app/Provider/Alert/AlertProvider';
+import { useLoader } from '@/app/Provider/loader/loaderProvider';
+export default function ZylmaProductReviews({prop}) {
+  const {showLoader,hideLoader}=useLoader();
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [searchTerm, setSearchTerm] = useState('');
@@ -11,6 +13,7 @@ export default function ZylmaProductReviews({prop,setShowAlert,setSucess,setPopL
   const [isSubmitting, setIsSubmitting] = useState(false);
   const uid = prop?.uid;
   const pid = prop?.pid;
+  const {showAlert} =useAlert();
   const [newReview, setNewReview] = useState({
     name: '',
     rating: 5,
@@ -47,15 +50,15 @@ export default function ZylmaProductReviews({prop,setShowAlert,setSucess,setPopL
 
   const handleSubmitReview = async () => {
    
-    setPopLoader(true)
+   showLoader();
     setShowAddReview(false)
     if (!newReview.name || !newReview.title || !newReview.content  || !pid   || !uid ) {
         if(!newReview.name || !newReview.title || !newReview.content  || !pid ){
-       setShowAlert(true)
+      showAlert.error("PLease provide all fileds")
         }else{
-          setConfirmLogin(false)
+          handelLogin();
         }
-       setPopLoader(false)
+       hideLoader();
     
   return
     }
@@ -68,13 +71,13 @@ try {
         body: JSON.stringify(newReview), 
       });
  setReviews(res)
-      setPopLoader(false)
-      setSucess(true);
+      hideLoader();
+     showAlert.success('Review submitted successfuly')
   
     
 } catch (error) {
-      setPopLoader(false)
-  setShowAlert(true)
+    hideLoader();
+showAlert.error('Unable to submit review')
   console.log(err);
 }
   
@@ -118,7 +121,7 @@ const  query = params.toString();
 getData();
    },[])
 const handledelete =async(id,uid)=>{
-  setPopLoader(true)
+  showLoader();
       const params = new URLSearchParams();
   params.set('id', id);
   params.set('uid',uid)
@@ -129,18 +132,27 @@ try {
         headers: { 'Content-Type': 'application/json' },
          
       });
-       setPopLoader(false)
-  setSucess(true)
+     hideLoader();
+    showAlert.success("Review has been deleted successfully")
   setReviews((prev) => prev.filter(r => r._id !== id)) 
 
 
 } catch (error) {
-      setPopLoader(false)
-  setShowAlert(true)
+    hideLoader();
+ showAlert.error("Unable to delete the review")
   console.log(err);
 }
 }
-   
+    const handelLogin=()=>{
+    showAlert.confirm('You need to be logged in to continue. Would you like to login now?',
+  () => {router.push('/Authentication')}, 
+  {
+    title: "Login Required",
+    confirmText: "Login",
+    cancelText: "Cancel",
+    onCancel: () => {console.log('User cancel the action')}
+  })
+   }
   return (
     <section className="py-6 lg:py-12">
       <div className="max-w-6xl mx-auto px-2 sm:px-4 lg:px-8">

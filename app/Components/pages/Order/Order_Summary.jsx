@@ -1,6 +1,8 @@
 'use client'
 import React from 'react'
-
+import { useLoader } from '@/app/Provider/loader/loaderProvider';
+import { useAlert } from '@/app/Provider/Alert/AlertProvider';
+import { safeFetch } from '@/Utils/safeFetch';
 function Order_Summary({
   product,
   Counter,
@@ -19,9 +21,8 @@ function Order_Summary({
   paymentMethod,
   setFinalAddresses,
   setShowOrderForm,
-  setLoading,
-  setSucess,
-  setShowAlert,
+  
+  
   loading,
   user,
 }) {
@@ -30,7 +31,8 @@ function Order_Summary({
     const shipping = 250;
     return productPrice * Counter + shipping;
   };
-
+  const {hideLoader,showLoader}=useLoader();
+  const {showAlert} =useAlert();
   const handleAddress = async () => {
     const addressParts = [
       streetAddress.trim(),
@@ -71,26 +73,26 @@ function Order_Summary({
     };
 
     try {
-      setLoading(true);
-      const res = await fetch('/api/Orders', {
+      showLoader();
+      const res = await safeFetch('/api/Orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderDetails }),
       });
 
-      const result = await res.json();
-      setLoading(false);
-
+      const result = await res
+      hideLoader();
+      
       if (result.success) {
-        setSucess(true);
+       showAlert.success('Order is placed succuessfully')
         setShowOrderForm(false);
       } else {
-        setShowAlert(true);
+        showAlert.error('Unable to order prodcut?')
       }
     } catch (err) {
-      setLoading(false);
+     hideLoader();
       console.error('Order error:', err);
-      setShowAlert(true);
+      showAlert.error("Something went wrong?")
     }
   };
 

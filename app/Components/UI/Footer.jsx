@@ -37,10 +37,10 @@ export default function ZylmoraFooter() {
     <footer className="bg-white border-t border-slate-100">
       <div className="py-8 sm:py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+          <div className="grid grid-cols-2 justify-center items-center sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             
           
-            <div className="col-span-1 sm:col-span-2 lg:col-span-1 text-center sm:text-left">
+            <div className="col-span-1 sm:col-span-2 lg:col-span-1 text-center sm:text-left py-8">
               <div className="flex items-center justify-center sm:justify-start space-x-2 mb-4 sm:mb-6 group">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-slate-800 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                   <span className="text-white font-bold text-lg sm:text-xl">Z</span>
@@ -69,7 +69,7 @@ export default function ZylmoraFooter() {
             </div>
 
            
-            <div className="col-span-1">
+            <div className="col-span-1 py-8" >
               <h4 className="text-base sm:text-lg font-bold text-slate-800 mb-4 sm:mb-6 text-center sm:text-left">Shop</h4>
               <ul className="space-y-2 sm:space-y-3">
                 {categoriesData.slice(0, 6).map((category, id) => (
@@ -94,7 +94,7 @@ export default function ZylmoraFooter() {
             </div>
 
            
-            <div className="col-span-1">
+            <div className="col-span-1 py-8" >
               <h4 className="text-base sm:text-lg font-bold text-slate-800 mb-4 sm:mb-6 text-center sm:text-left">Support</h4>
               <ul className="space-y-2 sm:space-y-3">
                 <li className="text-center sm:text-left">
