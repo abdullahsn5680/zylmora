@@ -14,16 +14,17 @@ export default function UpdateProductClient()  {
   const [newDescriptionLine, setNewDescriptionLine] = useState('');
   const [categories] = useContext(CollectionContext);
  const router =useRouter()
-  const  {session}=useContext(UserContext)
+  const  {session,status}=useContext(UserContext)
 const isAdmin = session?.user?.role 
  useEffect(()=>{
+  if(status !== "loading"){
     if(!session){
       router.replace('/Authentication')
     }
      if(!isAdmin){
       router.replace('/')
     }
-  },[])
+}},[status])
   const [product, setProduct] = useState({
     _id: '',
     title: '',

@@ -12,19 +12,20 @@ export default function AdminPage() {
   const [initialBannerImage, setInitialBannerImage] = useState(null);
   const MAX_PRODUCTS = 10;
   const [entries, setEntries] = useState([]);
-  const {session} =useContext(UserContext)
+  const {session,status} =useContext(UserContext)
   const [uniqueCategories, setUniqueCategories] = useState([]);
   const [categorySubMap, setCategorySubMap] = useState({});
     
   const isAdmin = session?.user?.role 
-   useEffect(()=>{
-      if(!session){
-        router.replace('/Authentication')
-      }
-       if(!isAdmin){
-        router.replace('/')
-      }
-    },[])
+ useEffect(()=>{
+  if(status !== "loading"){
+    if(!session){
+      router.replace('/Authentication')
+    }
+     if(!isAdmin){
+      router.replace('/')
+    }
+}},[status])
 
   
   useEffect(() => {

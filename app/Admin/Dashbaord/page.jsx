@@ -4,16 +4,17 @@ import { UserContext } from '@/app/Context/contextProvider'
 import { useRouter } from 'next/navigation'
 function page() {
    const router =useRouter()
-    const  {session}=useContext(UserContext)
+    const  {session,status}=useContext(UserContext)
   const isAdmin = session?.user?.role 
-   useEffect(()=>{
-      if(!session){
-        router.replace('/Authentication')
-      }
-       if(!isAdmin){
-        router.replace('/')
-      }
-    },[])
+ useEffect(()=>{
+  if(status !== "loading"){
+    if(!session){
+      router.replace('/Authentication')
+    }
+     if(!isAdmin){
+      router.replace('/')
+    }
+}},[status])
   return (
     <div className='w-full h-full justify-center items-center'> 
     Dashbaord is not created yet,

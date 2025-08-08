@@ -34,7 +34,7 @@ export default function RootLayout({ children }) {
 
 
           <div className="fixed bottom-22 z-50 right-3">
-  <a 
+  < a 
     href="https://wa.me/923243040120?text=Hello%20I%20am%20interested%20in%20Zylmora%20products" 
     target="_blank" 
     rel="noopener noreferrer"

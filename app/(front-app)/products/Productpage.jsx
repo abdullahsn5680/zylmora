@@ -13,7 +13,7 @@ import ProdcutDescription from "@/app/Components/pages/prodcuts/ProductDescripti
 import NotLogin from "@/app/Components/alerts/NotLogin";
 import Sucess from "@/app/Components/alerts/Sucess";
 import Order_Summary from "@/app/Components/pages/Order/Order_Summary";
-import Alert from "@/app/Components/alerts/Alert";
+import Alert from "@/Hooks/Alert";
 import Pop_Loader from "@/app/Components/alerts/popLoader";
 import Complete_Order from "@/app/Components/pages/Order/Complete_Order";
 function ProductPage() {

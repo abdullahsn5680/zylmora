@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 import { UserContext } from '@/app/Context/contextProvider';
 import Loader from '@/app/Components/Loader/loader';
 export default function ProfilePage() {
-  const {  session } =useContext(UserContext)
+  const {  session,status } =useContext(UserContext)
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const {user, setUser} = useContext(UserContext);
@@ -22,11 +22,11 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState(initialValues);
 useEffect(()=>{
-    if(!session){
-      router.replace('/Authentication')
+    if(status !== "loading"){
+     if(!session) router.replace('/Authentication')
     }
     
-  },[])
+  },[status])
   useEffect(() => {
     if (user) {
       setTimeout(() => {

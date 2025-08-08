@@ -15,17 +15,17 @@ export default function CollectionsAdminPage() {
     setNewCollection('');
   };
      const router =useRouter()
-      const  {session}=useContext(UserContext)
+      const  {session,status}=useContext(UserContext)
     const isAdmin = session?.user?.role 
-     useEffect(()=>{
-        if(!session){
-          router.replace('/Authentication')
-        }
-         if(!isAdmin){
-          router.replace('/')
-        }
-      },[])
-
+    useEffect(()=>{
+     if(status !== "loading"){
+       if(!session){
+         router.replace('/Authentication')
+       }
+        if(!isAdmin){
+         router.replace('/')
+       }
+   }},[status])
   const addSub = () => {
     if (!newSub.trim() || selectedCollection === null) return;
     const updated = [...collections];

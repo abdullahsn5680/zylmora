@@ -9,16 +9,17 @@ export default function AdminOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState('All');
  const router =useRouter()
-  const  {session}=useContext(UserContext)
+  const  {session,status}=useContext(UserContext)
 const isAdmin = session?.user?.role 
  useEffect(()=>{
+  if(status !== "loading"){
     if(!session){
       router.replace('/Authentication')
     }
      if(!isAdmin){
       router.replace('/')
     }
-  },[])
+}},[status])
   const fetchGlobalOrders = async () => {
     try {
       const res = await fetch('/api/globalOrders');

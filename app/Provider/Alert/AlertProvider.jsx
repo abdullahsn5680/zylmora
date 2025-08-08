@@ -1,6 +1,6 @@
 'use client';
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import Alert from '@/app/Components/alerts/Alert';
+import Alert from '@/Hooks/Alert';
 import { useLoader } from '../loader/loaderProvider';
 export const AlertContext = createContext();
 

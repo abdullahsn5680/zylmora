@@ -20,13 +20,17 @@ import {
 } from 'lucide-react';
 
 export default function ProfilePage() {
+  const  {session,status}=useContext(UserContext)
    const [loader,setLoading]=useContext(LoaderContext)
   const router = useRouter();
-useEffect(() => {
-  setLoading(false)
-}, []);
+useEffect(()=>{
+    if(status !== "loading"){
+     if(!session) router.replace('/Authentication')
+    }
     
-const  {session}=useContext(UserContext)
+  },[status])
+    
+
 const isAdmin = session?.user?.role === true;
  useEffect(()=>{
     if(!session){

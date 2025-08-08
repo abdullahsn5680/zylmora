@@ -9,7 +9,6 @@ export const CollectionContext = createContext();
 export const FilterContext = createContext();
 export const QueryContext = createContext();
 export const UserContext = createContext();
-
 export const LoaderContext = createContext();
 export const GridContext = createContext();
 export const AlertContext =createContext();

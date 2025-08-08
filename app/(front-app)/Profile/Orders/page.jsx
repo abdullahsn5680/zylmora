@@ -6,8 +6,9 @@ import Loader from '@/app/Components/Loader/loader';
 import { UserContext } from '@/app/Context/contextProvider';
 import Heading from '@/app/Components/UI/Heading/Heading';
 import { cacheFetch } from '@/Utils/cacheFetch';
+import EmptyMesseges from '@/app/Components/UI/Messeges/EmptyMesseges';
 export default function OrdersPage() {
-  const { session } = useContext(UserContext);
+  const { session,status } = useContext(UserContext);
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
@@ -17,10 +18,12 @@ export default function OrdersPage() {
   const [showCancelReason, setShowCancelReason] = useState(false);
   const [showNewAddressInput, setShowNewAddressInput] = useState(false);
 
-  useEffect(() => {
-    if (!session) router.replace('/Authentication');
-  }, []);
-
+ useEffect(()=>{
+    if(status !== "loading"){
+     if(!session) router.replace('/Authentication')
+    }
+    
+  },[status])
   const fetchOrders = async () => {
     try {
       const res = await cacheFetch(`/api/Orders?userId=${session?.user?.id}`);
@@ -80,15 +83,12 @@ export default function OrdersPage() {
 
    
     {filteredOrders.length === 0 ? (
-      <div className="text-center py-24">
-        <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-6 sm:mb-7 md:mb-8 shadow-inner">
-          <span className="text-4xl sm:text-5xl md:text-6xl opacity-60">🧾</span>
-        </div>
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-700 mb-3 sm:mb-4">No Orders Found</h2>
-        <p className="text-slate-500 text-base sm:text-lg md:text-xl leading-relaxed max-w-sm sm:max-w-md mx-auto px-4">
-          You haven't placed any orders yet. Start shopping now to see your orders here!
-        </p>
-      </div>
+        <EmptyMesseges
+        icon="🧾"
+        title="No Orders Found"
+        message="You haven't placed any orders yet. Start shopping now to see your orders here!"
+     
+      />
     ) : (
       <div className="grid gap-4 sm:gap-5 md:gap-6">
         {filteredOrders.map((order, index) => (

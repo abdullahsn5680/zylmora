@@ -20,16 +20,21 @@ function AddProductPage() {
     discount:0,
   });
   const router =useRouter()
-  const  {session}=useContext(UserContext)
+  const  {session,status}=useContext(UserContext)
 const isAdmin = session?.user?.role 
+
  useEffect(()=>{
+  if(status !== "loading"){
     if(!session){
       router.replace('/Authentication')
     }
      if(!isAdmin){
       router.replace('/')
     }
-  },[])
+}},[status])
+
+
+
   const [previewMainImage, setPreviewMainImage] = useState(null);
   const [previewImages, setPreviewImages] = useState([]);
   const [selectedSize, setSelectedSize] = useState('');

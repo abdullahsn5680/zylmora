@@ -133,7 +133,7 @@ useEffect(()=>{
       <div className="buttonsc w-full flex justify-end items-center gap-6">
         <ul className="flex gap-6">
           <li className="hover:text-slate-300 transition-all duration-300 hover:scale-110 p-2 rounded-lg hover:bg-slate-700">
-            <Link href="/Authentication">
+            <Link href="/Profile">
               <User2 className="w-5 h-5" />
             </Link>
           </li>

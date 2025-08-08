@@ -11,16 +11,17 @@ function ProductsTablePage() {
   const [search, setSearch] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [deleteProductId, setDeleteProductId] = useState(null);
-  const  {session}=useContext(UserContext)
+  const  {session,status}=useContext(UserContext)
 const isAdmin = session?.user?.role 
  useEffect(()=>{
+  if(status !== "loading"){
     if(!session){
       router.replace('/Authentication')
     }
      if(!isAdmin){
       router.replace('/')
     }
-  },[])
+}},[status])
   useEffect(() => {
     if (!isSearching) {
       fetchProducts();

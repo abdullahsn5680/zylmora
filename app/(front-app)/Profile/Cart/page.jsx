@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Heart, ArrowLeft, MapPin, CreditCard, Packag
 import Loader from '@/app/Components/Loader/loader';
 import { UserContext } from '@/app/Context/contextProvider';
 import { safeFetch } from '@/Utils/safeFetch';
+import EmptyMesseges from '@/app/Components/UI/Messeges/EmptyMesseges';
 export default function CartPage() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -16,7 +17,7 @@ export default function CartPage() {
   const [Orders,setOrders]=useState([]);
   const [processing, setProcessing] = useState(false);
   const [province,setProvince]=useState('');
-  const { session } = useContext(UserContext)
+  const { session,status } = useContext(UserContext)
   const { user, setUser } = useContext(UserContext);
   const [selectedAddress, setSelectedAddress] = useState('');
   const [streetAddress, setStreetAddress] = useState('');
@@ -51,14 +52,9 @@ const formatted = addressParts.join(', ')
 }
 
   const shipping = 0;
-  
-
   useEffect(() => {
     setTimeout(() => setLoading(false), 500);
   }, []);
-
- 
-
   const handleSubmit = async (e) => {
      
     e.preventDefault();
@@ -110,11 +106,12 @@ performOrder();
  
 
  
-  useEffect(() => {
-    if (!session) {
-      router.replace('/Authentication');
-    }
-  }, [session, router]);
+ useEffect(()=>{
+     if(status !== "loading"){
+      if(!session) router.replace('/Authentication')
+     }
+     
+   },[status])
 
 
   
@@ -1018,25 +1015,19 @@ const total = subtotal + shipping;
             </div>
           ))
         ) : (
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-lg border border-gray-100 p-8 sm:p-12 md:p-16 text-center">
-            <div className="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-6 sm:mb-8 shadow-inner">
-              <span className="text-5xl sm:text-6xl opacity-60">🛒</span>
-            </div>
-            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-700 mb-3 sm:mb-4">Your cart is empty</h3>
-            <p className="text-slate-500 text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed max-w-md mx-auto">
-              Looks like you haven't added any items to your cart yet.
-            </p>
-            <button
-              onClick={handleContinueShopping}
-              className="px-8 py-4 sm:px-10 sm:py-5 bg-gradient-to-r from-slate-700 to-slate-900 text-white rounded-xl sm:rounded-2xl hover:from-slate-800 hover:to-slate-950 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-semibold text-sm sm:text-base"
-            >
-              Start Shopping
-            </button>
-          </div>
+     
+        <EmptyMesseges
+  icon="🛒"
+  title="Your cart is empty"
+  message="  Looks like you haven't added any items to your cart yet."
+  buttonText=" Start Shopping"
+  onButtonClick={() => {
+  handleContinueShopping();
+   
+  }}
+/>
         )}
       </div>
-
-     
       <div className="bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-lg border border-gray-100 p-6 sm:p-8 h-fit sticky top-6">
         <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-xl flex items-center justify-center shadow-md">
