@@ -46,6 +46,7 @@ function Card({ prop,isRelated }) {
             }`}
           >
             <Image
+            loading='lazy'
               width={800}
               height={800}
               src={prop.main_image}

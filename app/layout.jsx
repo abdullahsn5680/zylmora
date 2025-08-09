@@ -8,6 +8,7 @@ import SlideBar from './Components/UI/MObile/SlideBar';
 import AuthSessionProvider from './Provider/Auth/AuthSessionProvider';
 import Footer from './Components/UI/Footer';
 import ContextProvider from './Context/contextProvider';
+import LenisProvider from './Provider/Lenis/LenisProvider';
 export const metadata = {
   title: 'Zylmora – Cozy, Stylish, and Everyday Wear for All',
   description: 'Build your nest of comfort and fashion.',
@@ -18,6 +19,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
    
       <body className="overflow-x-hidden relative">
+          <LenisProvider>
         <LoaderProvider> <AlertProvider>
         <AuthSessionProvider>
           <ContextProvider>
@@ -53,6 +55,7 @@ export default function RootLayout({ children }) {
           </ContextProvider>
         </AuthSessionProvider>
      </AlertProvider></LoaderProvider> 
+      </LenisProvider>
       </body>
     </html>
   );

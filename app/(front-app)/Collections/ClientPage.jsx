@@ -23,10 +23,8 @@ export default function ClientPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [grid] = useContext(GridContext);
   const [isSlide, setIsSlide] = useContext(SlideBarContext);
-
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const {
     selectedCategory,
     selectedSubCategory,
