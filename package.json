@@ -16,7 +16,6 @@
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.7.0",
     "formik": "^2.4.6",
-    "framer-motion": "^12.23.3",
     "fuse.js": "^7.1.0",
     "idb-keyval": "^6.2.2",
     "leaflet": "^1.9.4",
@@ -42,6 +41,9 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4"
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.23.12",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss": "^4.1.11"
   }
 }

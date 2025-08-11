@@ -21,7 +21,7 @@ function AddCart({prop}) {
     type="button" 
     className="group relative w-full bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-900 text-white font-bold text-[8px] md:text-base px-2 py-1.5 md:px-6 md:py-4 rounded-md shadow-lg hover:shadow-xl transition-all duration-300 ease-out hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-slate-300/50 active:scale-95 overflow-hidden"
   >
-    <span className="relative z-10 flex items-center justify-center gap-2">
+    <span className="relative z-1 flex items-center justify-center gap-2">
       <span className="transition-all duration-300 group-hover:scale-105">
         Quick Add
       </span>
