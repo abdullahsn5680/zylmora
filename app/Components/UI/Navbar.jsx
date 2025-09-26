@@ -6,11 +6,18 @@ import React, { useState, useRef, useContext,useEffect, } from 'react';
 import { useRouter } from 'next/navigation';
 import { CollectionContext, FilterContext, QueryContext } from '@/app/Context/contextProvider';
 import Announcemnt from '../alerts/announcemnt';
+import { BoxIcon } from 'lucide-react';
+import { Box } from 'lucide-react';
+import { BoxSelectIcon } from 'lucide-react';
+import { closeFullscreen, openFullscreen } from '@/lib/provideFullScreen';
+import { BookX } from 'lucide-react';
+import { FullscreenIcon } from 'lucide-react';
 
 function Navbar() {
   const [categories] = useContext(CollectionContext);
   const [confirmCatagory,setCofrimCategory]=useState('');
-    const [query, setQuery] = useContext(QueryContext);
+  const [query, setQuery] = useContext(QueryContext);
+  const [fullScreen,setFullScreen]=useState(false)
   const [q,setQ]=useContext(QueryContext);
   const [hovered, setHovered] = useState(null);
   const timeoutRef = useRef(null);
@@ -132,6 +139,12 @@ useEffect(()=>{
     
       <div className="buttonsc w-full flex justify-end items-center gap-6">
         <ul className="flex gap-6">
+             <li className="hover:text-slate-300 transition-all duration-300 hover:scale-110 p-2 rounded-lg hover:bg-slate-700">
+            
+              {!fullScreen?<FullscreenIcon onClick={()=>{ openFullscreen() ;setFullScreen(!fullScreen)}} className="w-5 h-5" />
+                 :<BoxSelectIcon onClick={()=>{closeFullscreen();setFullScreen(!fullScreen)}} className="w-5 h-5" />
+        }
+          </li>
           <li className="hover:text-slate-300 transition-all duration-300 hover:scale-110 p-2 rounded-lg hover:bg-slate-700">
             <Link href="/Profile">
               <User2 className="w-5 h-5" />
