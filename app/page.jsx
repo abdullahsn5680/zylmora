@@ -11,6 +11,7 @@ export default function HomeClient() {
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useContext(LoaderContext)
   const {session}=useContext(UserContext)
+ 
     const {
        selectedCategory,
             setSelectedCategory,
@@ -55,6 +56,7 @@ setSelectedSortBy('');
           console.error('Error fetching collections:', err);
         }
   }, [session]);
+
 
 
 

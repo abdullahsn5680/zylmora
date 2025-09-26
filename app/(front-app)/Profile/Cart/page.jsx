@@ -6,6 +6,7 @@ import Loader from '@/app/Components/Loader/loader';
 import { UserContext } from '@/app/Context/contextProvider';
 import { safeFetch } from '@/Utils/safeFetch';
 import EmptyMesseges from '@/app/Components/UI/Messeges/EmptyMesseges';
+import Heading from '@/app/Components/UI/Heading/Heading';
 export default function CartPage() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);

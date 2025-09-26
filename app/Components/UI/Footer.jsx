@@ -1,13 +1,15 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { safeFetch } from '@/Utils/safeFetch';
 import Link from 'next/link';
 import { Mail, Phone, MapPin, Facebook, Instagram, Twitter, Youtube, ArrowRight, Heart } from 'lucide-react';
+import { LoaderContext } from '@/app/Context/contextProvider';
 
 export default function ZylmoraFooter() {
   const router = useRouter();
-  
+  const {loader}=useContext(LoaderContext)
+  const [show,setShow]=useState('hidden')
   const performAction = (cat, subCat) => {
     const query = new URLSearchParams({
       category: cat,
@@ -15,7 +17,10 @@ export default function ZylmoraFooter() {
     }).toString();
     router.push(`/Collections?${query}`);
   };
-  
+   useEffect(()=>{
+loader?setShow('hidden'):setShow('block')
+
+   },[loader])
   const [categoriesData, setCategoriesData] = useState([]);
   
   useEffect(() => {
@@ -34,7 +39,7 @@ export default function ZylmoraFooter() {
   };
 
   return (
-    <footer className="bg-white border-t border-slate-100">
+    <footer className={ `bg-white border-t border-slate-100  ${show}`}>
       <div className="py-8 sm:py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
           <div className="grid grid-cols-2 justify-center items-center sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">

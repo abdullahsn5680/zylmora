@@ -2,7 +2,7 @@ import React from 'react';
 
 function Loader() {
   return (
-    <div className="min-h-screen  border-0 border-transparent w-screen h-screen flex items-center justify-center">
+    <div className="min-h-screen  border-0 border-transparent w-screen h-screen overf flex items-center justify-center">
       <div className="text-center rounded-3xl p-16 max-w-md">
       
         <div className="relative mb-8 flex justify-center">

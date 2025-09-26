@@ -1,7 +1,5 @@
 import './globals.css';
-import Navbar from './Components/UI/Navbar';
 import MobileNavbar from './Components/UI/MObile/bottomNav';
-import NavbarM from './Components/UI/MObile/NavbarM';
 import { LoaderProvider } from './Provider/loader/loaderProvider';
 import { AlertProvider } from './Provider/Alert/AlertProvider';
 import SlideBar from './Components/UI/MObile/SlideBar';
@@ -9,6 +7,8 @@ import AuthSessionProvider from './Provider/Auth/AuthSessionProvider';
 import Footer from './Components/UI/Footer';
 import ContextProvider from './Context/contextProvider';
 import LenisProvider from './Provider/Lenis/LenisProvider';
+import NavbarProivder from './Provider/NavBAr/NavbarProivder';
+import FullScreenProvider from './Provider/FullScreen/FullScreenProvider';
 export const metadata = {
   title: 'Zylmora – Cozy, Stylish, and Everyday Wear for All',
   description: 'Build your nest of comfort and fashion.',
@@ -23,17 +23,13 @@ export default function RootLayout({ children }) {
         <LoaderProvider> <AlertProvider>
         <AuthSessionProvider>
           <ContextProvider>
-            <div className="flex lg:hidden fixed top-0 left-0 right-0 z-10">
-              <NavbarM />
-            </div>
-            <div className="hidden lg:flex fixed top-0 left-0 right-0 z-10">
-              <Navbar />
-            </div>
+         <NavbarProivder/>
+         <FullScreenProvider>
     <main className="pt-[14vh]  pb-32 bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50 w-full">
   {children}
   <Footer/>
 </main>
-
+</FullScreenProvider>
 
           <div className="fixed bottom-22 z-50 right-3">
   < a 
