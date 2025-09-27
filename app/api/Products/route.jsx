@@ -1,13 +1,14 @@
-export const config = {
-  runtime: 'nodejs',
-};
-
+// app/api/Products/route.js
 import { NextResponse } from "next/server";
 import Product from "@/models/Product";
 import dbConnect from "@/Utils/connectDb";
 import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
 import { v2 as cloudinary } from "cloudinary";
 import Catagories from "@/models/Catagories";
+import { AdminGuard } from "@/Utils/guards";
+
+
+export const config = { runtime: 'nodejs' };
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -15,93 +16,63 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function POST(req) {
+
+async function createProductHandler(req) {
   try {
     await dbConnect();
     const body = await req.json();
     const {
-      title,
-      price,
-      cut_price,
-      Vendor,
-      discount,
-      category,
-      subcategory,
-      sizes,
-      main_image,
-      images,
-      description,
+      title, price, cut_price, Vendor, discount,
+      category, subcategory, sizes, main_image,
+      images, description
     } = body;
-   
+
     const mainImageUpload = await uploadToCloudinary(main_image, "Products_Img");
     if (!mainImageUpload) {
       return NextResponse.json({ error: "Main image upload failed" }, { status: 500 });
     }
 
-    const existingProduct = await Product.findOne({
-      title,
-      category,
-      subcategory,
-      Vendor,
-    });
-
+    const existingProduct = await Product.findOne({ title, category, subcategory, Vendor });
     if (existingProduct) {
       return NextResponse.json({
         success: false,
-        message:
-          "Product already exists with the same title, vendor, category, and subcategory.",
+        message: "Product already exists with the same title, vendor, category, and subcategory."
       }, { status: 400 });
     }
 
     const imageUploads = [];
     const imagesToProcess = images || [];
     const maxImages = imagesToProcess.length > 4 ? 4 : imagesToProcess.length;
-    
+
     for (let i = 0; i < maxImages; i++) {
       const uploadResult = await uploadToCloudinary(imagesToProcess[i], "Products_Img");
       imageUploads.push(uploadResult);
     }
 
-    
     const imageUrls = [];
     const imagePublicIds = [];
-    
     for (let i = 0; i < imageUploads.length; i++) {
-      if (imageUploads[i] && imageUploads[i].url) {
-        imageUrls.push(imageUploads[i].url);
-      }
-      if (imageUploads[i] && imageUploads[i].public_id) {
-        imagePublicIds.push(imageUploads[i].public_id);
-      }
+      if (imageUploads[i]?.url) imageUrls.push(imageUploads[i].url);
+      if (imageUploads[i]?.public_id) imagePublicIds.push(imageUploads[i].public_id);
     }
 
-    const name = `${category}-${subcategory}`;
-    const isExists = await Catagories.findOne({name: name});
-    
+    const categoryName = `${category}-${subcategory}`;
+    const isExists = await Catagories.findOne({ name: categoryName });
     if (!isExists) {
       const newCat = new Catagories({
-        name: name,
+        name: categoryName,
         image: mainImageUpload.url,
         cat: category,
         subCat: subcategory,
       });
       await newCat.save();
     }
-    
+
     const newProduct = await Product.create({
-      Vendor,
-      discount,
-      title,
-      price,
-      cut_price,
-      category,
-      subcategory,
-      sizes,
-      description,
-      main_image: mainImageUpload.url,
+      Vendor, discount, title, price, cut_price, category, subcategory,
+      sizes, description, main_image: mainImageUpload.url,
       main_image_public_id: mainImageUpload.public_id,
-      images: imageUrls,
-      images_public_ids: imagePublicIds,
+      images: imageUrls, images_public_ids: imagePublicIds
     });
 
     return NextResponse.json({ success: true, product: newProduct }, { status: 201 });
@@ -111,7 +82,7 @@ export async function POST(req) {
   }
 }
 
-export async function PUT(req) {
+async function updateProductHandler(req) {
   try {
     await dbConnect();
     const body = await req.json();
@@ -120,20 +91,13 @@ export async function PUT(req) {
     if (!currentProduct) {
       return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
     }
+
     const {
-      title,
-      price,
-      cut_price,
-      Vendor,
-      discount,
-      category,
-      subcategory,
-      sizes,
-      main_image,
-      images,
-      description,
+      title, price, cut_price, Vendor, discount,
+      category, subcategory, sizes, main_image,
+      images, description
     } = rest;
-    
+
     const mainImageUpload = await uploadToCloudinary(main_image, "Products_Img");
     if (!mainImageUpload) {
       return NextResponse.json({ error: "Main image upload failed" }, { status: 500 });
@@ -142,72 +106,51 @@ export async function PUT(req) {
     const imageUploads = [];
     const imagesToProcess = images || [];
     const maxImages = imagesToProcess.length > 4 ? 4 : imagesToProcess.length;
-    
+
     for (let i = 0; i < maxImages; i++) {
       const uploadResult = await uploadToCloudinary(imagesToProcess[i], "Products_Img");
       imageUploads.push(uploadResult);
     }
 
-   
     const imageUrls = [];
     const imagePublicIds = [];
-    
     for (let i = 0; i < imageUploads.length; i++) {
-      if (imageUploads[i] && imageUploads[i].url) {
-        imageUrls.push(imageUploads[i].url);
-      }
-      if (imageUploads[i] && imageUploads[i].public_id) {
-        imagePublicIds.push(imageUploads[i].public_id);
-      }
+      if (imageUploads[i]?.url) imageUrls.push(imageUploads[i].url);
+      if (imageUploads[i]?.public_id) imagePublicIds.push(imageUploads[i].public_id);
     }
 
     if (currentProduct.main_image_public_id) {
       await cloudinary.uploader.destroy(currentProduct.main_image_public_id);
     }
-
     if (currentProduct.images_public_ids && currentProduct.images_public_ids.length > 0) {
       for (let i = 0; i < currentProduct.images_public_ids.length; i++) {
         await cloudinary.uploader.destroy(currentProduct.images_public_ids[i]);
       }
     }
-    
-  
+
     const updatedProduct = await Product.findByIdAndUpdate(_id, {
-      Vendor,
-      discount,
-      title,
-      price,
-      cut_price,
-      category,
-      subcategory,
-      sizes,
-      description,
-      main_image: mainImageUpload.url,
+      Vendor, discount, title, price, cut_price, category, subcategory,
+      sizes, description, main_image: mainImageUpload.url,
       main_image_public_id: mainImageUpload.public_id,
-      images: imageUrls,
-      images_public_ids: imagePublicIds,
+      images: imageUrls, images_public_ids: imagePublicIds
     }, { new: true });
 
-    const categoryChanged = currentProduct.category !== updatedProduct.category || 
-                           currentProduct.subcategory !== updatedProduct.subcategory;
+    const categoryChanged = currentProduct.category !== updatedProduct.category ||
+                            currentProduct.subcategory !== updatedProduct.subcategory;
 
     if (categoryChanged) {
       const newCategoryName = `${updatedProduct.category}-${updatedProduct.subcategory}`;
-      
-      const newCategoryExists = await Catagories.findOne({name: newCategoryName});
+      const newCategoryExists = await Catagories.findOne({ name: newCategoryName });
       if (!newCategoryExists) {
         const newCategory = new Catagories({
           name: newCategoryName,
           image: updatedProduct.main_image,
           cat: updatedProduct.category,
-          subCat: updatedProduct.subcategory,
+          subCat: updatedProduct.subcategory
         });
         await newCategory.save();
       } else {
-        await Catagories.findOneAndUpdate(
-          {name: newCategoryName},
-          {image: updatedProduct.main_image}
-        );
+        await Catagories.findOneAndUpdate({ name: newCategoryName }, { image: updatedProduct.main_image });
       }
 
       const oldCategoryName = `${currentProduct.category}-${currentProduct.subcategory}`;
@@ -217,14 +160,11 @@ export async function PUT(req) {
       });
 
       if (remainingProducts === 0) {
-        await Catagories.findOneAndDelete({name: oldCategoryName});
+        await Catagories.findOneAndDelete({ name: oldCategoryName });
       }
     } else {
       const categoryName = `${updatedProduct.category}-${updatedProduct.subcategory}`;
-      await Catagories.findOneAndUpdate(
-        {name: categoryName},
-        {image: updatedProduct.main_image}
-      );
+      await Catagories.findOneAndUpdate({ name: categoryName }, { image: updatedProduct.main_image });
     }
 
     return NextResponse.json({ success: true, product: updatedProduct }, { status: 200 });
@@ -234,28 +174,18 @@ export async function PUT(req) {
   }
 }
 
-export async function DELETE(req) {
+async function deleteProductHandler(req) {
   try {
     await dbConnect();
     const url = new URL(req.url);
     const id = url.searchParams.get("id");
-
-    if (!id) {
-      return NextResponse.json({ success: false, message: "Product ID is required" }, { status: 400 });
-    }
+    if (!id) return NextResponse.json({ success: false, message: "Product ID is required" }, { status: 400 });
 
     const product = await Product.findById(id);
-    if (!product) {
-      return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
-    }
+    if (!product) return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
 
-    const categoryName = `${product.category}-${product.subcategory}`;
-
-    if (product.main_image_public_id) {
-      await cloudinary.uploader.destroy(product.main_image_public_id);
-    }
-
-    if (product.images_public_ids && product.images_public_ids.length > 0) {
+    if (product.main_image_public_id) await cloudinary.uploader.destroy(product.main_image_public_id);
+    if (product.images_public_ids) {
       for (let i = 0; i < product.images_public_ids.length; i++) {
         await cloudinary.uploader.destroy(product.images_public_ids[i]);
       }
@@ -263,14 +193,9 @@ export async function DELETE(req) {
 
     await Product.findByIdAndDelete(id);
 
-    const remainingProducts = await Product.countDocuments({
-      category: product.category,
-      subcategory: product.subcategory
-    });
-
-    if (remainingProducts === 0) {
-      await Catagories.findOneAndDelete({name: categoryName});
-    }
+    const categoryName = `${product.category}-${product.subcategory}`;
+    const remainingProducts = await Product.countDocuments({ category: product.category, subcategory: product.subcategory });
+    if (remainingProducts === 0) await Catagories.findOneAndDelete({ name: categoryName });
 
     return NextResponse.json({ success: true, message: "Product deleted" });
   } catch (error) {
@@ -279,21 +204,15 @@ export async function DELETE(req) {
   }
 }
 
-export async function GET(req) {
+async function getProductHandler(req) {
   try {
     await dbConnect();
-    const { searchParams } = new URL(req.url);
-    const pid = searchParams.get("id");
-
-    if (!pid) {
-      return NextResponse.json({ success: false, message: "Product ID is missing" }, { status: 400 });
-    }
+    const url = new URL(req.url);
+    const pid = url.searchParams.get("id");
+    if (!pid) return NextResponse.json({ success: false, message: "Product ID is missing" }, { status: 400 });
 
     const product = await Product.findById(pid);
-
-    if (!product) {
-      return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
-    }
+    if (!product) return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
 
     return NextResponse.json({ success: true, product }, { status: 200 });
   } catch (error) {
@@ -301,3 +220,9 @@ export async function GET(req) {
     return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
   }
 }
+
+
+export const GET = AdminGuard(getProductHandler);
+export const POST = AdminGuard(createProductHandler);
+export const PUT = AdminGuard(updateProductHandler);
+export const DELETE = AdminGuard(deleteProductHandler);

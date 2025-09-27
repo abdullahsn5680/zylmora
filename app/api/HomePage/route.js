@@ -1,12 +1,10 @@
-export const config = {
-  runtime: 'nodejs',
-};
-
 import { NextResponse } from 'next/server';
 import dbConnect from '@/Utils/connectDb';
 import HomeCollection from '@/models/HomeCollection';
 import { v2 as cloudinary } from 'cloudinary';
 import { uploadToCloudinary } from '@/lib/uploadToCloudinary';
+import { AdminGuard } from '@/Utils/guards';
+
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -14,9 +12,20 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function POST(req) {
-  await dbConnect();
 
+async function getHomeHandler(req) {
+  await dbConnect();
+  try {
+    const entries = await HomeCollection.find();
+    return NextResponse.json({ success: true, entries });
+  } catch (err) {
+    return NextResponse.json({ success: false, message: 'Failed to fetch entries' }, { status: 500 });
+  }
+}
+
+
+async function postHomeHandler(req) {
+  await dbConnect();
   try {
     const text = await req.text();
     if (!text) {
@@ -24,25 +33,19 @@ export async function POST(req) {
     }
 
     const entries = JSON.parse(text);
-
     const oldEntries = await HomeCollection.find();
 
     await HomeCollection.deleteMany({});
 
     const uploadedEntries = await Promise.all(entries.map(async (entry, index) => {
       const oldEntry = oldEntries[index]; 
-
       let bannerUrl = oldEntry?.banner || '';
       let bannerPublicId = oldEntry?.banner_public_id || '';
 
       if (entry.banner?.startsWith('data:image')) {
-      
         if (bannerPublicId) {
-          try {
-            await cloudinary.uploader.destroy(bannerPublicId);
-          } catch (e) {
-            console.warn('Failed to delete old image:', bannerPublicId, e.message);
-          }
+          try { await cloudinary.uploader.destroy(bannerPublicId); } 
+          catch (e) { console.warn('Failed to delete old image:', bannerPublicId, e.message); }
         }
 
         const uploaded = await uploadToCloudinary(entry.banner, 'HomePage_Banners');
@@ -63,15 +66,14 @@ export async function POST(req) {
     return NextResponse.json({ success: true, saved });
 
   } catch (err) {
-    console.error('Error in POST /api/HomePage:', err);
+    console.error('POST /api/HomePage error:', err);
     return NextResponse.json({ success: false, message: 'Server error' }, { status: 500 });
   }
 }
 
 
-export async function DELETE() {
+async function deleteHomeHandler(req) {
   await dbConnect();
-
   try {
     const entries = await HomeCollection.find();
     for (let entry of entries) {
@@ -87,13 +89,9 @@ export async function DELETE() {
   }
 }
 
-export async function GET() {
-  await dbConnect();
-  try {
-    const entries = await HomeCollection.find();
-    
-    return NextResponse.json({ success: true, entries,});
-  } catch (err) {
-    return NextResponse.json({ success: false, message: 'Failed to fetch entries' }, { status: 500 });
-  }
-}
+
+export const POST = AdminGuard(postHomeHandler);
+export const DELETE = AdminGuard(deleteHomeHandler);
+export const GET = getHomeHandler; 
+
+export const config = { runtime: 'nodejs' };

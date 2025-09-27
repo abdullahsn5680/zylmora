@@ -5,7 +5,7 @@ import dbConnect from '@/Utils/connectDb';
 import users from '@/models/users';
 import bcrypt from 'bcryptjs';
 
-const handler = NextAuth({
+export const authOptions = {
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_ID,
@@ -21,20 +21,13 @@ const handler = NextAuth({
         await dbConnect();
         const user = await users.findOne({ Username: credentials.username });
 
-        if (user) {
-          if (user.isactive) {
-            const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
-            if (isPasswordValid) {
-              return { id: user._id, email: user.email, name: user.Username, role: user.admin };
-            } else {
-              throw new Error("Invalid password");
-            }
-          } else {
-            throw new Error("User is inactive");
-          }
-        } else {
-          throw new Error("User not found");
-        }
+        if (!user) throw new Error("User not found");
+        if (!user.isactive) throw new Error("User is inactive");
+
+        const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+        if (!isPasswordValid) throw new Error("Invalid password");
+
+        return { id: user._id, email: user.email, name: user.Username, role: user.admin };
       },
     }),
   ],
@@ -57,10 +50,8 @@ const handler = NextAuth({
       return session;
     },
   },
-});
-
-export const config = {
-  runtime: 'nodejs',
 };
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

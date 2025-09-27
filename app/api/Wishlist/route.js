@@ -5,23 +5,30 @@ export const config = {
 import { NextResponse } from "next/server";
 import users from "@/models/users";
 import dbConnect from "@/Utils/connectDb";
-export async function GET(req) {
-  await dbConnect();
+import { AuthGuard } from "@/Utils/guards";
 
+
+
+
+async function getWishlistHandler(req) {
+  await dbConnect();
   const { searchParams } = new URL(req.url);
   const email = searchParams.get('email');
-  console.log(email)
-  if (!email) return NextResponse.json({ error: "Email is required" }, { status: 400 });
+
+  if (!email) {
+    return NextResponse.json({ error: "Email is required" }, { status: 400 });
+  }
 
   const user = await users.findOne({ email });
-  if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
+  if (!user) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
 
-  return NextResponse.json(user.wishlist || []);
+  return NextResponse.json(user.wishlist || [], { status: 200 });
 }
 
-export async function POST(req) {
+async function addToWishlistHandler(req) {
   await dbConnect();
-
   const body = await req.json();
   const { email, product } = body;
 
@@ -45,30 +52,38 @@ export async function POST(req) {
     image: product.main_image,
   };
 
+
   user.wishlist = user.wishlist.filter(item => item.id !== product._id);
 
- 
+
   user.wishlist.push(wishlistItem);
   await user.save();
 
-  return NextResponse.json({ success: true, wishlist: user.wishlist });
+  return NextResponse.json({ success: true, wishlist: user.wishlist }, { status: 200 });
 }
 
-
-export async function DELETE(req) {
+async function removeFromWishlistHandler(req) {
   await dbConnect();
-
   const { searchParams } = new URL(req.url);
   const email = searchParams.get('email');
   const productId = searchParams.get('productId');
 
-  if (!email || !productId) return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
+  if (!email || !productId) {
+    return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
+  }
 
   const user = await users.findOne({ email });
-  if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
+  if (!user) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
 
-  user.wishlist = user.wishlist.filter((item) => item.id !== productId);
+  user.wishlist = user.wishlist.filter(item => item.id !== productId);
   await user.save();
 
-  return NextResponse.json({ success: true, wishlist: user.wishlist });
+  return NextResponse.json({ success: true, wishlist: user.wishlist }, { status: 200 });
 }
+
+
+export const GET = AuthGuard(getWishlistHandler);
+export const POST = AuthGuard(addToWishlistHandler);
+export const DELETE = AuthGuard(removeFromWishlistHandler);

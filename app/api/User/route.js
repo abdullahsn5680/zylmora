@@ -6,8 +6,12 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/Utils/connectDb';
 import users from '@/models/users';
 import bcrypt from 'bcryptjs';
+import { AuthGuard } from '@/Utils/guards';
 
-export async function POST(request) {
+
+
+
+async function updateUserHandler(request) {
   await dbConnect();
   const body = await request.json();
   const { Id, updateData } = body;
@@ -21,6 +25,7 @@ export async function POST(request) {
     return NextResponse.json({ message: 'User not found' }, { status: 404 });
   }
 
+
   if (!updateData) {
     const { password, ...sanitizedUser } = user.toObject();
     return NextResponse.json({ data: sanitizedUser }, { status: 200 });
@@ -28,6 +33,7 @@ export async function POST(request) {
 
   try {
     const { oldPassword, newPassword, ...otherFields } = updateData;
+
 
     if (newPassword) {
       if (!user.password) {
@@ -40,19 +46,15 @@ export async function POST(request) {
       otherFields.password = await bcrypt.hash(newPassword, 10);
     }
 
-   
+  
     if ('address' in otherFields) {
       if (!Array.isArray(otherFields.address)) {
         return NextResponse.json({ message: 'Address must be an array' }, { status: 400 });
       }
     }
 
-  
-    const updatedUser = await users.findByIdAndUpdate(
-      Id,
-      { $set: otherFields },
-      { new: true }
-    );
+
+    const updatedUser = await users.findByIdAndUpdate(Id, { $set: otherFields }, { new: true });
 
     const { password, ...sanitizedUser } = updatedUser.toObject();
     return NextResponse.json({ data: sanitizedUser }, { status: 200 });
@@ -61,3 +63,6 @@ export async function POST(request) {
     return NextResponse.json({ message: 'Update failed' }, { status: 500 });
   }
 }
+
+
+export const POST = AuthGuard(updateUserHandler);

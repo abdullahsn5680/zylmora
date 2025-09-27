@@ -82,7 +82,7 @@ export default function OrdersPage() {
     </div>
 
    
-    {filteredOrders.length === 0 ? (
+    {filteredOrders?.length === 0 ? (
         <EmptyMesseges
         icon="🧾"
         title="No Orders Found"
@@ -91,7 +91,7 @@ export default function OrdersPage() {
       />
     ) : (
       <div className="grid gap-4 sm:gap-5 md:gap-6">
-        {filteredOrders.map((order, index) => (
+        {filteredOrders?.map((order, index) => (
           <div
             key={index}
             className="group relative bg-white rounded-2xl sm:rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 sm:hover:-translate-y-2 overflow-hidden border border-gray-100"
