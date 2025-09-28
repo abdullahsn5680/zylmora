@@ -39,7 +39,8 @@ export async function GET(req) {
           main_image: product.main_image || '/fallback.avif',
           title: product.title,
           price: `${Number(product.price).toLocaleString()}`,
-          cut_price: `${Number(product.cut_price).toLocaleString()}`
+          cut_price: `${Number(product.cut_price).toLocaleString()}`,
+          stock:`${Number(product.stock).toLocaleString()}`,
         });
       }
 

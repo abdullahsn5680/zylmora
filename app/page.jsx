@@ -55,7 +55,7 @@ setSelectedSortBy('');
         } catch (err) {
           console.error('Error fetching collections:', err);
         }
-  }, [session]);
+  }, []);
 
 
 

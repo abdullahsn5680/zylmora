@@ -1,4 +1,5 @@
 const nextConfig = {
+  outputFileTracingRoot: __dirname,
   images: {
 
      domains: ['res.cloudinary.com'],

@@ -26,6 +26,7 @@ const isAdmin = session?.user?.role
     }
 }},[status])
   const [product, setProduct] = useState({
+    previewImgToDel:[],
     _id: '',
     title: '',
     price: '',
@@ -46,6 +47,7 @@ const isAdmin = session?.user?.role
   });
 
   const [previewMainImage, setPreviewMainImage] = useState(null);
+  const [previewImgToDel,setPreviewImgToDel]=useState([]);
   const [previewImages, setPreviewImages] = useState([]);
   const [selectedSize, setSelectedSize] = useState('');
   const params = useSearchParams();
@@ -85,7 +87,7 @@ const isAdmin = session?.user?.role
       price: parseFloat(product.price),
       cut_price: parseFloat(product.cut_price),
       discount: calculateDiscount(),
-      sizes: product.sizes.map((s) => ({ size: s })),
+      size: product.sizes.map((s) => ({ size: s })),
     };
 
     setLoading(true);
@@ -140,6 +142,14 @@ const isAdmin = session?.user?.role
 
   const removeImage = (indexToRemove) => {
     const newImages = product.images.filter((_, i) => i !== indexToRemove);
+  console.log(indexToRemove)
+     const oldPublicIds = product.images_public_ids[indexToRemove]
+     if(oldPublicIds!==undefined){
+   setPreviewImgToDel(prev=>[...prev,oldPublicIds])
+   product.previewImgToDel=[...previewImgToDel,oldPublicIds]
+  }else{
+    console.log('not public id')
+   }
     const newPublicIds = product.images_public_ids?.filter((_, i) => i !== indexToRemove) || [];
     setProduct((prev) => ({
       ...prev,
@@ -298,4 +308,3 @@ const isAdmin = session?.user?.role
     </div>
   );
 }
-

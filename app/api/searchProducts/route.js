@@ -52,7 +52,7 @@ export async function GET(req) {
 
     
     const conditions = [];
-d
+
     if (gender) {
       conditions.push({ category: gender });
     }

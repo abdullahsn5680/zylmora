@@ -1,4 +1,3 @@
-// app/api/Products/route.js
 import { NextResponse } from "next/server";
 import Product from "@/models/Product";
 import dbConnect from "@/Utils/connectDb";
@@ -81,12 +80,12 @@ async function createProductHandler(req) {
     return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
   }
 }
-
 async function updateProductHandler(req) {
   try {
     await dbConnect();
     const body = await req.json();
     const { _id, ...rest } = body;
+
     const currentProduct = await Product.findById(_id);
     if (!currentProduct) {
       return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
@@ -94,63 +93,97 @@ async function updateProductHandler(req) {
 
     const {
       title, price, cut_price, Vendor, discount,
-      category, subcategory, sizes, main_image,
-      images, description
+      category, subcategory, size, main_image,
+      stock, images = [], description, previewImgToDel = []
     } = rest;
 
-    const mainImageUpload = await uploadToCloudinary(main_image, "Products_Img");
-    if (!mainImageUpload) {
-      return NextResponse.json({ error: "Main image upload failed" }, { status: 500 });
-    }
+    
+    let mainImageUpload = {
+      url: currentProduct.main_image,
+      public_id: currentProduct.main_image_public_id
+    };
 
-    const imageUploads = [];
-    const imagesToProcess = images || [];
-    const maxImages = imagesToProcess.length > 4 ? 4 : imagesToProcess.length;
+    if (main_image && !main_image.includes('https://res.cloudinary.com/')) {
+      mainImageUpload = await uploadToCloudinary(main_image, "Products_Img");
+      if (!mainImageUpload) return NextResponse.json({ error: "Main image upload failed" }, { status: 500 });
 
-    for (let i = 0; i < maxImages; i++) {
-      const uploadResult = await uploadToCloudinary(imagesToProcess[i], "Products_Img");
-      imageUploads.push(uploadResult);
-    }
-
-    const imageUrls = [];
-    const imagePublicIds = [];
-    for (let i = 0; i < imageUploads.length; i++) {
-      if (imageUploads[i]?.url) imageUrls.push(imageUploads[i].url);
-      if (imageUploads[i]?.public_id) imagePublicIds.push(imageUploads[i].public_id);
-    }
-
-    if (currentProduct.main_image_public_id) {
-      await cloudinary.uploader.destroy(currentProduct.main_image_public_id);
-    }
-    if (currentProduct.images_public_ids && currentProduct.images_public_ids.length > 0) {
-      for (let i = 0; i < currentProduct.images_public_ids.length; i++) {
-        await cloudinary.uploader.destroy(currentProduct.images_public_ids[i]);
+    
+      if (currentProduct.main_image_public_id) {
+        await cloudinary.uploader.destroy(currentProduct.main_image_public_id).catch(err => {
+          if (err.http_code !== 404) console.error("Cloudinary main image delete error:", err);
+        });
       }
     }
 
-    const updatedProduct = await Product.findByIdAndUpdate(_id, {
-      Vendor, discount, title, price, cut_price, category, subcategory,
-      sizes, description, main_image: mainImageUpload.url,
-      main_image_public_id: mainImageUpload.public_id,
-      images: imageUrls, images_public_ids: imagePublicIds
-    }, { new: true });
+   
+    let imageUrls = currentProduct.images || [];
+    let imagePublicIds = currentProduct.images_public_ids || [];
 
-    const categoryChanged = currentProduct.category !== updatedProduct.category ||
-                            currentProduct.subcategory !== updatedProduct.subcategory;
+    if (images.length > 0) {
+      const uploads = await Promise.all(
+        images.slice(0, 4).map(img => uploadToCloudinary(img, "Products_Img"))
+      );
+      imageUrls = uploads.map(u => u.url).filter(Boolean);
+      imagePublicIds = uploads.map(u => u.public_id).filter(Boolean);
+    }
+
+    
+    if (previewImgToDel.length > 0) {
+      await Promise.all(
+        previewImgToDel.map(publicId =>
+          cloudinary.uploader.destroy(publicId).catch(err => {
+            if (err.http_code !== 404) console.error(`Cloudinary delete error (${publicId}):`, err);
+          })
+        )
+      );
+
+     
+      imageUrls = imageUrls.filter((_, idx) => !previewImgToDel.includes(imagePublicIds[idx]));
+      imagePublicIds = imagePublicIds.filter(id => !previewImgToDel.includes(id));
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      _id,
+      {
+        Vendor,
+        discount,
+        title,
+        price,
+        cut_price,
+        category,
+        subcategory,
+        size,
+        description,
+        stock,
+        main_image: mainImageUpload.url,
+        main_image_public_id: mainImageUpload.public_id,
+        images: imageUrls,
+        images_public_ids: imagePublicIds
+      },
+      { new: true }
+    );
+
+  
+    const categoryChanged =
+      currentProduct.category !== updatedProduct.category ||
+      currentProduct.subcategory !== updatedProduct.subcategory;
 
     if (categoryChanged) {
       const newCategoryName = `${updatedProduct.category}-${updatedProduct.subcategory}`;
       const newCategoryExists = await Catagories.findOne({ name: newCategoryName });
+
       if (!newCategoryExists) {
-        const newCategory = new Catagories({
+        await new Catagories({
           name: newCategoryName,
           image: updatedProduct.main_image,
           cat: updatedProduct.category,
           subCat: updatedProduct.subcategory
-        });
-        await newCategory.save();
+        }).save();
       } else {
-        await Catagories.findOneAndUpdate({ name: newCategoryName }, { image: updatedProduct.main_image });
+        await Catagories.findOneAndUpdate(
+          { name: newCategoryName },
+          { image: updatedProduct.main_image }
+        );
       }
 
       const oldCategoryName = `${currentProduct.category}-${currentProduct.subcategory}`;
@@ -173,6 +206,8 @@ async function updateProductHandler(req) {
     return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
   }
 }
+
+
 
 async function deleteProductHandler(req) {
   try {
