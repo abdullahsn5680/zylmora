@@ -2,9 +2,11 @@ import { ShoppingBag } from 'lucide-react'
 import { Star } from 'lucide-react'
 import { Sparkle } from 'lucide-react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 
 function Hero({content}) {
+  const router = useRouter()
   return (
     <div className="relative hero md:py-8  sm:px-6 lg:px-8 text-gray-800">
         <div className="max-w-7xl mx-auto">
@@ -30,19 +32,19 @@ function Hero({content}) {
                     <span className="text-sm font-medium text-white">Premium Fashion Collection</span>
                   </div>
                   
-                  <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black text-white mb-6 leading-tight">
+                  <h1 className=" xxs:text-sm text-[2.25rem]  lg:text-6xl font-black text-white mb-6 leading-tight">
                     Discover Your
                     <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
                       Perfect Style
                     </span>
                   </h1>
                   
-                  <p className="text-lg text-gray-200 mb-8 leading-relaxed max-w-lg">
+                  <p className=" text-[0.9rem] text-gray-200 mb-8 leading-relaxed max-w-lg">
                     Explore our curated collection of premium fashion items, designed for those who appreciate quality and style.
                   </p>
                   
                   <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                    <button className="group relative px-8 py-4 bg-white text-gray-900 rounded-2xl font-bold transition-all duration-300 hover:scale-105 overflow-hidden shadow-xl">
+                    <button onClick ={()=>{router.push('./Catagories')}} className="group relative px-8 py-4 bg-white text-gray-900 rounded-2xl font-bold transition-all duration-300 hover:scale-105 overflow-hidden shadow-xl">
                       <span className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-50 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                       <span className="relative flex items-center justify-center gap-2">
                         <ShoppingBag className="w-5 h-5" />

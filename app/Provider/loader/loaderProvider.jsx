@@ -26,6 +26,7 @@ export function LoaderProvider({ children }) {
 
   return (
     <LoaderContext.Provider value={{ showLoader, hideLoader }}>
+      
       {children}
       <PopLoader {...loader} />
     </LoaderContext.Provider>

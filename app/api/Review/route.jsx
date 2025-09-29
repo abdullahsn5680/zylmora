@@ -82,7 +82,7 @@ async function deleteReviewHandler(req) {
 
 
 
-export const GET = AuthGuard(getReviewsHandler);
+export const GET = getReviewsHandler
 export const POST = AuthGuard(addReviewHandler);
 export const PUT = AuthGuard(updateReviewHandler);
 export const DELETE = AuthGuard(deleteReviewHandler);

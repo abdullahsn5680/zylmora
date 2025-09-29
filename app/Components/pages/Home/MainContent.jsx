@@ -18,7 +18,7 @@ function MainContent({content}) {
           
           <div className="w-24 h-1.5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 mx-auto rounded-full mb-6" />
           
-          <p className="text-xl max-w-3xl mx-auto leading-relaxed text-gray-600">
+          <p className="text-sm max-w-3xl mx-auto leading-relaxed text-gray-600">
             Explore our handpicked collections of premium fashion items, crafted with attention to detail and designed for the modern lifestyle.
           </p>
         </div>

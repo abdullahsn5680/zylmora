@@ -257,7 +257,7 @@ async function getProductHandler(req) {
 }
 
 
-export const GET = AuthGuard(getProductHandler);
+export const GET = getProductHandler
 export const POST = AdminGuard(createProductHandler);
 export const PUT = AdminGuard(updateProductHandler);
 export const DELETE = AdminGuard(deleteProductHandler);

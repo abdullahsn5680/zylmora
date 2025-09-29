@@ -64,14 +64,14 @@ const Card = memo(function Card({ prop, isRelated }) {
           )}
 
         
-          <div className="absolute top-3 left-3 flex flex-col gap-2 z-1">
+          <div className="absolute top-3 left-3 flex flex-col gap-1 z-1">
             {isNew && (
-              <div className="px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold rounded-full shadow-lg border border-white/20 backdrop-blur-sm transform hover:scale-105 transition-transform duration-300">
+              <div className="px-1 py-0.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[8px] font-bold rounded-full shadow-lg border border-white/20 backdrop-blur-sm transform hover:scale-105 transition-transform duration-300">
                 ✨ NEW
               </div>
             )}
             {isOnSale && (
-              <div className="px-3 py-1.5 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs font-bold rounded-full shadow-lg border border-white/20 backdrop-blur-sm transform hover:scale-105 transition-transform duration-300">
+              <div className="px-1 py-0.5 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[8px] font-bold rounded-full shadow-lg border border-white/20 backdrop-blur-sm transform hover:scale-105 transition-transform duration-300">
                 🔥 {prop.discount}% OFF
               </div>
             )}
@@ -88,7 +88,7 @@ const Card = memo(function Card({ prop, isRelated }) {
             className={`absolute bottom-4 left-3 right-3 z-1 transition-all duration-500 ease-out
             ${isHovered ? 'opacity-40 blur-sm translate-y-2' : 'opacity-100 blur-none translate-y-0'}`}
           >
-            <div className="flex justify-center gap-2 flex-wrap">
+            <div className="flex justify-center gap-1 flex-wrap">
               {prop.sizes.map((sizeData) => (
                 <button
                   key={sizeData._id}
