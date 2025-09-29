@@ -1,4 +1,4 @@
-'use client'
+'use client'   
 import React, { useEffect, useState } from 'react';
 import { safeFetch } from '@/Utils/safeFetch';
 import Loader from '@/app/Components/Loader/loader';
@@ -78,14 +78,13 @@ function page() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-gray-50 relative overflow-hidden">
       
-      {/* Background Decorations */}
+
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse" />
         <div className="absolute bottom-20 right-20 w-28 h-28 bg-gradient-to-br from-pink-100 to-orange-100 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse animation-delay-2000" />
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-gradient-to-br from-green-100 to-teal-100 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-4000" />
       </div>
 
-      {/* Header Section */}
       <div className="relative z-1">
         <Heading icon={'🛍️'} name={'Shop Categories'} />
         
@@ -97,7 +96,7 @@ function page() {
                 <span className="text-sm font-bold uppercase tracking-wider text-gray-600">Premium Collections</span>
               </div>
               
-              <p className="text-gray-600 text-xl font-light max-w-3xl mx-auto leading-relaxed">
+              <p className="text-gray-600 text-md font-light max-w-3xl mx-auto leading-relaxed">
                 Discover our carefully curated collection of premium products across all categories, 
                 designed for those who appreciate quality and style.
               </p>
@@ -108,7 +107,7 @@ function page() {
         </div>
       </div>
       
-      {/* Categories Grid */}
+   
       <div className="relative z-1 max-w-7xl mx-auto px-6 py-16">
         {categoriesData.length === 0 ? (
           <div className="text-center py-24">
@@ -122,7 +121,7 @@ function page() {
           </div>
         ) : (
           <>
-            {/* Section Header */}
+         
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-black text-gray-800 mb-6 tracking-tight">
                 Browse by Category
@@ -131,7 +130,7 @@ function page() {
             </div>
 
             {/* Categories Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {categoriesData.map((category, index) => (
                 <div
                   key={index}
@@ -166,10 +165,10 @@ function page() {
                       }}
                     />
                     
-                    {/* Hover Overlay */}
+              
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
                     
-                    {/* Available Badge */}
+             
                     <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg border border-white/50">
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
@@ -177,7 +176,7 @@ function page() {
                       </div>
                     </div>
 
-                    {/* View Icon */}
+        
                     <div className="absolute top-4 right-4 w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:scale-110">
                       <Eye className="w-6 h-6 text-white" />
                     </div>
@@ -220,10 +219,10 @@ function page() {
                     </div>
                   </div>
 
-                  {/* Top Border Animation */}
+                
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 rounded-t-3xl" />
                   
-                  {/* Shine Effect */}
+                 
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out rounded-3xl" />
                 </div>
               ))}

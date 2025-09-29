@@ -4,7 +4,7 @@ import dbConnect from "@/Utils/connectDb";
 import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
 import { v2 as cloudinary } from "cloudinary";
 import Catagories from "@/models/Catagories";
-import { AdminGuard } from "@/Utils/guards";
+import { AdminGuard, AuthGuard } from "@/Utils/guards";
 
 
 export const config = { runtime: 'nodejs' };
@@ -257,7 +257,7 @@ async function getProductHandler(req) {
 }
 
 
-export const GET = AdminGuard(getProductHandler);
+export const GET = AuthGuard(getProductHandler);
 export const POST = AdminGuard(createProductHandler);
 export const PUT = AdminGuard(updateProductHandler);
 export const DELETE = AdminGuard(deleteProductHandler);

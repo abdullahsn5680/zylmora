@@ -11,7 +11,7 @@ const CardContainer = memo(function CardContainer({ prop }) {
   };
 
   return (
-    <div className='w-full bg-gradient-to-br from-gray-50 via-white to-gray-50 mb-16 p-3 md:p-6 lg:p-8 relative overflow-hidden'>
+    <div className='w-full bg-gradient-to-br from-gray-50 via-white to-gray-50 mb-16 p-3 md:p-6 lg:p-8 rounded-3xl relative overflow-hidden'>
      
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-10 left-10 w-32 h-32 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse" />
