@@ -155,7 +155,7 @@ const Card = memo(function Card({ prop, isRelated }) {
 
             {savingsAmount > 0 && (
               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
-                <span className="text-green-700 text-sm font-bold">
+                <span className="text-green-700 text-xs font-bold">
                   Save Rs {formatPrice(savingsAmount)}
                 </span>
                 <span className="text-green-600">💰</span>

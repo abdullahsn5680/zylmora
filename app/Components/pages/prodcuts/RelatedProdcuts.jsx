@@ -107,12 +107,12 @@ function RelatedProducts({ prop }) {
       <div className="relative bg-gradient-to-br from-white/90 to-gray-50/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200/60 overflow-hidden">
         
       
-        <div className="pointer-events-none absolute left-0 top-0 h-full w-16 sm:w-24 lg:w-32 bg-gradient-to-r from-white via-white/80 to-transparent z-10" />
-        <div className="pointer-events-none absolute right-0 top-0 h-full w-16 sm:w-24 lg:w-32 bg-gradient-to-l from-white via-white/80 to-transparent z-10" />
+        {/* <div className="pointer-events-none absolute left-0 top-0 h-full w-16 sm:w-24 lg:w-32 bg-gradient-to-r from-white via-white/80 to-transparent z-10" />
+        <div className="pointer-events-none absolute right-0 top-0 h-full w-16 sm:w-24 lg:w-32 bg-gradient-to-l from-white via-white/80 to-transparent z-10" /> */}
 
        
         {relatedProducts.length > 0 && (
-          <div className="hidden sm:flex justify-between items-center absolute top-1/2 left-0 right-0 px-4 lg:px-6 z-20 -translate-y-1/2 pointer-events-none">
+          <div className="flex justify-between items-center absolute top-1/2 left-0 right-0 px-4 lg:px-6 z-20 -translate-y-1/2 pointer-events-none">
             <button
               onClick={() => scroll('left')}
               disabled={!canScrollLeft}
@@ -180,7 +180,7 @@ function RelatedProducts({ prop }) {
         {relatedProducts.length > 0 && (
           <div className="flex sm:hidden justify-center pb-6">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full border border-blue-200/60">
-              <span className="text-xs font-bold text-gray-700">Swipe to explore</span>
+              <span className="text-xs font-bold text-gray-700">Use buttons or  Swipe a to explore</span>
               <ChevronRight size={14} className="text-gray-600 animate-pulse" />
             </div>
           </div>

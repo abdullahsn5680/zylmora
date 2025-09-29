@@ -23,7 +23,7 @@ function ExploreMore() {
             
             <button onClick={()=>router.push('./Catagories')} className="group relative px-10 py-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl font-bold text-lg transition-all duration-300 hover:scale-105 overflow-hidden shadow-xl hover:shadow-2xl">
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-              <div   className="relative flex items-center gap-3">
+              <div   className="relative flex text-[0.9rem] items-center gap-2.5">
                 <Sparkles className="w-6 h-6" />
                 
                 Browse All Collections

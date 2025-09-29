@@ -149,7 +149,7 @@ export default function OrdersPage() {
                   <div className={`absolute inset-0 bg-gradient-to-br ${category.bgGradient} opacity-50`} />
                   
                
-                  <div className="relative p-8 md:p-12">
+                  <div className="relative p-3 md:p-12">
                     <div className="flex items-center justify-between mb-6">
                       <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${category.gradient} text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500`}>
                         {category.icon}
@@ -172,12 +172,12 @@ export default function OrdersPage() {
 </h3>
                     
                     <div className="text-gray-600  mb-6 leading-relaxed">
-                      <span className='text-xs md:text-xl'> View and manage all {category.name.toLowerCase()} orders in one place</span>
+                      <span className='text-xs hidden md:flex md:text-xl'> View and manage all {category.name.toLowerCase()} orders in one place</span>
                      
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <button className="group/btn flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors duration-300">
+                      <button className="group/btn hidden md:flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors duration-300">
                         View Orders
                         <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
                       </button>
@@ -257,7 +257,7 @@ export default function OrdersPage() {
                           />
                         </div>
                         
-                        {/* Status Badge */}
+                      
                         <div className={`absolute -top-2 -right-2 px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg ${
                           order.status === 'Delivered' ? 'bg-emerald-500 text-white' :
                           order.status === 'Shipped' ? 'bg-blue-500 text-white' :
@@ -273,7 +273,6 @@ export default function OrdersPage() {
                         </div>
                       </div>
 
-                      {/* Order Details */}
                       <div className="flex-1 min-w-0 space-y-3">
                         <h3 className="text-xl font-bold text-slate-800 truncate group-hover:text-slate-600 transition-colors duration-300">
                           {order.product?.title}
