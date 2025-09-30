@@ -80,7 +80,7 @@ async function updateOrderHandler(request) {
   try {
     await dbConnect();
     const body = await request.json();
-    const { id, status, returnReason, cancelReason, address } = body;
+    const { id, status, returnReason, cancelReason, } = body;
 
     if (!id) return NextResponse.json({ message: 'Order ID required', success: false }, { status: 400 });
 
@@ -88,7 +88,7 @@ async function updateOrderHandler(request) {
     if (status) updateFields.status = status;
     if (returnReason) updateFields.returnReason = returnReason;
     if (cancelReason) updateFields.cancelReason = cancelReason;
-    if (address) updateFields.address = address;
+    // if (address) updateFields.address = address;
 
     await GlobalOrder.findOneAndUpdate({ orderId: id }, { $set: updateFields });
     await Order.findOneAndUpdate({ id }, { $set: updateFields });

@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 import { UserContext } from '@/app/Context/contextProvider';
 import Loader from '@/app/Components/Loader/loader';
 
-export default function ProfilePage() {
+export default function Account() {
   const { session, status } = useContext(UserContext);
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);

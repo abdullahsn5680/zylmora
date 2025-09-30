@@ -42,7 +42,7 @@ export default function ProfilePage() {
   }, []);
 
   useEffect(() => {
-    router.prefetch('/Profile/Account');
+
     router.prefetch('/Profile/Orders');
     router.prefetch('/Profile/Wishlist');
     router.prefetch('/Profile/Cart');

@@ -1,7 +1,7 @@
 'use client'
 import NavbarM from '@/app/Components/UI/MObile/NavbarM'
 import Navbar from '@/app/Components/UI/Navbar'
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { useLenis } from '../Lenis/LenisProvider'
 
 function NavbarProvider() {
@@ -22,12 +22,16 @@ function NavbarProvider() {
         hidden ? '-translate-y-full' : 'translate-y-0'
       }`}
     >
+       <Suspense fallback={<div>Loading...</div>}>
+    
+ 
       <div className="flex lg:hidden">
         <NavbarM />
       </div>
       <div className="hidden lg:flex">
         <Navbar />
       </div>
+         </Suspense>
     </div>
   )
 }
