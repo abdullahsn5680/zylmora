@@ -13,7 +13,6 @@ function ImageViewer({ images }) {
   const imageRef = useRef(null);
   const containerRef = useRef(null);
 
-  // Sample images for demo
   const defaultImages = [
     'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1200&h=800&fit=crop&q=80',
     'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1200&h=800&fit=crop&q=80',
@@ -173,19 +172,22 @@ function ImageViewer({ images }) {
 
   function LoadingSpinner() {
     return (
-      <div className="w-8 h-8 border-3 border-slate-300 border-t-slate-800 rounded-full animate-spin"></div>
+      <div className="relative">
+        <div className="w-12 h-12 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+        <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-b-slate-600 rounded-full animate-spin" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }}></div>
+      </div>
     );
   }
 
   let thumbnailButtons = [];
   for (let i = 0; i < displayImages.length; i++) {
     let isActive = current === i;
-    let buttonClass = "relative min-w-24 w-24 h-24 rounded-md overflow-hidden transition-all duration-300 hover:scale-105 ";
+    let buttonClass = "relative min-w-28 w-28 h-28 rounded-xl overflow-hidden transition-all duration-500 hover:scale-110 ";
     
     if (isActive) {
-      buttonClass += "ring-2 ring-slate-800 ring-offset-2 shadow-lg";
+      buttonClass += "ring-4 ring-slate-800 ring-offset-4 ring-offset-white shadow-2xl scale-105";
     } else {
-      buttonClass += "hover:shadow-lg opacity-70 hover:opacity-100 border border-slate-200";
+      buttonClass += "hover:shadow-2xl opacity-60 hover:opacity-100 border-2 border-slate-200 hover:border-slate-400";
     }
 
     thumbnailButtons.push(
@@ -197,22 +199,24 @@ function ImageViewer({ images }) {
         <img
           src={displayImages[i]}
           alt={`Thumbnail ${i + 1}`}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
         />
+        {isActive && (
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent"></div>
+        )}
       </button>
     );
   }
 
-
   let mobileDots = [];
   for (let i = 0; i < displayImages.length; i++) {
     let isActive = current === i;
-    let dotClass = "transition-all duration-300 ";
+    let dotClass = "transition-all duration-500 ";
     
     if (isActive) {
-      dotClass += "w-8 h-2 bg-slate-800 rounded-full";
+      dotClass += "w-10 h-2.5 bg-gradient-to-r from-slate-700 to-slate-900 rounded-full shadow-lg";
     } else {
-      dotClass += "w-2 h-2 bg-slate-300 hover:bg-slate-400 rounded-full";
+      dotClass += "w-2.5 h-2.5 bg-slate-300 hover:bg-slate-500 rounded-full hover:scale-125";
     }
 
     mobileDots.push(
@@ -224,16 +228,15 @@ function ImageViewer({ images }) {
     );
   }
 
-
   let fullscreenDots = [];
   for (let i = 0; i < displayImages.length; i++) {
     let isActive = current === i;
-    let dotClass = "transition-all duration-300 ";
+    let dotClass = "transition-all duration-500 ";
     
     if (isActive) {
-      dotClass += "w-6 h-2 bg-white rounded-full";
+      dotClass += "w-8 h-2.5 bg-white rounded-full shadow-lg";
     } else {
-      dotClass += "w-2 h-2 bg-white/50 rounded-full hover:bg-white/70";
+      dotClass += "w-2.5 h-2.5 bg-white/40 rounded-full hover:bg-white/80 hover:scale-125";
     }
 
     fullscreenDots.push(
@@ -249,7 +252,7 @@ function ImageViewer({ images }) {
     transform: `scale(${zoomLevel}) translate(${position.x / zoomLevel}px, ${position.y / zoomLevel}px)`
   };
 
-  let cursorClass = "w-full h-full object-contain transition-all duration-300 ";
+  let cursorClass = "w-full h-full object-contain transition-all duration-500 ";
   if (isDragging) {
     cursorClass += "cursor-grabbing";
   } else if (zoomLevel > 1) {
@@ -262,13 +265,18 @@ function ImageViewer({ images }) {
 
   return (
     <>
-      <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-6 lg:py-8">
-       
-        <div className="text-center mb-8 lg:mb-12 bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-          <h2 className="text-2xl lg:text-4xl font-bold text-slate-800 mb-4 tracking-wide">
-            Gallery
-          </h2>
-          <div className="w-16 h-1 bg-gradient-to-r from-slate-300 to-slate-800 mx-auto rounded-full"></div>
+      <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-6 lg:py-8 bg-gradient-to-br from-slate-50 via-white to-slate-100 min-h-screen">
+        <div className="text-center mb-8 lg:mb-12 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-slate-100 rounded-3xl"></div>
+          <div className="relative bg-white/60 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-slate-200/50">
+            <div className="inline-block">
+              <h2 className="text-3xl lg:text-5xl font-bold bg-gradient-to-r from-slate-600 via-slate-800 to-slate-900 bg-clip-text text-transparent mb-2 tracking-tight">
+                Gallery
+              </h2>
+              <div className="h-1.5 bg-gradient-to-r from-transparent via-slate-800 to-transparent rounded-full"></div>
+            </div>
+            <p className="text-slate-500 text-sm mt-4 font-medium">Explore and interact with your collection</p>
+          </div>
         </div>
 
         <style jsx>{`
@@ -281,16 +289,14 @@ function ImageViewer({ images }) {
           }
         `}</style>
 
-      
         <div className="md:hidden">
           <div className="relative">
-           
             <div 
               ref={containerRef}
-              className="relative w-full aspect-square rounded-xl overflow-hidden bg-slate-50 shadow-sm border border-slate-100 hover:shadow-lg transition-all duration-300"
+              className="relative w-full aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 shadow-2xl border border-slate-200 hover:shadow-3xl transition-all duration-500 hover:scale-[1.01]"
             >
               {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white/90 backdrop-blur-sm z-20">
+                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-white/95 to-slate-50/95 backdrop-blur-md z-20">
                   <LoadingSpinner />
                 </div>
               )}
@@ -299,7 +305,7 @@ function ImageViewer({ images }) {
                 ref={imageRef}
                 src={displayImages[current]}
                 alt={`Image ${current + 1}`}
-                className="w-full h-full object-cover transition-all duration-300 cursor-pointer"
+                className="w-full h-full object-cover transition-all duration-500 cursor-pointer"
                 style={imageStyle}
                 onMouseDown={handleMouseDown}
                 onDoubleClick={handleDoubleClick}
@@ -307,68 +313,64 @@ function ImageViewer({ images }) {
                 draggable={false}
               />
 
-              
-              <div className="absolute top-4 right-4 bg-slate-800/90 backdrop-blur-sm text-white text-sm px-3 py-1 rounded-full font-medium">
+              <div className="absolute top-4 right-4 bg-gradient-to-br from-slate-800 to-slate-900 backdrop-blur-md text-white text-sm px-4 py-2 rounded-full font-semibold shadow-lg border border-white/10">
                 {current + 1} / {displayImages.length}
               </div>
 
-            
               <div className="absolute top-4 left-4 flex flex-col gap-2">
                 <button
                   onClick={handleZoomIn}
                   disabled={zoomLevel >= 3}
-                  className="p-2 bg-slate-100 text-slate-800 hover:bg-slate-800 hover:text-white rounded-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed border border-slate-200"
+                  className="p-2.5 bg-white/90 backdrop-blur-sm text-slate-800 hover:bg-slate-800 hover:text-white rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:scale-110 border border-slate-200/50"
                 >
-                  <ZoomIn size={16} />
+                  <ZoomIn size={18} />
                 </button>
                 <button
                   onClick={handleZoomOut}
                   disabled={zoomLevel <= 1}
-                  className="p-2 bg-slate-100 text-slate-800 hover:bg-slate-800 hover:text-white rounded-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed border border-slate-200"
+                  className="p-2.5 bg-white/90 backdrop-blur-sm text-slate-800 hover:bg-slate-800 hover:text-white rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:scale-110 border border-slate-200/50"
                 >
-                  <ZoomOut size={16} />
+                  <ZoomOut size={18} />
                 </button>
                 <button
                   onClick={toggleFullscreen}
-                  className="p-2 bg-slate-100 text-slate-800 hover:bg-slate-800 hover:text-white rounded-md transition-all duration-300 border border-slate-200"
+                  className="p-2.5 bg-white/90 backdrop-blur-sm text-slate-800 hover:bg-slate-800 hover:text-white rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110 border border-slate-200/50"
                 >
-                  <Maximize2 size={16} />
+                  <Maximize2 size={18} />
                 </button>
               </div>
             </div>
 
-         
             <div className="flex justify-between items-center mt-6 px-4">
               <button
                 onClick={handlePrev}
-                className="p-3 bg-slate-100 text-slate-800 hover:bg-slate-800 hover:text-white hover:scale-105 rounded-md shadow-sm hover:shadow-lg transition-all duration-300 border border-slate-200"
+                className="p-4 bg-gradient-to-br from-white to-slate-50 text-slate-800 hover:from-slate-800 hover:to-slate-900 hover:text-white hover:scale-110 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-slate-200"
               >
-                <ChevronLeft size={20} />
+                <ChevronLeft size={22} />
               </button>
               
-              <div className="flex gap-2">
+              <div className="flex gap-2.5">
                 {mobileDots}
               </div>
               
               <button
                 onClick={handleNext}
-                className="p-3 bg-slate-100 text-slate-800 hover:bg-slate-800 hover:text-white hover:scale-105 rounded-md shadow-sm hover:shadow-lg transition-all duration-300 border border-slate-200"
+                className="p-4 bg-gradient-to-br from-white to-slate-50 text-slate-800 hover:from-slate-800 hover:to-slate-900 hover:text-white hover:scale-110 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-slate-200"
               >
-                <ChevronRight size={20} />
+                <ChevronRight size={22} />
               </button>
             </div>
           </div>
         </div>
 
-          <div className="hidden md:block">
-         
+        <div className="hidden md:block">
           <div 
             ref={containerRef}
-            className="relative w-full max-w-4xl mx-auto aspect-[4/3] rounded-xl overflow-hidden bg-slate-50 shadow-sm border border-slate-100 group mb-8 hover:shadow-lg transition-all duration-300"
+            className="relative w-full max-w-5xl mx-auto aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 shadow-2xl border-2 border-slate-200/50 group mb-10 hover:shadow-3xl transition-all duration-500 hover:scale-[1.01]"
           >
             {isLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-white/90 backdrop-blur-sm z-20">
-                <div className="w-12 h-12 border-4 border-slate-300 border-t-slate-800 rounded-full animate-spin"></div>
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-white/95 to-slate-50/95 backdrop-blur-md z-20">
+                <LoadingSpinner />
               </div>
             )}
             
@@ -384,90 +386,83 @@ function ImageViewer({ images }) {
               draggable={false}
             />
 
-            {/* Controls Overlay */}
-            <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <div className="flex items-center gap-1 bg-slate-800/90 backdrop-blur-sm px-3 py-1 rounded-md">
+            <div className="absolute top-5 right-5 flex gap-3 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-[-10px] group-hover:translate-y-0">
+              <div className="flex items-center gap-1 bg-gradient-to-br from-slate-800 to-slate-900 backdrop-blur-md px-4 py-2 rounded-xl shadow-xl border border-white/10">
                 <button
                   onClick={handleZoomOut}
                   disabled={zoomLevel <= 1}
-                  className="p-1 text-white hover:bg-white/20 rounded transition-all duration-300 disabled:opacity-50"
+                  className="p-1.5 text-white hover:bg-white/20 rounded-lg transition-all duration-300 disabled:opacity-50 hover:scale-110"
                 >
-                  <ZoomOut size={14} />
+                  <ZoomOut size={16} />
                 </button>
-                <span className="text-white text-xs font-medium px-2">
+                <span className="text-white text-sm font-bold px-3 min-w-[50px] text-center">
                   {zoomPercentage}%
                 </span>
                 <button
                   onClick={handleZoomIn}
                   disabled={zoomLevel >= 3}
-                  className="p-1 text-white hover:bg-white/20 rounded transition-all duration-300 disabled:opacity-50"
+                  className="p-1.5 text-white hover:bg-white/20 rounded-lg transition-all duration-300 disabled:opacity-50 hover:scale-110"
                 >
-                  <ZoomIn size={14} />
+                  <ZoomIn size={16} />
                 </button>
               </div>
               <button
                 onClick={toggleFullscreen}
-                className="p-2 bg-slate-800/90 backdrop-blur-sm text-white rounded-md transition-all duration-300 hover:bg-slate-700/90"
+                className="p-2.5 bg-gradient-to-br from-slate-800 to-slate-900 backdrop-blur-md text-white rounded-xl transition-all duration-300 hover:scale-110 shadow-xl border border-white/10"
               >
-                <Maximize2 size={14} />
+                <Maximize2 size={16} />
               </button>
             </div>
 
-           
-            <div className="absolute bottom-4 left-4 bg-slate-800/90 backdrop-blur-sm text-white text-sm px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute bottom-5 left-5 bg-gradient-to-br from-slate-800 to-slate-900 backdrop-blur-md text-white text-sm px-4 py-2 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-500 font-semibold shadow-xl border border-white/10 translate-y-[10px] group-hover:translate-y-0">
               {current + 1} of {displayImages.length}
             </div>
 
-          
             {zoomLevel === 1 && (
-              <div className="absolute bottom-4 right-4 bg-slate-800/90 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                Double-click to zoom
+              <div className="absolute bottom-5 right-5 bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md text-white text-xs px-4 py-2 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-500 font-medium shadow-xl border border-white/10 translate-y-[10px] group-hover:translate-y-0">
+                Double-click to zoom • Drag to pan
               </div>
             )}
           </div>
 
-         
-          <div className="relative group bg-white rounded-xl p-6 shadow-sm border border-slate-100 hover:shadow-lg transition-all duration-300">
-       
-            <div className="hidden md:flex justify-between items-center absolute top-1/2 left-0 right-0 px-4 z-10 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="relative group bg-gradient-to-br from-white to-slate-50 rounded-2xl p-8 shadow-xl border-2 border-slate-200/50 hover:shadow-2xl transition-all duration-500">
+            <div className="hidden md:flex justify-between items-center absolute top-1/2 left-0 right-0 px-6 z-10 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500">
               <button
                 onClick={handlePrev}
-                className="bg-slate-100 text-slate-800 hover:bg-slate-800 hover:text-white hover:scale-105 shadow-sm hover:shadow-lg px-3 py-3 rounded-md transition-all duration-300 border border-slate-200"
+                className="bg-gradient-to-br from-white to-slate-50 text-slate-800 hover:from-slate-800 hover:to-slate-900 hover:text-white hover:scale-110 shadow-xl hover:shadow-2xl px-4 py-4 rounded-xl transition-all duration-300 border-2 border-slate-200"
               >
-                <ChevronLeft size={20} />
+                <ChevronLeft size={24} />
               </button>
               <button
                 onClick={handleNext}
-                className="bg-slate-100 text-slate-800 hover:bg-slate-800 hover:text-white hover:scale-105 shadow-sm hover:shadow-lg px-3 py-3 rounded-md transition-all duration-300 border border-slate-200"
+                className="bg-gradient-to-br from-white to-slate-50 text-slate-800 hover:from-slate-800 hover:to-slate-900 hover:text-white hover:scale-110 shadow-xl hover:shadow-2xl px-4 py-4 rounded-xl transition-all duration-300 border-2 border-slate-200"
               >
-                <ChevronRight size={20} />
+                <ChevronRight size={24} />
               </button>
             </div>
 
-         
-            <div className="flex overflow-x-auto gap-4 px-16 py-4 no-scrollbar scroll-smooth">
+            <div className="flex overflow-x-auto gap-5 px-20 py-6 no-scrollbar scroll-smooth">
               {thumbnailButtons}
             </div>
           </div>
         </div>
       </div>
 
-     
       {isFullscreen && (
-        <div className="fixed inset-0 bg-slate-900/95 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="relative w-full h-full max-w-7xl mx-auto p-4">
+        <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 backdrop-blur-xl z-50 flex items-center justify-center">
+          <div className="relative w-full h-full max-w-7xl mx-auto p-6">
             <button
               onClick={toggleFullscreen}
-              className="absolute top-6 right-6 p-3 bg-slate-100/20 backdrop-blur-sm text-white rounded-md border border-white/20 transition-all duration-300 hover:bg-slate-100/30 z-10"
+              className="absolute top-8 right-8 p-4 bg-white/10 backdrop-blur-md text-white rounded-xl border border-white/20 transition-all duration-300 hover:bg-white/20 hover:scale-110 z-10 shadow-2xl"
             >
-              <X size={24} />
+              <X size={26} />
             </button>
             
             <div className="w-full h-full flex items-center justify-center">
               <img
                 src={displayImages[current]}
                 alt={`Image ${current + 1}`}
-                className="max-w-full max-h-full object-contain cursor-pointer"
+                className="max-w-full max-h-full object-contain cursor-pointer transition-all duration-500 rounded-xl shadow-2xl"
                 style={imageStyle}
                 onMouseDown={handleMouseDown}
                 onDoubleClick={handleDoubleClick}
@@ -475,17 +470,26 @@ function ImageViewer({ images }) {
               />
             </div>
 
-            
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-slate-800/20 backdrop-blur-md px-6 py-3 rounded-md border border-white/20">
-              <button onClick={handlePrev} className="p-2 text-white hover:bg-white/20 rounded-md transition-all duration-300">
-                <ChevronLeft size={20} />
+            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-6 bg-white/10 backdrop-blur-xl px-8 py-4 rounded-2xl border border-white/20 shadow-2xl">
+              <button 
+                onClick={handlePrev} 
+                className="p-3 text-white hover:bg-white/20 rounded-xl transition-all duration-300 hover:scale-110"
+              >
+                <ChevronLeft size={24} />
               </button>
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 {fullscreenDots}
               </div>
-              <button onClick={handleNext} className="p-2 text-white hover:bg-white/20 rounded-md transition-all duration-300">
-                <ChevronRight size={20} />
+              <button 
+                onClick={handleNext} 
+                className="p-3 text-white hover:bg-white/20 rounded-xl transition-all duration-300 hover:scale-110"
+              >
+                <ChevronRight size={24} />
               </button>
+            </div>
+
+            <div className="absolute top-8 left-8 bg-white/10 backdrop-blur-md text-white px-5 py-3 rounded-xl border border-white/20 font-semibold shadow-2xl">
+              {current + 1} / {displayImages.length}
             </div>
           </div>
         </div>

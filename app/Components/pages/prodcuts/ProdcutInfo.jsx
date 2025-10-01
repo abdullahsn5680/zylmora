@@ -1,10 +1,10 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Heart } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useAlert } from '@/app/Provider/Alert/AlertProvider'
-import { safeFetch } from '@/Utils/safeFetch'
+import { safeFetch, safeFetchImage } from '@/Utils/safeFetch'
 import { useLoader } from '@/app/Provider/loader/loaderProvider'
 
 function ProductInfo({
@@ -21,6 +21,23 @@ function ProductInfo({
   const router = useRouter();
   const isInStock = product.stock != 0;
   
+    const [Url,setUrl]=useState()
+  
+  
+    useEffect(() => {
+      if(product?.main_image ){
+      const  fetch=async()=>{
+       const imageUrl = await safeFetchImage(product?.main_image ,86400000,session );
+       setUrl(imageUrl)
+     }
+          fetch();
+    }
+    }, [product])
+
+
+
+
+
   const handleAddWishlist = async () => {
     if (!product) return;
     if (!session?.user?.email) return handelLogin();
@@ -101,7 +118,7 @@ function ProductInfo({
           <Image
             width={800}
             height={800}
-            src={product?.main_image || '/placeholder.png'}
+            src={Url || '/placeholder.png'}
             alt={product?.title || 'Product'}
             className="w-full h-full object-cover rounded-3xl transition-all duration-700 group-hover:scale-110 group-hover:brightness-105"
           />
