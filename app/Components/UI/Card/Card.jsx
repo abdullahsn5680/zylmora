@@ -1,8 +1,10 @@
 'use client';
-import React, { memo, useState } from 'react';
+import React, { memo, useContext, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import AddCart from '../Buttons/AddCart';
+import { safeFetchImage } from '@/Utils/safeFetch';
+import { UserContext } from '@/app/Context/contextProvider';
 
 const Card = memo(function Card({ prop, isRelated }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -15,6 +17,22 @@ const Card = memo(function Card({ prop, isRelated }) {
   const isNew = prop.discount !== 0;
   const isInStock = prop.stock != 0;
   const related = isRelated;
+
+   const { session } = useContext(UserContext);
+    const [Url,setUrl]=useState()
+  
+  
+    useEffect(() => {
+      if(prop?.main_image){
+      const  fetch=async()=>{
+       const imageUrl = await safeFetchImage(prop?.main_image,86400000,session );
+       setUrl(imageUrl)
+     }
+          fetch();
+    }
+    }, [prop])
+
+
 
   const formatPrice = (price) =>
     price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -46,15 +64,15 @@ const Card = memo(function Card({ prop, isRelated }) {
         <div className="relative w-full aspect-square overflow-hidden rounded-t-3xl">
           
           <div className={`transition-opacity duration-700 ease-out ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
-            <Image
+           {Url&& <Image
               loading="lazy"
               width={800}
               height={800}
-              src={prop.main_image}
+              src={Url}
               alt={prop.title}
               className={`w-full h-full object-cover transition-all duration-700 ease-out ${isHovered ? 'scale-110 brightness-105' : 'scale-100'}`}
               onLoad={() => setImageLoaded(true)}
-            />
+            />}
           </div>
 
           {!imageLoaded && (

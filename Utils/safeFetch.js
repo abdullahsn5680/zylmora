@@ -1,3 +1,5 @@
+
+
 const DB_NAME = 'SafeFetchCache';
 const STORE_NAME = 'responses';
 const IMAGE_STORE_NAME = 'images';

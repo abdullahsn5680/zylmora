@@ -6,7 +6,7 @@ import SlideBar from './Components/UI/MObile/SlideBar';
 import AuthSessionProvider from './Provider/Auth/AuthSessionProvider';
 import Footer from './Components/UI/Footer';
 import ContextProvider from './Context/contextProvider';
-import LenisProvider from './Provider/Lenis/LenisProvider';
+
 import NavbarProvider from './Provider/NavBAr/NavbarProivder'; // check file name!
 import FullScreenProvider from './Provider/FullScreen/FullScreenProvider';
 import SafeLoader from './Components/UI/SafeLoader';
@@ -20,21 +20,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="overflow-x-hidden relative">
-        <LenisProvider>
           <LoaderProvider>
             <AlertProvider>
               <AuthSessionProvider>
                 <ContextProvider>
                   <NavbarProvider />
-
-                 
                     <main className="pt-[14vh] pb-32 bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50 w-full">
                       {children}
                       <Footer />
                     </main>
-                  
-
-                  
                   <div className="fixed bottom-[88px] z-50 right-3">
                     <a 
                       href="https://wa.me/923243040120?text=Hello%20I%20am%20interested%20in%20Zylmora%20products" 
@@ -47,12 +41,9 @@ export default function RootLayout({ children }) {
                       </svg>
                     </a>
                   </div>
-
-                
                   <div className="top-0 fixed z-20 md:hidden">
                     <SlideBar />
                   </div>
-
                   <div className="w-full">
                     <MobileNavbar />
                   </div>
@@ -60,7 +51,6 @@ export default function RootLayout({ children }) {
               </AuthSessionProvider>
             </AlertProvider>
           </LoaderProvider>
-        </LenisProvider>
       </body>
     </html>
   );

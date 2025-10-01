@@ -1,12 +1,31 @@
+
+'use client'
+import { UserContext } from '@/app/Context/contextProvider'
+import { safeFetchImage, useCachedImage } from '@/Utils/safeFetch'
 import { ShoppingBag } from 'lucide-react'
+import { UserSearch } from 'lucide-react'
 import { Star } from 'lucide-react'
 import { Sparkle } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 function Hero({content}) {
-  const router = useRouter()
+    const router = useRouter()
+  const { session } = useContext(UserContext);
+  const [Url,setUrl]=useState()
+
+
+  useEffect(() => {
+    if(content?.banner_Url){
+    const  fetch=async()=>{
+     const imageUrl = await safeFetchImage(content?.banner_Url,86400000,session );
+     setUrl(imageUrl)
+   }
+        fetch();
+  }
+  }, [content])
+  
   return (
     <div className="relative hero md:py-8  sm:px-6 lg:px-8 text-gray-800">
         <div className="max-w-7xl mx-auto">
@@ -14,13 +33,16 @@ function Hero({content}) {
           
           <div className="relative mb-12 md:rounded-3xl overflow-hidden shadow-2xl border border-gray-200/60">
             <div className="relative aspect-[2/3] sm:aspect-[16/6] lg:aspect-[21/9]">
-              <Image
-                src="/banner/banner.png"
+              {Url&&<Image
+                src={Url}
                 alt="Premium Fashion Collection"
-                fill
+           fill
+
+                priority           
+  loading="eager"
                 className="object-cover"
-                priority
-              />
+            
+              />}
              
               <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
               
