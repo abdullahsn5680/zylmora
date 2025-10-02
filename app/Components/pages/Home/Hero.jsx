@@ -31,7 +31,7 @@ function Hero({content}) {
         <div className="max-w-7xl mx-auto">
           
           
-          <div className="relative mb-12 md:rounded-3xl overflow-hidden shadow-2xl border border-gray-200/60">
+          <div className="relative mb-12 mt-10 md:rounded-3xl overflow-hidden shadow-2xl border border-gray-200/60">
             <div className="relative aspect-[2/3] sm:aspect-[16/6] lg:aspect-[21/9]">
               {Url&&<Image
                 src={Url}
