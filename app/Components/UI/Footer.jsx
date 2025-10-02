@@ -119,24 +119,44 @@ export default function ZylmoraFooter() {
                 Premium clothing brand dedicated to bringing you the latest fashion trends with exceptional quality and style.
               </p>
             
-              <div className="flex justify-center lg:justify-start space-x-1.5 sm:space-x-2 mb-4 sm:mb-6">
-                <Link href="#" className="group relative p-2 sm:p-3 bg-white text-gray-600 hover:text-white rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-110 shadow-md hover:shadow-lg border border-gray-200 overflow-hidden">
-                  <span className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <Facebook className="w-4 h-4 sm:w-5 sm:h-5 relative z-10" />
-                </Link>
-                <Link href="#" className="group relative p-2 sm:p-3 bg-white text-gray-600 hover:text-white rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-110 shadow-md hover:shadow-lg border border-gray-200 overflow-hidden">
-                  <span className="absolute inset-0 bg-gradient-to-r from-pink-500 to-rose-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <Instagram className="w-4 h-4 sm:w-5 sm:h-5 relative z-10" />
-                </Link>
-                <Link href="#" className="group relative p-2 sm:p-3 bg-white text-gray-600 hover:text-white rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-110 shadow-md hover:shadow-lg border border-gray-200 overflow-hidden">
-                  <span className="absolute inset-0 bg-gradient-to-r from-sky-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <Twitter className="w-4 h-4 sm:w-5 sm:h-5 relative z-10" />
-                </Link>
-                <Link href="#" className="group relative p-2 sm:p-3 bg-white text-gray-600 hover:text-white rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-110 shadow-md hover:shadow-lg border border-gray-200 overflow-hidden">
-                  <span className="absolute inset-0 bg-gradient-to-r from-red-500 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <Youtube className="w-4 h-4 sm:w-5 sm:h-5 relative z-10" />
-                </Link>
-              </div>
+            <div className="flex justify-center lg:justify-start space-x-1.5 sm:space-x-2 mb-4 sm:mb-6">
+  <Link
+    href="#"
+    aria-label="Facebook"
+    className="group relative p-2 sm:p-3 bg-white text-gray-600 hover:text-white rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-110 shadow-md hover:shadow-lg border border-gray-200 overflow-hidden"
+  >
+    <span className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    <Facebook className="w-4 h-4 sm:w-5 sm:h-5 relative z-10" />
+  </Link>
+
+  <Link
+    href="#"
+    aria-label="Instagram"
+    className="group relative p-2 sm:p-3 bg-white text-gray-600 hover:text-white rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-110 shadow-md hover:shadow-lg border border-gray-200 overflow-hidden"
+  >
+    <span className="absolute inset-0 bg-gradient-to-r from-pink-500 to-rose-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    <Instagram className="w-4 h-4 sm:w-5 sm:h-5 relative z-10" />
+  </Link>
+
+  <Link
+    href="#"
+    aria-label="Twitter"
+    className="group relative p-2 sm:p-3 bg-white text-gray-600 hover:text-white rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-110 shadow-md hover:shadow-lg border border-gray-200 overflow-hidden"
+  >
+    <span className="absolute inset-0 bg-gradient-to-r from-sky-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    <Twitter className="w-4 h-4 sm:w-5 sm:h-5 relative z-10" />
+  </Link>
+
+  <Link
+    href="#"
+    aria-label="Youtube"
+    className="group relative p-2 sm:p-3 bg-white text-gray-600 hover:text-white rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-110 shadow-md hover:shadow-lg border border-gray-200 overflow-hidden"
+  >
+    <span className="absolute inset-0 bg-gradient-to-r from-red-500 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    <Youtube className="w-4 h-4 sm:w-5 sm:h-5 relative z-10" />
+  </Link>
+</div>
+
 
               {/* <div className="bg-gradient-to-r from-gray-50 to-gray-100  w-fit rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-gray-200/60">
                 <h5 className="text-sm sm:text-lg font-bold text-gray-800 mb-2 sm:mb-3">Stay Updated</h5>

@@ -1,11 +1,20 @@
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  outputFileTracingRoot: __dirname, // Ensures correct tracing of serverless function deps
+
+  outputFileTracingRoot: __dirname,
+
   images: {
-    unoptimized: false, // Enables Next.js image optimization (default)
+    unoptimized: false,
+    formats: ["image/avif", "image/webp"], 
+    minimumCacheTTL: 60
   },
-  compress: true, // Enables gzip compression for responses
-  poweredByHeader: false, // Hides "X-Powered-By: Next.js" header (security best practice)
-  reactStrictMode: true, // Helps detect issues during development
+
+
+  poweredByHeader: false, // hides "X-Powered-By"
+  reactStrictMode: true,  // extra checks in dev
+  productionBrowserSourceMaps: false, // smaller bundles
+
+
 };
 
 module.exports = nextConfig;
