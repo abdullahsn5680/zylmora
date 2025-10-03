@@ -48,7 +48,7 @@ function page() {
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-gray-50 flex items-center justify-center">
-        {/* Background Decorations */}
+        
         <div className="fixed inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-red-100 to-pink-100 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse" />
           <div className="absolute bottom-20 right-20 w-28 h-28 bg-gradient-to-br from-orange-100 to-yellow-100 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse" />
@@ -123,13 +123,13 @@ function page() {
           <>
          
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-black text-gray-800 mb-6 tracking-tight">
+              <h2 className="md:text-4xl text-3xl md:text-5xl font-black text-gray-800 mb-6 tracking-tight">
                 Browse by Category
               </h2>
               <div className="w-24 h-1.5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 mx-auto rounded-full" />
             </div>
 
-            {/* Categories Grid */}
+            
             <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {categoriesData.map((category, index) => (
                 <div
@@ -140,7 +140,7 @@ function page() {
                     animationFillMode: 'both'
                   }}
                 > 
-                  {/* Image Container */}
+                 
                   <div className="relative aspect-[4/3] overflow-hidden rounded-t-3xl">
                     <img
                       src={category.image || '/placeholder-category.jpg'}
@@ -181,7 +181,7 @@ function page() {
                       <Eye className="w-6 h-6 text-white" />
                     </div>
 
-                    {/* Quick Action Button */}
+                   
                     <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
                       <button
                         onClick={() => performAction(category.cat, category.subCat)}
@@ -195,7 +195,6 @@ function page() {
                     </div>
                   </div>
 
-                  {/* Content */}
                   <div className="p-6">
                     <h3 className="text-xl font-black text-gray-800 mb-2 group-hover:text-blue-600 transition-colors duration-300 leading-tight">
                       {category.name}
@@ -231,31 +230,8 @@ function page() {
         )}
       </div>
 
-      {/* Custom CSS for animations */}
-      <style jsx>{`
-        @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        .animate-fade-in-up {
-          animation: fade-in-up 0.6s ease-out;
-        }
-
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
+     
+     
     </div>
   );
 }
