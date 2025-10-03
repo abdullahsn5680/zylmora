@@ -28,7 +28,7 @@ function AddCart({ prop }) {
         <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
         
       
-        <span className="relative z-10 flex items-center justify-center gap-2 md:gap-3">
+        <span className="relative z-1 flex items-center justify-center gap-2 md:gap-3">
          
           <ShoppingCart className="w-3 h-3 md:w-5 md:h-5 transition-transform duration-300 group-hover:scale-110" />
           

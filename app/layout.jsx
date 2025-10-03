@@ -7,7 +7,7 @@ import Footer from "./Components/UI/Footer";
 import ContextProvider from "./Context/contextProvider";
 import NavbarProvider from "./Provider/NavBAr/NavbarProivder";
 import SlideBarWrapper from "./Provider/SlideBarPorvider/SlideBarProvider";
-
+import { FaWhatsapp } from "react-icons/fa";
 import localFont from "next/font/local"; 
 
 
@@ -42,17 +42,17 @@ export default function RootLayout({ children }) {
                 </main>
 
                
-               
-                <div className="fixed bottom-[88px] z-50 right-3">
-                  <a
-                    href="https://wa.me/923243040120?text=Hello%20I%20am%20interested%20in%20Zylmora%20products"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Chat on WhatsApp"
-                    className="flex items-center justify-center w-12 h-12 bg-green-500 text-white rounded-full shadow-2xl hover:bg-green-600 hover:scale-110 transition-all duration-300 cursor-pointer"
-                  ></a>
-                </div>
-
+           <div className="fixed bottom-[88px] z-50 right-3">
+  <a
+    href="https://wa.me/923243040120?text=Hello%20I%20am%20interested%20in%20Zylmora%20products"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Chat on WhatsApp"
+    className="flex items-center justify-center w-12 h-12 bg-green-500 text-white rounded-full shadow-2xl hover:bg-green-600 hover:scale-110 transition-all duration-300 cursor-pointer"
+  >
+    <FaWhatsapp size={24} />
+  </a>
+</div>
                
                 <div className="top-0 fixed z-20 md:hidden">
                   <SlideBarWrapper />
