@@ -7,32 +7,27 @@ import { safeFetchImage } from '@/Utils/safeFetch';
 import { UserContext } from '@/app/Context/contextProvider';
 
 const Card = memo(function Card({ prop, isRelated }) {
-  const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
-  const router = useRouter();
+  const [url, setUrl] = useState(null);
 
-  const savingsAmount = prop.discount !== 0 ? prop.price - prop.cut_price : 0;
+  const router = useRouter();
+  const { session } = useContext(UserContext);
+
+  const savingsAmount = prop.discount > 0 ? prop.price - prop.cut_price : 0;
   const isOnSale = prop.discount > 0;
-  const isNew = prop.discount !== 0;
-  const isInStock = prop.stock != 0;
+  const isNew = prop.isNew ?? false;
+  const isInStock = prop.stock > 0;
   const related = isRelated;
 
-   const { session } = useContext(UserContext);
-    const [Url,setUrl]=useState()
-  
-  
-    useEffect(() => {
-      if(prop?.main_image){
-      const  fetch=async()=>{
-       const imageUrl = await safeFetchImage(prop?.main_image,86400000,session );
-       setUrl(imageUrl)
-     }
-          fetch();
-    }
-    }, [prop])
+  useEffect(() => {
+    if (!prop?.main_image) return;
 
-
+    (async () => {
+      const imageUrl = await safeFetchImage(prop.main_image, 86400000, session);
+      setUrl(imageUrl);
+    })();
+  }, [prop, session]);
 
   const formatPrice = (price) =>
     price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -48,40 +43,40 @@ const Card = memo(function Card({ prop, isRelated }) {
 
   return (
     <div
-      className={`group relative flex flex-col ${related && 'w-[180px] md:w-[280px]'} ${!related && 'w-full'} mx-auto transition-all duration-500 ease-out cursor-pointer motion-reduce:transform-none`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className={`group relative flex flex-col 
+        ${related ? 'w-[180px] md:w-[280px]' : 'w-full'} 
+        mx-auto transition-all duration-500 ease-out cursor-pointer motion-reduce:transform-none`}
       onClick={handleCardClick}
     >
-   
       <div
-        className={`relative bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-lg transition-all duration-500 ease-out
-        hover:shadow-2xl hover:border-gray-200 ${isHovered ? 'transform -translate-y-2 scale-[1.02]' : ''} motion-reduce:transform-none
-        before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:via-transparent before:to-gray-50/30 before:pointer-events-none before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500
-        after:absolute after:inset-0 after:rounded-3xl after:bg-gradient-to-t after:from-black/5 after:via-transparent after:to-white/10 after:pointer-events-none after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-500`}
+        className="relative bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-lg transition-all duration-500 ease-out
+          hover:shadow-2xl hover:border-gray-200 hover:-translate-y-2 hover:scale-[1.02] motion-reduce:transform-none
+          before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:via-transparent before:to-gray-50/30 before:pointer-events-none before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500
+          after:absolute after:inset-0 after:rounded-3xl after:bg-gradient-to-t after:from-black/5 after:via-transparent after:to-white/10 after:pointer-events-none after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-500"
       >
-     
+        {/* Image wrapper */}
         <div className="relative w-full aspect-square overflow-hidden rounded-t-3xl">
-          
           <div className={`transition-opacity duration-700 ease-out ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
-           {Url&& <Image
-              loading="lazy"
-              width={800}
-              height={800}
-              src={Url}
-              alt={prop.title}
-              className={`w-full h-full object-cover transition-all duration-700 ease-out ${isHovered ? 'scale-110 brightness-105' : 'scale-100'}`}
-              onLoad={() => setImageLoaded(true)}
-            />}
+            {url && (
+              <Image
+                loading="lazy"
+                width={800}
+                height={800}
+                src={url}
+                alt={`Product image of ${prop.title}`}
+                className="w-full h-full object-cover transition-all duration-700 ease-out hover:scale-110 brightness-105"
+                onLoad={() => setImageLoaded(true)}
+              />
+            )}
           </div>
 
           {!imageLoaded && (
             <div className="absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 animate-pulse">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-[shimmer_2s_infinite] transform" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
             </div>
           )}
 
-        
+          {/* NEW / SALE badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-1 z-1">
             {isNew && (
               <div className="px-1 py-0.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[8px] font-bold rounded-full shadow-lg border border-white/20 backdrop-blur-sm transform hover:scale-105 transition-transform duration-300">
@@ -95,17 +90,15 @@ const Card = memo(function Card({ prop, isRelated }) {
             )}
           </div>
 
-          <div className={`absolute top-3 right-3 z-1 transition-all duration-300 ease-out ${isHovered ? 'opacity-100 scale-100' : 'opacity-70 scale-90'}`}>
+          {/* Wishlist button */}
+          <div className="absolute top-3 right-3 z-1 transition-all duration-300 ease-out hover:opacity-100 hover:scale-100 opacity-70 scale-90">
             <button className="w-8 h-8 md:w-10 md:h-10 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full shadow-lg hover:shadow-xl flex items-center justify-center group/heart transition-all duration-300 hover:scale-110 hover:bg-rose-50">
               <span className="text-gray-600 group-hover/heart:text-rose-500 transition-colors duration-300">♡</span>
             </button>
           </div>
 
-        
-          <div
-            className={`absolute bottom-4 left-3 right-3 z-1 transition-all duration-500 ease-out
-            ${isHovered ? 'opacity-40 blur-sm translate-y-2' : 'opacity-100 blur-none translate-y-0'}`}
-          >
+          {/* Sizes */}
+          <div className="absolute bottom-4 left-3 right-3 z-1 transition-all duration-500 ease-out hover:opacity-40 hover:blur-sm hover:translate-y-2 opacity-100 blur-none translate-y-0">
             <div className="flex justify-center gap-1 flex-wrap">
               {prop.sizes.map((sizeData) => (
                 <button
@@ -124,12 +117,9 @@ const Card = memo(function Card({ prop, isRelated }) {
             </div>
           </div>
 
-        
-          <div
-            className={`absolute inset-0 transition-all duration-500 ease-out
-            ${isHovered ? 'md:bg-black/20 md:backdrop-blur-[2px] opacity-100' : 'opacity-0 pointer-events-none'}`}
-          >
-            <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ease-out ${isHovered ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}>
+          {/* Quick view overlay */}
+          <div className="absolute inset-0 transition-all duration-500 ease-out hover:md:bg-black/20 hover:md:backdrop-blur-[2px] hover:opacity-100 opacity-0 pointer-events-none">
+            <div className="absolute inset-0 flex items-center justify-center transition-all duration-500 ease-out hover:scale-100 hover:opacity-100 scale-95 opacity-0">
               <button className="hidden md:flex bg-white/95 backdrop-blur-sm text-gray-800 px-6 py-3 rounded-2xl shadow-xl border border-gray-200 font-bold text-sm transition-all duration-300 hover:bg-gray-900 hover:text-white hover:shadow-2xl hover:scale-105 items-center gap-2 group/quick">
                 <span className="transition-transform duration-300 group-hover/quick:scale-110">👁</span>
                 Quick View
@@ -138,27 +128,20 @@ const Card = memo(function Card({ prop, isRelated }) {
           </div>
         </div>
 
-       
+        {/* Content */}
         <div className="px-4 py-4 md:px-6 md:py-6 space-y-3 md:space-y-4">
-         
+          {/* Mobile add-to-cart */}
           <div className="w-full md:hidden">
             <AddCart prop={prop} />
           </div>
 
-         
           <div className="space-y-2">
             <h3 className="text-base md:text-xl font-bold text-gray-800 leading-tight group-hover:text-gray-900 transition-colors duration-300 line-clamp-2">
               {prop.title}
             </h3>
-            
-          
-            {/* <div className="flex items-center gap-2">
-              <div className="flex text-amber-400 text-sm">{'★★★★☆'}</div>
-              <span className="text-xs text-gray-500 font-medium">(4.2)</span>
-            </div> */}
           </div>
 
-         
+          {/* Prices */}
           <div className="space-y-2">
             <div className="flex items-center gap-3">
               {isOnSale && (
@@ -181,7 +164,7 @@ const Card = memo(function Card({ prop, isRelated }) {
             )}
           </div>
 
-         
+          {/* Stock */}
           <div className="flex items-center justify-between">
             {isInStock ? (
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200">
@@ -198,11 +181,9 @@ const Card = memo(function Card({ prop, isRelated }) {
         </div>
 
        
-        <div className={`absolute inset-0 rounded-3xl pointer-events-none transition-all duration-500 ${isHovered ? 'shadow-2xl shadow-gray-500/10' : ''}`} />
-        
-        
-        <div className={`absolute inset-0 rounded-3xl pointer-events-none transition-opacity duration-700 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out transform" />
+        <div className="absolute inset-0 rounded-3xl pointer-events-none transition-all duration-500 hover:shadow-2xl hover:shadow-gray-500/10" />
+        <div className="absolute inset-0 rounded-3xl pointer-events-none transition-opacity duration-700 hover:opacity-100 opacity-0">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
         </div>
       </div>
     </div>

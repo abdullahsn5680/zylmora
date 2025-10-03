@@ -1,11 +1,11 @@
 'use client';
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import Card from '../Card/Card';
 import { useRouter } from 'next/navigation';
 
 const CardContainer = memo(function CardContainer({ prop }) {
   const router = useRouter();
-  
+  const data = useMemo(()=>{return prop},[])
   const performAction = (url) => {
     router.push(url);
   };
@@ -24,7 +24,7 @@ const CardContainer = memo(function CardContainer({ prop }) {
       
         <div className="relative">
           <h2 className="font-black text-2xl md:text-4xl lg:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 tracking-tight leading-tight">
-            {prop.heading}
+            {data.heading}
           </h2>
           
         
@@ -34,7 +34,7 @@ const CardContainer = memo(function CardContainer({ prop }) {
 
       
         <button
-          onClick={() => { performAction(prop?.url) }}
+          onClick={() => { performAction(data?.url) }}
           className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl px-8 py-4 font-bold text-white transition-all duration-500 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/50 hover:-translate-y-1 active:scale-95"
         >
           
@@ -74,14 +74,11 @@ const CardContainer = memo(function CardContainer({ prop }) {
 
       <div className="items w-full max-w-7xl mx-auto">
         <div className="grid gap-2 md:gap-6 lg:gap-8 grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 justify-center">
-          {prop.products.map((data, index) => (
+          {data.products.map((data, index) => (
             <div
               key={data._id}
               className="animate-fade-in-up"
-              style={{
-                animationDelay: `${index * 100}ms`,
-                animationFillMode: 'both'
-              }}
+            
             >
               <Card prop={data} />
             </div>
