@@ -1,6 +1,6 @@
 'use client'
-import { UserContext } from '@/app/Context/contextProvider'
-import { safeFetchImage, useCachedImage } from '@/Utils/safeFetch'
+// import { UserContext } from '@/app/Context/contextProvider'
+// import { safeFetchImage, useCachedImage } from '@/Utils/safeFetch'
 import { ShoppingBag, Star, Sparkles, TrendingUp, Award, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -8,18 +8,18 @@ import React, { useContext, useEffect, useState } from 'react'
 
 function Hero({content}) {
   const router = useRouter()
-  const { session } = useContext(UserContext);
-  const [Url, setUrl] = useState()
-
-  useEffect(() => {
-    if(content?.banner_Url){
-      const fetch = async() => {
-        const imageUrl = await safeFetchImage(content?.banner_Url, 86400000, session);
-        setUrl(imageUrl)
-      }
-      fetch();
-    }
-  }, [content])
+//   const { session } = useContext(UserContext);
+//   const [Url, setUrl] = useState()
+//  console.log(content?.banner_Url)
+//   useEffect(() => {
+//     if(content?.banner_Url){
+//       const fetch = async() => {
+//         const imageUrl = await safeFetchImage(content?.banner_Url, 86400000, session);
+//         setUrl(imageUrl)
+//       }
+//       fetch();
+//     }
+//   }, [content])
   
   return (
     <div className="relative hero md:py-8 sm:px-6 lg:px-8 text-gray-800 overflow-hidden">
@@ -33,16 +33,17 @@ function Hero({content}) {
           <div className="relative aspect-[2/3.5] sm:aspect-[16/6] lg:aspect-[21/9]">
             
            
-            {Url && (
+            
               <Image
-                src={Url}
+              fetchPriority="high"
+                src={content?.banner_Url}
                 alt="Premium Fashion Collection"
                 fill
                 priority           
                 loading="eager"
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
-            )}
+           
             
             
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />

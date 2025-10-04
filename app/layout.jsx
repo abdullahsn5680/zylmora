@@ -30,6 +30,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.className}>
+      <head>
+  <meta name="description" content="Shop stylish shirts, trousers, and accessories at Zylmora. Build your nest of comfort and fashion." />
+  <meta property="og:title" content="Zylmora – Cozy, Stylish, and Everyday Wear" />
+  <meta property="og:description" content="Shop stylish shirts, trousers, and accessories at Zylmora." />
+  <meta name="twitter:card" content="summary_large_image" />
+</head>
+
       <body className="overflow-x-hidden relative">
         <LoaderProvider>
           <AlertProvider>
