@@ -219,7 +219,7 @@ function ProductPage() {
     );
   }
   return (
-    <div className="mt-12 pb-15  max-w-7xl mx-auto">
+    <div className="mt-12 pb-15  max-w-7xl   mx-auto">
       <div className="navigation px-6 flex items-center gap-3 text-sm text-gray-600 mb-8">
         <div className="home font-medium hover:text-gray-900 cursor-pointer transition-colors">
           Home
