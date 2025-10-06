@@ -4,12 +4,12 @@ import { Heart, Package, Search, ShoppingBag, User2, X, Maximize, Minimize } fro
 import Link from "next/link";
 import React, { useState, useRef, useContext, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { CollectionContext, FilterContext, QueryContext } from "@/app/Context/contextProvider";
+import { FilterContext, QueryContext } from "@/app/Context/contextProvider";
 import Announcemnt from "../alerts/announcemnt";
 import { openFullscreen, closeFullscreen } from "@/lib/provideFullScreen";
 
-function Navbar() {
-  const [categories] = useContext(CollectionContext);
+function Navbar({categories}) {
+
   const [confirmCategory, setConfirmCategory] = useState("");
   const [query, setQuery] = useContext(QueryContext);
   const [fullScreen, setFullScreen] = useState(false);

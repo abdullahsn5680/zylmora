@@ -18,7 +18,7 @@ const ExploreMore = dynamic(() => import('./Components/pages/Home/ExploreMore'),
 
 export default function HomeClient({content}) {
 
-  const memoizedContent = useMemo(() => content, [content]);
+
 
 
   return (
@@ -29,8 +29,8 @@ export default function HomeClient({content}) {
         <div className="absolute bottom-20 right-20 w-28 h-28 bg-gradient-to-br from-pink-100 to-orange-100 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse animation-delay-2000" />
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-gradient-to-br from-green-100 to-teal-100 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-4000" />
       </div>
-      <Hero content={memoizedContent} />
-      <MainContent content={memoizedContent} />
+      <Hero content={content} />
+      <MainContent content={content} />
       <ExploreMore />
     </div>
   );

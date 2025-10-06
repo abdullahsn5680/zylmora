@@ -1,53 +1,19 @@
-'use client'
-import NavbarM from '@/app/Components/UI/MObile/NavbarM'
-import Navbar from '@/app/Components/UI/Navbar'
-import React, { Suspense, useContext, useEffect, useState } from 'react'
-import { useLenis } from '../Lenis/LenisProvider'
-import NavbarSkeleton from '@/app/Components/UI/NavbarSkeleton'
-import { CollectionContext } from '@/app/Context/contextProvider'
+import { isrFetch } from '@/Utils/isrFetch';
+import NavbarClient from './NavBarClient'
+
+export const revalidate = 36000;
+
+async function NavbarProivder() {
+
+  const data = await isrFetch(`/api/collections`);
 
 
-function NavbarProvider() {
-   const [categories] = useContext(CollectionContext);
-  const [hidden, setHidden] = useState(false)
-  // const { scrollY, scrollDirection } = useLenis()
+  const categories = data.collections;
 
-  // useEffect(() => {
-  //   if (scrollDirection == 'down' ) {
-  //     setHidden(true)
-  //   } else if (scrollDirection == 'up') {
-  //     setHidden(false)
-  //   }
-  // }, [ scrollDirection])
-console.log(categories)
-if(categories.length<1) return <div
-      className={`fixed top-0 left-0 right-0 z-10 transition-transform duration-300 ${
-        hidden ? '-translate-y-full' : 'translate-y-0'
-      }`}
-    >
-    
- <NavbarSkeleton/>
-
-    </div>
-
-  return (
-    <div
-      className={`fixed top-0 left-0 right-0 z-10 transition-transform duration-300 ${
-        hidden ? '-translate-y-full' : 'translate-y-0'
-      }`}
-    >
-       <Suspense fallback={<div><NavbarSkeleton/></div>}>
-    
  
-      <div className="flex lg:hidden">
-       <NavbarM/>
-      </div>
-      <div className="hidden w-full lg:flex">
-        <Navbar/>
-      </div>
-         </Suspense>
-    </div>
+  return (
+    <NavbarClient categories={categories}/>
   )
 }
 
-export default NavbarProvider
+export default NavbarProivder;

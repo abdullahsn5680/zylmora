@@ -4,6 +4,14 @@ const nextConfig = {
   outputFileTracingRoot: __dirname,
 
   images: {
+     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        port: "",
+        pathname: "**",
+      },
+    ],
     unoptimized: false,
     formats: ["image/avif", "image/webp"], 
     minimumCacheTTL: 60

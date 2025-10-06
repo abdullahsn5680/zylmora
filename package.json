@@ -41,6 +41,7 @@
     "yup": "^1.6.1"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^15.5.4",
     "@tailwindcss/postcss": "^4",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.12",
