@@ -57,7 +57,7 @@ function ProductDescription(props) {
                 >
                   {data.id === 1 ? (
                     <div className="mb-8 pb-6 border-b-2 border-gradient-to-r from-indigo-200 via-purple-200 to-pink-200">
-                      <h2 className="text-2xl lg:text-3xl font-extrabold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight">
+                      <h2 className="text-xl lg:text-2xl font-extrabold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight">
                         {data.line}
                       </h2>
                     </div>
