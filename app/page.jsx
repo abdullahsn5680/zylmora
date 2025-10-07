@@ -6,7 +6,7 @@ export const revalidate = 3600;
 
 export default async function Page() {
 
-const data = await isrFetch('/api/getHome')
+const data = await isrFetch('/api/getHome',3600)
 
   return <HomeClient content={data} />;
 }

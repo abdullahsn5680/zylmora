@@ -5,8 +5,6 @@ import { UserContext } from "@/app/Context/contextProvider";
 import ProdcutInfo from "@/app/Components/pages/prodcuts/ProdcutInfo";
 import { useRouter } from "next/navigation";
 import ImageViewer from "@/app/Components/UI/Img/ImageViewer";
-import Loader from "@/app/Components/Loader/loader";
-import { safeFetch } from "@/Utils/safeFetch";
 import ProductReviews from "@/app/Components/pages/prodcuts/Review";
 import RelatedProdcuts from "@/app/Components/pages/prodcuts/RelatedProdcuts";
 import ProdcutDescription from "@/app/Components/pages/prodcuts/ProductDescription";
@@ -16,18 +14,16 @@ import Order_Summary from "@/app/Components/pages/Order/Order_Summary";
 import Alert from "@/Hooks/Alert";
 import Pop_Loader from "@/app/Components/alerts/popLoader";
 import Complete_Order from "@/app/Components/pages/Order/Complete_Order";
-function ProductPage() {
+function ProductPage({product,reviews,relatedProducts}) {
   const router = useRouter();
   const [finalAddress, setFinalAddresses] = useState("");
   const { session } = useContext(UserContext);
   const { user } = useContext(UserContext);
-  const searchParams = useSearchParams();
   const [Counter, setCounter] = useState(1);
   const [Size, setSize] = useState(0);
 
   const [loading, setLoading] = useState(true);
 
-  const [product, setProduct] = useState({});
   const [showOrderForm, setShowOrderForm] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [streetAddress, setStreetAddress] = useState("");
@@ -106,25 +102,10 @@ function ProductPage() {
     }
   }, [product]);
 
-  const slug = searchParams.get("url");
 
-  useEffect(() => {
-    const getProduct = async () => {
-      try {
-        const res = await safeFetch(`/api/Products?id=${slug}`, {}, 360000);
-        const data = res;
-        setProduct(data.product);
-        if (data.success) {
-          setTimeout(() => setLoading(false), 2000);
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    getProduct();
-  }, [slug]);
 
-  if (loading) return <Loader />;
+
+
 
   if (showOrderForm) {
     return (
@@ -252,15 +233,11 @@ function ProductPage() {
         <ProdcutDescription product={product?.description} />
       </div>
       <div className="mb-20 w-full">
-        <ProductReviews setPopLoader={setPopLoader} setConfirmLogin={setConfirmLogin} prop ={{pid:product._id,uid:user?._id}} setSucess={setSucess}   setShowAlert={setShowAlert}/>
+        <ProductReviews setPopLoader={setPopLoader} setConfirmLogin={setConfirmLogin}  prop ={{pid:product._id,uid:user?._id}} reviewsData={reviews} setSucess={setSucess}   setShowAlert={setShowAlert}/>
       </div>
       <div className="realetd mb-20 w-full">
         <RelatedProdcuts
-          prop={{
-            pid: product._id,
-            category: product.category,
-            subcategory: product.subcategory,
-          }}
+             relatedProducts={relatedProducts}
         />
       </div>
       {confirmLogin !== true && <NotLogin />}

@@ -59,7 +59,7 @@ if(session){
   useEffect(() => {
     const fetchCollections = async () => {
       try {
-         const origin = window.location.origin;
+     
         const data = await safeFetch(`/api/collections`, {}, 3600000);
         if (data.success) {
           setCategories(data.collections);

@@ -5,7 +5,7 @@ import { safeFetch } from '@/Utils/safeFetch';
 import { useAlert } from '@/app/Provider/Alert/AlertProvider';
 import { useLoader } from '@/app/Provider/loader/loaderProvider';
 
-export default function ZylmaProductReviews({prop}) {
+export default function ZylmaProductReviews({prop,reviewsData}) {
   const {showLoader, hideLoader} = useLoader();
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
@@ -29,7 +29,11 @@ export default function ZylmaProductReviews({prop}) {
   const ratingDistribution = [5, 4, 3, 2, 1].map(rating => 
     reviews.filter(review => review.rating === rating).length
   );
+ useEffect(() => {
+ setReviews(reviewsData)
 
+ }, [])
+ 
   const filteredReviews = reviews.filter(review => {
     if (selectedFilter !== 'all' && review.rating !== parseInt(selectedFilter)) return false;
     if (searchTerm && !review.content.toLowerCase().includes(searchTerm.toLowerCase()) && 
@@ -90,24 +94,6 @@ export default function ZylmaProductReviews({prop}) {
     ));
   };
 
-  useEffect(() => {
-    async function getData() {
-      try {
-        const params = new URLSearchParams();
-        params.set('pid', pid);
-        const query = params.toString();
-        const res = await safeFetch(`/api/Review?${query}`, {}, 0);
-        if (!res) {
-          throw new Error("Failed to fetch reviews");
-        }
-        setReviews(res);
-      } catch (err) {
-        console.error("Caught error:", err.message);
-        return null;
-      }
-    }
-    getData();
-  }, []);
 
   const handledelete = async(id, uid) => {
     showLoader();

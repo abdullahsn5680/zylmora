@@ -1,34 +1,16 @@
 'use client'
 import React, { useRef, useState, useEffect } from 'react'
 import Card from '../../UI/Card/Card';
-import { safeFetch } from '@/Utils/safeFetch';
 import { ChevronLeft, ChevronRight, Sparkles, Heart, TrendingUp } from 'lucide-react'
 
-function RelatedProducts({ prop }) {
-  const { pid, category, subcategory } = prop
+function RelatedProducts({ relatedProducts }) {
+
   const scrollRef = useRef(null);
-  const [relatedProducts, setRP] = useState([]);
+
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
-  useEffect(() => {
-    if (!pid || !category || !subcategory) return;
 
-    const getRp = async () => {
-      const Query = new URLSearchParams({
-        category: category,
-        subcategory: subcategory,
-      });
-      const res = await safeFetch(`/api/RelatedProducts/?${Query.toString()}`);
-      const data = res
-      if (data.success) {
-        const related = data.products.filter(p => p.pid !== pid);
-        setRP(related);
-      }
-    };
-
-    getRp();
-  }, [pid, category, subcategory]);
 
   const checkScrollButtons = () => {
     if (scrollRef.current) {

@@ -22,7 +22,7 @@ const Card = memo(function Card({ prop, isRelated }) {
     price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
   const handleCardClick = () => {
-    router.push(`/products?url=${prop._id}`);
+    router.push(`/products/${prop._id}`);
   };
 
   const handleSizeSelect = (size, e) => {

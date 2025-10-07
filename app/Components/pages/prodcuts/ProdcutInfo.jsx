@@ -20,19 +20,6 @@ function ProductInfo({
   const {showLoader, hideLoader} = useLoader();
   const router = useRouter();
   const isInStock = product.stock != 0;
-  
-    const [Url,setUrl]=useState()
-  
-  
-    useEffect(() => {
-      if(product?.main_image ){
-      const  fetch=async()=>{
-       const imageUrl = await safeFetchImage(product?.main_image ,86400000,session );
-       setUrl(imageUrl)
-     }
-          fetch();
-    }
-    }, [product])
 
 
 
@@ -118,7 +105,7 @@ function ProductInfo({
           <Image
             width={800}
             height={800}
-            src={Url || '/placeholder.png'}
+            src={product?.main_image || '/placeholder.png'}
             alt={product?.title || 'Product'}
             className="w-full h-full object-cover rounded-3xl transition-all duration-700 group-hover:scale-110 group-hover:brightness-105"
           />
