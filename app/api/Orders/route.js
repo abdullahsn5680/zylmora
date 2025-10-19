@@ -81,9 +81,7 @@ async function updateOrderHandler(request) {
     await dbConnect();
     const body = await request.json();
     const { id, status, returnReason, cancelReason, } = body;
-
     if (!id) return NextResponse.json({ message: 'Order ID required', success: false }, { status: 400 });
-
     const updateFields = {};
     if (status) updateFields.status = status;
     if (returnReason) updateFields.returnReason = returnReason;
@@ -107,7 +105,7 @@ async function deleteOrderHandler(request) {
     if (!id) return NextResponse.json({ message: 'Order ID required', success: false }, { status: 400 });
 
     await Order.findOneAndDelete({ id });
-    await GlobalOrder.findOneAndDelete({ orderId: id });
+    
 
     return NextResponse.json({ message: 'Order deleted', success: true }, { status: 200 });
   } catch (error) {

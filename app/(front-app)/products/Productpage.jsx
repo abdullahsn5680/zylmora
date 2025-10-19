@@ -22,7 +22,7 @@ function ProductPage({product,reviews,relatedProducts}) {
   const [Counter, setCounter] = useState(1);
   const [Size, setSize] = useState(0);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [showOrderForm, setShowOrderForm] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState("");

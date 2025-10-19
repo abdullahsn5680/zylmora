@@ -60,7 +60,7 @@ if(session){
     const fetchCollections = async () => {
       try {
      
-        const data = await safeFetch(`/api/collections`, {}, 3600000);
+        const data = await safeFetch(`/api/collections`, {}, 3600000,session);
         if (data.success) {
           setCategories(data.collections);
         }

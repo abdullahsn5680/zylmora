@@ -4,6 +4,92 @@ import { useRouter } from 'next/navigation';
 
 function Orders_Detail({selectedOrder, setSelectedOrder, setShowCancelReason, setShowNewAddressInput, showCancelReason, showNewAddressInput}) {
   const router =useRouter()
+const handleCancelOrder = async () => {
+  if (!selectedOrder.cancelReasonInput) {
+    alert('Please provide a cancellation reason.');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/Orders', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: selectedOrder.id,
+        status: 'Cancelled',
+        cancelReason: selectedOrder.cancelReasonInput,
+      }),
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      alert('Order cancelled successfully!');
+      router.refresh(); // or trigger state refresh
+      setSelectedOrder(null);
+    } else {
+      alert(data.message || 'Failed to cancel order');
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Something went wrong.');
+  }
+};
+
+const handleReturnOrder = async () => {
+  if (!selectedOrder.returnReasonInput) {
+    alert('Please provide a return reason.');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/Orders', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: selectedOrder.id,
+        status: 'Return Requested',
+        returnReason: selectedOrder.returnReasonInput,
+      }),
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      alert('Return request submitted!');
+      router.refresh();
+      setSelectedOrder(null);
+    } else {
+      alert(data.message || 'Failed to submit return');
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Something went wrong.');
+  }
+};
+
+const handleDeleteOrder = async () => {
+  if (!confirm('Are you sure you want to delete this order?')) return;
+  try {
+    const res = await fetch(`/api/Orders?id=${selectedOrder.id}`, {
+      method: 'DELETE',
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      alert('Order deleted successfully');
+      router.refresh();
+      setSelectedOrder(null);
+    } else {
+      alert(data.message || 'Failed to delete order');
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Something went wrong.');
+  }
+};
+
+
+
+
   const getStatusConfig = (status) => {
     const configs = {
       'Delivered': { 
@@ -312,11 +398,16 @@ function Orders_Detail({selectedOrder, setSelectedOrder, setShowCancelReason, se
                     placeholder="Please enter your return reason..."
                     className="w-full border-2 border-gray-300 rounded-2xl px-6 py-4 text-base font-medium focus:ring-4 focus:ring-yellow-500/30 focus:border-yellow-500 transition-all duration-300 placeholder:text-gray-400 bg-white"
                     onChange={(e) => setSelectedOrder({ ...selectedOrder, returnReasonInput: e.target.value })}
+                    
                   />
-                  <button className="w-full bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 text-white px-8 py-5 rounded-2xl font-black text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3 group">
-                    <RotateCcw className="w-6 h-6 group-hover:rotate-180 transition-transform duration-500" />
-                    Submit Return Request
-                  </button>
+               <button
+  className="w-full bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 text-white px-8 py-5 rounded-2xl font-black text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3 group"
+  onClick={handleReturnOrder}
+>
+  <RotateCcw className="w-6 h-6 group-hover:rotate-180 transition-transform duration-500" />
+  Submit Return Request
+</button>
+
                 </div>
               )}
 
@@ -337,11 +428,16 @@ function Orders_Detail({selectedOrder, setSelectedOrder, setShowCancelReason, se
                     placeholder="Please tell us why you're cancelling..."
                     className="w-full border-2 border-gray-300 rounded-2xl px-6 py-4 text-base font-medium focus:ring-4 focus:ring-red-500/30 focus:border-red-500 transition-all duration-300 placeholder:text-gray-400 bg-white"
                     onChange={(e) => setSelectedOrder({ ...selectedOrder, cancelReasonInput: e.target.value })}
+                    onClick={()=>{console.log('ads asd asd ')}}
                   />
-                  <button className="w-full bg-gradient-to-r from-red-500 via-red-600 to-rose-600 text-white px-8 py-5 rounded-2xl font-black text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3 group">
-                    <XCircle className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
-                    Confirm Cancellation
-                  </button>
+                <button
+  className="w-full bg-gradient-to-r from-red-500 via-red-600 to-rose-600 text-white px-8 py-5 rounded-2xl font-black text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3 group"
+  onClick={handleCancelOrder}
+>
+  <XCircle className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
+  Confirm Cancellation
+</button>
+
                 </div>
               )}
 
@@ -371,10 +467,14 @@ function Orders_Detail({selectedOrder, setSelectedOrder, setShowCancelReason, se
               )}
 
               {(selectedOrder.status === 'Delivered' || selectedOrder.status === 'Cancelled') && (
-                <button className="w-full bg-gradient-to-r from-gray-700 via-gray-800 to-slate-900 text-white px-8 py-5 rounded-2xl font-black text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3 group">
-                  <X className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
-                  Delete Order
-                </button>
+               <button
+  className="w-full bg-gradient-to-r from-gray-700 via-gray-800 to-slate-900 text-white px-8 py-5 rounded-2xl font-black text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3 group"
+  onClick={handleDeleteOrder}
+>
+  <X className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
+  Delete Order
+</button>
+
               )}
             </div>
           </div>

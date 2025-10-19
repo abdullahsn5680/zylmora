@@ -7,90 +7,101 @@ export async function GET(req) {
     await dbConnect();
 
     const { searchParams } = new URL(req.url);
+    
+    const page = Math.max(1, parseInt(searchParams.get('page')) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit')) || 10));
+    const skip = (page - 1) * limit;
+
     const rawQuery = searchParams.get('q');
-
-   
+    
+    // Handle empty query - return all products with pagination
     if (!rawQuery || rawQuery.trim().length === 0) {
-      const fallbackProducts = await Product.find().sort({ _id: -1 }).limit(50);
-      return NextResponse.json({ success: true, products: fallbackProducts });
+      const total = await Product.countDocuments();
+      const products = await Product.find()
+        .select('title category subcategory price cut_price image main_image sold stock _id Product_Type Vendor')
+        .sort({ _id: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean();
+
+      return NextResponse.json({
+        success: true,
+        products,
+        total,
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        hasNextPage: page < Math.ceil(total / limit),
+        hasPrevPage: page > 1,
+      });
     }
 
-  
+    // Process search query
     const query = rawQuery.toLowerCase().trim();
-    const words = query.split(' ');
-    
-    
-    const cleanWords = [];
-    for (let i = 0; i < words.length; i++) {
-      if (words[i].trim().length > 0) {
-        cleanWords.push(words[i].trim());
-      }
-    }
+    const words = query.split(/\s+/).filter((w) => w.length > 0);
 
     const genderCategories = ['men', 'women', 'kids'];
-    
-    
     let gender = null;
     const otherWords = [];
-    
-    for (let i = 0; i < cleanWords.length; i++) {
-      const word = cleanWords[i];
-      let isGender = false;
-      
-      for (let j = 0; j < genderCategories.length; j++) {
-        if (word === genderCategories[j]) {
-          gender = word;
-          isGender = true;
-          break;
-        }
-      }
-      
-      if (!isGender) {
+
+    // Separate gender from other search terms
+    for (const word of words) {
+      if (genderCategories.includes(word)) {
+        gender = word;
+      } else {
         otherWords.push(word);
       }
     }
 
-    
+    // Build query conditions
     const conditions = [];
-
+    
     if (gender) {
       conditions.push({ category: gender });
     }
 
-    for (let i = 0; i < otherWords.length; i++) {
-      const word = otherWords[i];
-      conditions.push({
+    if (otherWords.length > 0) {
+      // Create OR conditions for each word across multiple fields
+      const searchConditions = otherWords.map(word => ({
         $or: [
           { title: { $regex: word, $options: 'i' } },
           { subcategory: { $regex: word, $options: 'i' } },
           { Product_Type: { $regex: word, $options: 'i' } },
           { Vendor: { $regex: word, $options: 'i' } },
         ],
-      });
+      }));
+      
+      conditions.push(...searchConditions);
     }
 
-   
-    let queryFilter = {};
-    if (conditions.length > 0) {
-      queryFilter = { $and: conditions };
-    }
+    const queryFilter = conditions.length > 0 ? { $and: conditions } : {};
 
-    const products = await Product.find(queryFilter).limit(50);
+    // Execute count and find in parallel for better performance
+    const [total, products] = await Promise.all([
+      Product.countDocuments(queryFilter),
+      Product.find(queryFilter)
+        .select('title category subcategory price cut_price image main_image sold stock _id Product_Type Vendor')
+        .sort({ _id: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean()
+    ]);
 
+    const totalPages = Math.ceil(total / limit);
 
-    if (products.length === 0) {
-      return NextResponse.json(
-        { success: false, message: 'No matching products found' },
-        { status: 404 }
-      );
-    }
+    return NextResponse.json({
+      success: true,
+      products,
+      total,
+      currentPage: page,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1,
+    }, { status: 200 });
 
-    return NextResponse.json({ success: true, products: products }, { status: 200 });
-    
   } catch (err) {
     console.error('Search API error:', err);
     return NextResponse.json(
-      { success: false, message: 'Error during search' },
+      { success: false, message: 'Error during search', error: err.message },
       { status: 500 }
     );
   }

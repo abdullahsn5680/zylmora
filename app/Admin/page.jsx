@@ -2,32 +2,34 @@
 
 import { useState, useEffect, useContext } from 'react';
 import { CollectionContext } from '@/app/Context/contextProvider';
-import { PlusCircle, Trash2 } from 'lucide-react';
+import { PlusCircle, Trash2, Upload, Image as ImageIcon } from 'lucide-react';
 import { UserContext } from '@/app/Context/contextProvider';
 import { useRouter } from 'next/navigation';
+
 export default function AdminPage() {
-  const router =useRouter();
+  const router = useRouter();
   const [collections] = useContext(CollectionContext);
   const [bannerImage, setBannerImage] = useState(null);
   const [initialBannerImage, setInitialBannerImage] = useState(null);
   const MAX_PRODUCTS = 10;
   const [entries, setEntries] = useState([]);
-  const {session,status} =useContext(UserContext)
+  const { session, status } = useContext(UserContext);
   const [uniqueCategories, setUniqueCategories] = useState([]);
   const [categorySubMap, setCategorySubMap] = useState({});
     
-  const isAdmin = session?.user?.role 
- useEffect(()=>{
-  if(status !== "loading"){
-    if(!session){
-      router.replace('/Authentication')
-    }
-     if(!isAdmin){
-      router.replace('/')
-    }
-}},[status])
+  const isAdmin = session?.user?.role;
 
-  
+  useEffect(() => {
+    if (status !== "loading") {
+      if (!session) {
+        router.replace('/Authentication');
+      }
+      if (!isAdmin) {
+        router.replace('/');
+      }
+    }
+  }, [status]);
+
   useEffect(() => {
     const extractCategorySub = () => {
       const catMap = {};
@@ -176,79 +178,168 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white py-10 px-4 md:px-20">
-      <h1 className="text-center text-3xl font-bold mb-8">Admin Panel</h1>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 md:px-20">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Admin Panel</h1>
+          <p className="text-gray-600">Manage your homepage content and product showcases</p>
+        </div>
 
-      <div className="mb-10">
-        <label className="block font-semibold mb-2">Upload Banner Image</label>
-        <input type="file" accept="image/*" onChange={(e) => {
-          const file = e.target.files[0];
-          if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => setBannerImage(reader.result);
-            reader.readAsDataURL(file);
-          }
-        }} className="border p-2 rounded w-full" />
-        {(bannerImage || initialBannerImage) && <img src={bannerImage || initialBannerImage} className="mt-2 rounded h-48 object-cover w-full" />}
-      </div>
-
-      {entries.map((entry, index) => (
-        <div key={index} className="border p-4 rounded mb-6 bg-gray-50">
-          <div className="flex justify-between mb-2">
-            <h2 className="font-bold">Entry {index + 1}</h2>
-            {entries.length > 1 && (
-              <button onClick={() => removeEntry(index)} className="text-red-600">Remove</button>
-            )}
+        <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <ImageIcon className="w-6 h-6 text-gray-700" />
+            <h2 className="text-xl font-semibold text-gray-900">Banner Image</h2>
           </div>
-
-          <select className="border p-2 rounded w-full mb-2" value={entry.selectedCategory} onChange={e => handleEntryChange(index, 'selectedCategory', e.target.value)}>
-            <option value="">Select Category</option>
-            {uniqueCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-          </select>
-
-          {entry.selectedCategory && (
-            <select className="border p-2 rounded w-full mb-2" value={entry.selectedSubCategory} onChange={e => handleEntryChange(index, 'selectedSubCategory', e.target.value)}>
-              <option value="">Select Subcategory</option>
-              {categorySubMap[entry.selectedCategory]?.map((sub, i) => (
-                <option key={i} value={sub}>{sub}</option>
-              ))}
-            </select>
-          )}
-
-          {entry.selectedSubCategory && (
-            <>
-              <select className="border p-2 rounded w-full mb-4" onChange={e => handleEntryChange(index, 'selectedProductId', e.target.value)}>
-                <option value="">Add Product (Max {MAX_PRODUCTS})</option>
-                {entry.productOptions
-                  .filter(p => !entry.selectedProductIds.includes(p._id))
-                  .map(p => <option key={p._id} value={p._id}>{p.title}</option>)}
-              </select>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {entry.selectedProductDetails.map(product => (
-                  <div key={product._id} className="border rounded p-2 relative bg-white">
-                    <p className="font-semibold">{product.title}</p>
-                    <img src={product.main_image} alt={product.title} className="h-24 w-24 object-cover rounded mt-1" />
-                    <p>Rs. {product.price} (Save {product.discount}%)</p>
-                    <button onClick={() => removeProduct(index, product._id)} className="absolute top-1 right-1 text-sm text-red-500">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
+          
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-gray-400 transition-colors">
+            <label className="cursor-pointer block">
+              <div className="flex flex-col items-center justify-center gap-3">
+                <Upload className="w-10 h-10 text-gray-400" />
+                <span className="text-sm font-medium text-gray-700">Click to upload banner image</span>
+                <span className="text-xs text-gray-500">PNG, JPG up to 10MB</span>
               </div>
-            </>
+              <input 
+                type="file" 
+                accept="image/*" 
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => setBannerImage(reader.result);
+                    reader.readAsDataURL(file);
+                  }
+                }} 
+                className="hidden" 
+              />
+            </label>
+          </div>
+          
+          {(bannerImage || initialBannerImage) && (
+            <div className="mt-6">
+              <img 
+                src={bannerImage || initialBannerImage} 
+                className="rounded-lg h-64 object-cover w-full shadow-md" 
+                alt="Banner preview"
+              />
+            </div>
           )}
         </div>
-      ))}
 
-      <div className="flex justify-between mt-6">
-        <button onClick={addNewEntry} className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2">
-          <PlusCircle className="w-4 h-4" /> Add More
-        </button>
+        <div className="space-y-6">
+          {entries.map((entry, index) => (
+            <div key={index} className="bg-white rounded-xl shadow-lg overflow-hidden">
+              <div className="bg-gradient-to-r from-gray-800 to-gray-700 px-6 py-4 flex justify-between items-center">
+                <h2 className="font-bold text-white text-lg">Entry {index + 1}</h2>
+                {entries.length > 1 && (
+                  <button 
+                    onClick={() => removeEntry(index)} 
+                    className="text-red-400 hover:text-red-300 font-medium transition-colors flex items-center gap-2"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Remove
+                  </button>
+                )}
+              </div>
 
-        <button onClick={perfromSave} className="bg-black text-white px-4 py-2 rounded flex items-center gap-2">
-          <PlusCircle className="w-4 h-4" /> Save Entries
-        </button>
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                  <select 
+                    className="border border-gray-300 p-3 rounded-lg w-full focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all outline-none" 
+                    value={entry.selectedCategory} 
+                    onChange={e => handleEntryChange(index, 'selectedCategory', e.target.value)}
+                  >
+                    <option value="">Select Category</option>
+                    {uniqueCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                  </select>
+                </div>
+
+                {entry.selectedCategory && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Subcategory</label>
+                    <select 
+                      className="border border-gray-300 p-3 rounded-lg w-full focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all outline-none" 
+                      value={entry.selectedSubCategory} 
+                      onChange={e => handleEntryChange(index, 'selectedSubCategory', e.target.value)}
+                    >
+                      <option value="">Select Subcategory</option>
+                      {categorySubMap[entry.selectedCategory]?.map((sub, i) => (
+                        <option key={i} value={sub}>{sub}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {entry.selectedSubCategory && (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Add Products ({entry.selectedProductIds.length}/{MAX_PRODUCTS})
+                      </label>
+                      <select 
+                        className="border border-gray-300 p-3 rounded-lg w-full focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all outline-none" 
+                        onChange={e => handleEntryChange(index, 'selectedProductId', e.target.value)}
+                      >
+                        <option value="">Add Product</option>
+                        {entry.productOptions
+                          .filter(p => !entry.selectedProductIds.includes(p._id))
+                          .map(p => <option key={p._id} value={p._id}>{p.title}</option>)}
+                      </select>
+                    </div>
+
+                    {entry.selectedProductDetails.length > 0 && (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-3">Selected Products</label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {entry.selectedProductDetails.map(product => (
+                            <div key={product._id} className="border border-gray-200 rounded-lg p-4 bg-gray-50 hover:shadow-md transition-shadow">
+                              <div className="flex gap-4">
+                                <img 
+                                  src={product.main_image} 
+                                  alt={product.title} 
+                                  className="h-24 w-24 object-cover rounded-lg flex-shrink-0" 
+                                />
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-semibold text-gray-900 truncate mb-1">{product.title}</p>
+                                  <p className="text-lg font-bold text-gray-900">Rs. {product.price}</p>
+                                  <p className="text-sm text-green-600">Save {product.discount}%</p>
+                                </div>
+                                <button 
+                                  onClick={() => removeProduct(index, product._id)} 
+                                  className="text-red-500 hover:text-red-700 transition-colors h-fit"
+                                >
+                                  <Trash2 className="w-5 h-5" />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex flex-col sm:flex-row justify-between gap-4 mt-10">
+          <button 
+            onClick={addNewEntry} 
+            className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-3 rounded-lg font-medium shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+          >
+            <PlusCircle className="w-5 h-5" /> 
+            Add More Entry
+          </button>
+
+          <button 
+            onClick={perfromSave} 
+            className="bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white px-8 py-3 rounded-lg font-medium shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+          >
+            <PlusCircle className="w-5 h-5" /> 
+            Save All Changes
+          </button>
+        </div>
       </div>
     </div>
   );
